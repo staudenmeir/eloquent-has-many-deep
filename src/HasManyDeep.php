@@ -65,14 +65,14 @@ class HasManyDeep extends HasManyThrough
 
         $segments = explode(' as ', $query->getQuery()->from);
 
-        $alias = (count($segments) > 1) ? $segments[1] : null;
+        $alias = count($segments) > 1 ? $segments[1] : null;
 
         foreach ($throughParents as $i => $throughParent) {
             $first = $throughParent->qualifyColumn($localKeys[$i]);
 
             $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
 
-            $foreignKey = (($i == 0 && $alias) ? $alias.'.' : '').$foreignKeys[$i];
+            $foreignKey = ($i == 0 && $alias ? $alias.'.' : '').$foreignKeys[$i];
 
             $second = $predecessor->qualifyColumn($foreignKey);
 
@@ -92,9 +92,7 @@ class HasManyDeep extends HasManyThrough
      */
     public function throughParentInstanceSoftDeletes(Model $instance)
     {
-        return in_array(SoftDeletes::class, class_uses_recursive(
-            get_class($instance)
-        ));
+        return in_array(SoftDeletes::class, class_uses_recursive($instance));
     }
 
     /**

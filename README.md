@@ -4,7 +4,7 @@
 [![License](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/license)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep)
 
 ## Introduction
-This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
+This extended version of `HasManyThrough` allows relationships with unlimited intermediate models and supports `BelongsToMany` relationships.  
 Requires Laravel 5.5.29+.
 
 ## Installation
