@@ -96,6 +96,46 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
+     * Get a paginator for the "select" statement.
+     *
+     * @param  int  $perPage
+     * @param  array  $columns
+     * @param  string  $pageName
+     * @param  int  $page
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        if ($columns == ['*']) {
+            $columns = [$this->related->getTable() . '.*'];
+        }
+
+        $this->query->addSelect($columns);
+
+        return $this->query->paginate($perPage, $columns, $pageName, $page);
+    }
+
+    /**
+     * Paginate the given query into a simple paginator.
+     *
+     * @param  int  $perPage
+     * @param  array  $columns
+     * @param  string  $pageName
+     * @param  int|null  $page
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        if ($columns == ['*']) {
+            $columns = [$this->related->getTable() . '.*'];
+        }
+
+        $this->query->addSelect($columns);
+
+        return $this->query->simplePaginate($perPage, $columns, $pageName, $page);
+    }
+
+    /**
      * Add the constraints for a relationship query on the same table.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
