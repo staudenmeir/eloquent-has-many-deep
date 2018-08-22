@@ -29,39 +29,33 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         Capsule::schema()->create('countries', function (Blueprint $table) {
             $table->increments('country_pk');
-            $table->timestamps();
         });
 
         Capsule::schema()->create('users', function (Blueprint $table) {
             $table->increments('user_pk');
             $table->unsignedInteger('country_country_pk');
             $table->unsignedInteger('team_team_pk');
-            $table->timestamps();
             $table->softDeletes();
         });
 
         Capsule::schema()->create('posts', function (Blueprint $table) {
             $table->increments('post_pk');
             $table->unsignedInteger('user_user_pk');
-            $table->timestamps();
         });
 
         Capsule::schema()->create('comments', function (Blueprint $table) {
             $table->increments('comment_pk');
             $table->unsignedInteger('post_post_pk');
-            $table->timestamps();
         });
 
         Capsule::schema()->create('clubs', function (Blueprint $table) {
             $table->increments('club_pk');
             $table->unsignedInteger('user_user_pk');
-            $table->timestamps();
         });
 
         Capsule::schema()->create('teams', function (Blueprint $table) {
             $table->increments('team_pk');
             $table->unsignedInteger('club_club_pk');
-            $table->timestamps();
         });
 
         Model::unguarded(function (){
