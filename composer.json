@@ -13,6 +13,7 @@
         "illuminate/database": "^5.5.29"
     },
     "require-dev": {
+        "illuminate/pagination": "^5.5.29",
         "phpunit/phpunit": "~6.5"
     },
     "autoload": {

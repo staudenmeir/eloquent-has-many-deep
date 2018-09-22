@@ -20,6 +20,22 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
     }
 
+    public function testPaginate()
+    {
+        $comments = Country::first()->comments()
+            ->paginate();
+
+        $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
+    }
+
+    public function testSimplePaginate()
+    {
+        $comments = Country::first()->comments()
+            ->simplePaginate();
+
+        $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
+    }
+
     public function testEagerLoading()
     {
         $countries = Country::with('comments')->get();
