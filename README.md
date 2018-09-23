@@ -13,7 +13,7 @@ Requires Laravel 5.5.29+.
 
 ## Usage
 
-Using the  [documentation example](https://laravel.com/docs/5.6/eloquent-relationships#has-many-through) with an additional level:  
+Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
 
 ```php
@@ -66,7 +66,7 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'], [null, 'my_user_id']);
+        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'], [null, 'custom_user_id']);
     }
 }
 ```
@@ -75,7 +75,7 @@ class Country extends Model
 
 You can also include `BelongsToMany` relationships in the intermediate path.
 
-Using the [documentation example](https://laravel.com/docs/5.6/eloquent-relationships#many-to-many) with an additional level:  
+Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional level:  
 `User` → belongs to many → `Role` → has many → `Permission`
 
 Add the pivot table to the intermediate models:
@@ -116,5 +116,91 @@ class User extends Model
             ]
         );
     }
+}
+```
+
+### Intermediate and pivot data
+
+Use `withIntermediate()` to retrieve attributes from intermediate tables:
+
+```php
+public function comments()
+{
+    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+        ->withIntermediate('App\Post');
+}
+
+foreach ($country->comments as $comment) {
+    // $comment->post->title
+}
+```
+
+By default, this will retrieve all the table's columns. Be aware that this executes a separate query to get the list of columns.
+
+You can specify the selected columns as the second argument:
+
+```php
+public function comments()
+{
+    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+        ->withIntermediate('App\Post', ['id', 'title']);
+}
+```
+
+As the third argument, you can specify a custom accessor:
+
+```php
+public function comments()
+{
+    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+        ->withIntermediate('App\Post', ['id', 'title'], 'accessor');
+}
+
+foreach ($country->comments as $comment) {
+    // $comment->accessor->title
+}
+```
+
+If you retrieve data from multiple tables, you can use nested accessors:
+
+```php
+public function comments()
+{
+    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+        ->withIntermediate('App\Post')
+        ->withIntermediate('App\User', ['*'], 'post.user');
+}
+
+foreach ($country->comments as $comment) {
+    // $comment->post->title
+    // $comment->post->user->name
+}
+```
+
+Use `withPivot()` for the pivot tables of `BelongsToMany` relationships:
+
+```php
+public function permissions()
+{
+    return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role'])
+        ->withPivot('role_user', ['expires_at']);
+}
+
+foreach ($user->permissions as $permission) {
+    // $permission->role_user->expires_at
+}
+```
+
+You can specify a custom pivot model as the third argument and a custom accessor as the fourth: 
+
+```php
+public function permissions()
+{
+    return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role'])
+        ->withPivot('role_user', ['expires_at'], 'App\RoleUserPivot', 'pivot');
+}
+
+foreach ($user->permissions as $permission) {
+    // $permission->pivot->expires_at
 }
 ```

@@ -9,7 +9,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Tests\Models\Club;
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\Permission;
 use Tests\Models\Post;
+use Tests\Models\Role;
 use Tests\Models\Team;
 use Tests\Models\User;
 
@@ -58,7 +60,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $table->unsignedInteger('club_club_pk');
         });
 
-        Model::unguarded(function (){
+        Capsule::schema()->create('roles', function (Blueprint $table) {
+            $table->increments('role_pk');
+        });
+
+        Capsule::schema()->create('permissions', function (Blueprint $table) {
+            $table->increments('permission_pk');
+            $table->unsignedInteger('role_role_pk');
+        });
+
+        Capsule::schema()->create('role_user', function (Blueprint $table) {
+            $table->unsignedInteger('role_role_pk');
+            $table->unsignedInteger('user_user_pk');
+        });
+
+        Model::unguarded(function () {
             Country::create();
             Country::create();
 
@@ -81,6 +97,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             Team::create(['club_club_pk' => 1]);
             Team::create(['club_club_pk' => 2]);
             Team::create(['club_club_pk' => 3]);
+
+            Role::create();
+
+            Permission::create(['role_role_pk' => 1]);
+
+            Capsule::table('role_user')->insert([
+                ['role_role_pk' => 1, 'user_user_pk' => 1]
+            ]);
         });
 
         Capsule::enableQueryLog();

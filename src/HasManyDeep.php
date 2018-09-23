@@ -5,7 +5,10 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Schema\Builder as SchemaBuilder;
+use Illuminate\Support\Str;
 
 class HasManyDeep extends HasManyThrough
 {
@@ -29,6 +32,13 @@ class HasManyDeep extends HasManyThrough
      * @var array
      */
     protected $localKeys;
+
+    /**
+     * The intermediate tables to retrieve.
+     *
+     * @var array
+     */
+    protected $intermediateTables = [];
 
     /**
      * Create a new has many deep relationship instance.
@@ -72,7 +82,7 @@ class HasManyDeep extends HasManyThrough
 
             $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
 
-            $foreignKey = ($i == 0 && $alias ? $alias.'.' : '').$foreignKeys[$i];
+            $foreignKey = ($i === 0 && $alias ? $alias.'.' : '').$foreignKeys[$i];
 
             $second = $predecessor->qualifyColumn($foreignKey);
 
@@ -96,6 +106,21 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
+     * Execute the query as a "select" statement.
+     *
+     * @param  array  $columns
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function get($columns = ['*'])
+    {
+        $models = parent::get($columns);
+
+        $this->hydrateIntermediateRelations($models->all());
+
+        return $models;
+    }
+
+    /**
      * Get a paginator for the "select" statement.
      *
      * @param  int  $perPage
@@ -106,13 +131,15 @@ class HasManyDeep extends HasManyThrough
      */
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($columns == ['*']) {
-            $columns = [$this->related->getTable() . '.*'];
-        }
+        $columns = $this->shouldSelect($columns);
+
+        unset($columns[array_search($this->getQualifiedFirstKeyName(), $columns)]);
 
         $this->query->addSelect($columns);
 
-        return $this->query->paginate($perPage, $columns, $pageName, $page);
+        return tap($this->query->paginate($perPage, $columns, $pageName, $page), function ($paginator) {
+            $this->hydrateIntermediateRelations($paginator->items());
+        });
     }
 
     /**
@@ -126,13 +153,118 @@ class HasManyDeep extends HasManyThrough
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        if ($columns == ['*']) {
-            $columns = [$this->related->getTable() . '.*'];
-        }
+        $columns = $this->shouldSelect($columns);
+
+        unset($columns[array_search($this->getQualifiedFirstKeyName(), $columns)]);
 
         $this->query->addSelect($columns);
 
-        return $this->query->simplePaginate($perPage, $columns, $pageName, $page);
+        return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function ($paginator) {
+            $this->hydrateIntermediateRelations($paginator->items());
+        });
+    }
+
+    /**
+     * Set the select clause for the relation query.
+     *
+     * @param  array  $columns
+     * @return array
+     */
+    protected function shouldSelect(array $columns = ['*'])
+    {
+        return array_merge(parent::shouldSelect($columns), $this->intermediateColumns());
+    }
+
+    /**
+     * Chunk the results of the query.
+     *
+     * @param  int  $count
+     * @param  callable  $callback
+     * @return bool
+     */
+    public function chunk($count, callable $callback)
+    {
+        return $this->prepareQueryBuilder()->chunk($count, function ($results) use ($callback) {
+            $this->hydrateIntermediateRelations($results->all());
+
+            return $callback($results);
+        });
+    }
+
+    /**
+     * Hydrate the intermediate table relationship on the models.
+     *
+     * @param  array  $models
+     * @return void
+     */
+    protected function hydrateIntermediateRelations(array $models)
+    {
+        $intermediateTables = $this->intermediateTables;
+
+        ksort($intermediateTables);
+
+        foreach ($intermediateTables as $accessor => $intermediateTable) {
+            $prefix = $this->prefix($accessor);
+
+            if (Str::contains($accessor, '.')) {
+                list($path, $key) = preg_split('/\.(?=[^.]*$)/', $accessor);
+            } else {
+                list($path, $key) = [null, $accessor];
+            }
+
+            foreach ($models as $model) {
+                $relation = $this->intermediateRelation($model, $intermediateTable, $prefix);
+
+                data_get($model, $path)->setRelation($key, $relation);
+            }
+        }
+    }
+
+    /**
+     * Get the intermediate relationship from the query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  array  $intermediateTable
+     * @param  string  $prefix
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function intermediateRelation(Model $model, array $intermediateTable, $prefix)
+    {
+        $attributes = $this->intermediateAttributes($model, $prefix);
+
+        $class = $intermediateTable['class'];
+
+        if ($class === Pivot::class) {
+            return $class::fromAttributes($model, $attributes, $intermediateTable['table'], true);
+        }
+
+        if (is_subclass_of($class, Pivot::class)) {
+            return $class::fromRawAttributes($model, $attributes, $intermediateTable['table'], true);
+        }
+
+        return (new $class)->newFromBuilder($attributes);
+    }
+
+    /**
+     * Get the intermediate attributes from a model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $prefix
+     * @return array
+     */
+    protected function intermediateAttributes(Model $model, $prefix)
+    {
+        $attributes = [];
+
+        foreach ($model->getAttributes() as $key => $value) {
+            if (strpos($key, $prefix) === 0) {
+                $attributes[substr($key, strlen($prefix))] = $value;
+
+                unset($model->$key);
+            }
+        }
+
+        return $attributes;
     }
 
     /**
@@ -154,5 +286,79 @@ class HasManyDeep extends HasManyThrough
         return $query->select($columns)->whereColumn(
             $parentQuery->getQuery()->from.'.'.$query->getModel()->getKeyName(), '=', $this->getQualifiedFirstKeyName()
         );
+    }
+
+    /**
+     * Set the columns on an intermediate table to retrieve.
+     *
+     * @param  string  $class
+     * @param  array  $columns
+     * @param  string|null  $accessor
+     * @return $this
+     */
+    public function withIntermediate($class, array $columns = ['*'], $accessor = null)
+    {
+        $table = (new $class)->getTable();
+
+        $accessor = $accessor ?: snake_case(class_basename($class));
+
+        return $this->withPivot($table, $columns, $class, $accessor);
+    }
+
+    /**
+     * Set the columns on a pivot table to retrieve.
+     *
+     * @param  string  $table
+     * @param  array  $columns
+     * @param  string  $class
+     * @param  string|null  $accessor
+     * @return $this
+     */
+    public function withPivot($table, array $columns = ['*'], $class = Pivot::class, $accessor = null)
+    {
+        if ($columns === ['*']) {
+            $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);
+        }
+
+        $accessor = $accessor ?: $table;
+
+        if (isset($this->intermediateTables[$accessor])) {
+            $columns = array_merge($columns, $this->intermediateTables[$accessor]['columns']);
+        }
+
+        $this->intermediateTables[$accessor] = compact('table', 'columns', 'class');
+
+        return $this;
+    }
+
+    /**
+     * Get the intermediate columns for the relation.
+     *
+     * @return array
+     */
+    protected function intermediateColumns()
+    {
+        $columns = [];
+
+        foreach ($this->intermediateTables as $accessor => $intermediateTable) {
+            $prefix = $this->prefix($accessor);
+
+            foreach ($intermediateTable['columns'] as $column) {
+                $columns[] = $intermediateTable['table'].'.'.$column.' as '.$prefix.$column;
+            }
+        }
+
+        return array_unique($columns);
+    }
+
+    /**
+     * Get the intermediate column alias prefix.
+     *
+     * @param  string  $accessor
+     * @return string
+     */
+    protected function prefix($accessor)
+    {
+        return '__'.$accessor.'__';
     }
 }

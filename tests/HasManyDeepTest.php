@@ -3,12 +3,16 @@
 namespace Tests;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Tests\Models\Country;
+use Tests\Models\Post;
+use Tests\Models\RoleUserPivot;
 use Tests\Models\User;
 
 class HasManyDeepTest extends TestCase
 {
-    public function testResults()
+    public function testGet()
     {
         $comments = Country::first()->comments;
 
@@ -23,17 +27,34 @@ class HasManyDeepTest extends TestCase
     public function testPaginate()
     {
         $comments = Country::first()->comments()
+            ->withIntermediate(Post::class)
             ->paginate();
 
+        $this->assertTrue($comments[0]->relationLoaded('post'));
         $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
     }
 
     public function testSimplePaginate()
     {
         $comments = Country::first()->comments()
+            ->withIntermediate(Post::class)
             ->simplePaginate();
 
+        $this->assertTrue($comments[0]->relationLoaded('post'));
         $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
+    }
+
+    public function testChunk()
+    {
+        if (! method_exists(HasManyThrough::class, 'chunk')) {
+            $this->markTestSkipped();
+        }
+
+        Country::first()->comments()
+            ->withIntermediate(Post::class)
+            ->chunk(1, function ($results) {
+                $this->assertTrue($results[0]->relationLoaded('post'));
+            });
     }
 
     public function testEagerLoading()
@@ -74,5 +95,54 @@ class HasManyDeepTest extends TestCase
             .' where "users"."user_pk" = "clubs"."user_user_pk" and "laravel_reserved_0"."deleted_at" is null)'
             .' and "users"."deleted_at" is null';
         $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+    }
+
+    public function testWithIntermediate()
+    {
+        $comments = Country::first()->comments()
+            ->withIntermediate(User::class, ['user_pk', 'deleted_at'], 'post.user')
+            ->withIntermediate(Post::class)
+            ->get();
+
+        $this->assertInstanceOf(Post::class, $post = $comments[0]->post);
+        $this->assertEquals(['post_pk' => 1, 'user_user_pk' => 1], $post->getAttributes());
+        $this->assertEquals(['user_pk' => 1, 'deleted_at' => null], $post->user->getAttributes());
+        $sql = 'select "comments".*, "users"."country_country_pk",'
+            .' "users"."user_pk" as "__post.user__user_pk", "users"."deleted_at" as "__post.user__deleted_at",'
+            .' "posts"."post_pk" as "__post__post_pk", "posts"."user_user_pk" as "__post__user_user_pk"'
+            .' from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
+        $this->assertEquals($sql, Capsule::getQueryLog()[2]['query']);
+    }
+
+    public function testWithPivot()
+    {
+        $permissions = User::first()->permissions()
+            ->withPivot('role_user', ['role_role_pk'])
+            ->withPivot('role_user', ['user_user_pk'])
+            ->get();
+
+        $this->assertInstanceOf(Pivot::class, $pivot = $permissions[0]->role_user);
+        $this->assertEquals(['role_role_pk' => 1, 'user_user_pk' => 1], $pivot->getAttributes());
+        $sql = 'select "permissions".*, "role_user"."user_user_pk",'
+            .' "role_user"."user_user_pk" as "__role_user__user_user_pk",'
+            .' "role_user"."role_role_pk" as "__role_user__role_role_pk"'
+            .' from "permissions"'
+            .' inner join "roles" on "roles"."role_pk" = "permissions"."role_role_pk"'
+            .' inner join "role_user" on "role_user"."role_role_pk" = "roles"."role_pk"'
+            .' where "role_user"."user_user_pk" = ?';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+    }
+
+    public function testWithPivotClass()
+    {
+        $permissions = User::first()->permissions()
+            ->withPivot('role_user', ['role_role_pk'], RoleUserPivot::class, 'pivot')
+            ->get();
+
+        $this->assertInstanceOf(RoleUserPivot::class, $pivot = $permissions[0]->pivot);
+        $this->assertEquals(['role_role_pk' => 1], $pivot->getAttributes());
     }
 }
