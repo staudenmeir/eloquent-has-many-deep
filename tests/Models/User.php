@@ -11,6 +11,11 @@ class User extends Model
 
     protected $primaryKey = 'user_pk';
 
+    public function likes()
+    {
+        return $this->hasManyDeep(Like::class, [Post::class], [null, ['likeable_type', 'likeable_id']]);
+    }
+
     public function permissions()
     {
         return $this->hasManyDeep(Permission::class, ['role_user', Role::class]);

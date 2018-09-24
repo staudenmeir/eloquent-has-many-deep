@@ -9,9 +9,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Tests\Models\Club;
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\Like;
 use Tests\Models\Permission;
 use Tests\Models\Post;
 use Tests\Models\Role;
+use Tests\Models\Tag;
 use Tests\Models\Team;
 use Tests\Models\User;
 
@@ -74,6 +76,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $table->unsignedInteger('user_user_pk');
         });
 
+        Capsule::schema()->create('likes', function (Blueprint $table) {
+            $table->increments('like_pk');
+            $table->morphs('likeable');
+            $table->unsignedInteger('user_user_pk');
+        });
+
+        Capsule::schema()->create('tags', function (Blueprint $table) {
+            $table->increments('tag_pk');
+        });
+
+        Capsule::schema()->create('taggables', function (Blueprint $table) {
+            $table->unsignedInteger('tag_tag_pk');
+            $table->morphs('taggable');
+        });
+
         Model::unguarded(function () {
             Country::create();
             Country::create();
@@ -104,6 +121,19 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
             Capsule::table('role_user')->insert([
                 ['role_role_pk' => 1, 'user_user_pk' => 1]
+            ]);
+
+            Like::create(['likeable_type' => Post::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
+            Like::create(['likeable_type' => Post::class, 'likeable_id' => 3, 'user_user_pk' => 2]);
+            Like::create(['likeable_type' => Comment::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
+            Like::create(['likeable_type' => Comment::class, 'likeable_id' => 2, 'user_user_pk' => 2]);
+
+            Tag::create();
+            Tag::create();
+
+            Capsule::table('taggables')->insert([
+                ['tag_tag_pk' => 1, 'taggable_type' => Post::class, 'taggable_id' => 1],
+                ['tag_tag_pk' => 2, 'taggable_type' => Comment::class, 'taggable_id' => 2]
             ]);
         });
 

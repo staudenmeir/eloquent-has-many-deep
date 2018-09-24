@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Tests\Models\Country;
 use Tests\Models\Post;
 use Tests\Models\RoleUserPivot;
+use Tests\Models\Tag;
 use Tests\Models\User;
 
 class HasManyDeepTest extends TestCase
@@ -22,6 +23,44 @@ class HasManyDeepTest extends TestCase
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
         $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([1], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testGetWithLeadingMorphMany()
+    {
+        $likes = Post::first()->users;
+
+        $this->assertEquals([1], $likes->pluck('user_pk')->all());
+        $sql = 'select "users".*, "likes"."likeable_id" from "users"'
+            .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
+            .' where "likes"."likeable_id" = ? and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([1, Post::class], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testGetWithTrailingMorphMany()
+    {
+        $likes = User::first()->likes;
+
+        $this->assertEquals([1], $likes->pluck('like_pk')->all());
+        $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
+            .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
+            .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" = ?';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testGetWithMorphedByMany()
+    {
+        $comments = Tag::first()->comments;
+
+        $this->assertEquals([1], $comments->pluck('comment_pk')->all());
+        $sql = 'select "comments".*, "taggables"."tag_tag_pk" from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
+            .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" = ?';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1], Capsule::getQueryLog()[1]['bindings']);
     }
 
     public function testPaginate()
@@ -67,6 +106,44 @@ class HasManyDeepTest extends TestCase
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" in (?, ?)';
         $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([1, 2], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testEagerLoadingWithLeadingMorphMany()
+    {
+        $posts = Post::with('users')->get();
+
+        $this->assertEquals([1], $posts[0]->users->pluck('user_pk')->all());
+        $sql = 'select "users".*, "likes"."likeable_id" from "users"'
+            .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
+            .' where "likes"."likeable_id" in (?, ?, ?) and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([1, 2, 3, Post::class], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testEagerLoadingWithTrailingMorphMany()
+    {
+        $users = User::with('likes')->get();
+
+        $this->assertEquals([1], $users[0]->likes->pluck('like_pk')->all());
+        $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
+            .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
+            .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" in (?, ?)';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1, 2], Capsule::getQueryLog()[1]['bindings']);
+    }
+
+    public function testEagerLoadingWithMorphedByMany()
+    {
+        $tags = Tag::with('comments')->get();
+
+        $this->assertEquals([1], $tags[0]->comments->pluck('comment_pk')->all());
+        $sql = 'select "comments".*, "taggables"."tag_tag_pk" from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
+            .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" in (?, ?)';
+        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1, 2], Capsule::getQueryLog()[1]['bindings']);
     }
 
     public function testExistenceQuery()
@@ -83,6 +160,49 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
     }
 
+    public function testExistenceQueryWithLeadingMorphMany()
+    {
+        $posts = Post::has('users')->get();
+
+        $this->assertEquals([1, 3], $posts->pluck('post_pk')->all());
+        $sql = 'select * from "posts"'
+            .' where exists (select * from "users"'
+            .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
+            .' where "posts"."post_pk" = "likes"."likeable_id" and "likes"."likeable_type" = ?'
+            .' and "users"."deleted_at" is null)';
+        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class], Capsule::getQueryLog()[0]['bindings']);
+    }
+
+    public function testExistenceQueryWithTrailingMorphMany()
+    {
+        $users = User::has('likes')->get();
+
+        $this->assertEquals([1], $users->pluck('user_pk')->all());
+        $sql = 'select * from "users"'
+            .' where exists (select * from "likes"'
+            .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
+            .' where "likes"."likeable_type" = ? and "users"."user_pk" = "posts"."user_user_pk"'
+            .' and "likes"."likeable_type" = ?) and "users"."deleted_at" is null';
+        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class, Post::class], Capsule::getQueryLog()[0]['bindings']);
+    }
+
+    public function testExistenceQueryWithMorphedByMany()
+    {
+        $tags = Tag::has('comments')->get();
+
+        $this->assertEquals([1], $tags->pluck('tag_pk')->all());
+        $sql = 'select * from "tags"'
+            .' where exists (select * from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
+            .' where "taggables"."taggable_type" = ? and "tags"."tag_pk" = "taggables"."tag_tag_pk"'
+            .' and "taggables"."taggable_type" = ?)';
+        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class, Post::class], Capsule::getQueryLog()[0]['bindings']);
+    }
+
     public function testExistenceQueryForSelfRelation()
     {
         $users = User::has('players')->get();
@@ -95,6 +215,21 @@ class HasManyDeepTest extends TestCase
             .' where "users"."user_pk" = "clubs"."user_user_pk" and "laravel_reserved_0"."deleted_at" is null)'
             .' and "users"."deleted_at" is null';
         $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+    }
+
+    public function testExistenceQueryForSelfRelationWithLeadingMorphMany()
+    {
+        $posts = Post::has('posts')->get();
+
+        $this->assertEquals([1, 3], $posts->pluck('post_pk')->all());
+        $sql = 'select * from "posts"'
+            .' where exists (select * from "posts" as "laravel_reserved_1"'
+            .' inner join "users" on "users"."user_pk" = "laravel_reserved_1"."user_user_pk"'
+            .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
+            .' where "users"."deleted_at" is null and "posts"."post_pk" = "likes"."likeable_id"'
+            .' and "likes"."likeable_type" = ? and "users"."deleted_at" is null)';
+        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class], Capsule::getQueryLog()[0]['bindings']);
     }
 
     public function testWithIntermediate()

@@ -4,7 +4,7 @@
 [![License](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/license)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep)
 
 ## Introduction
-This extended version of `HasManyThrough` allows relationships with unlimited intermediate models and supports `BelongsToMany` relationships.  
+This extended version of `HasManyThrough` allows relationships with unlimited intermediate models and supports both [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships.  
 Requires Laravel 5.5.29+.
 
 ## Installation
@@ -12,6 +12,12 @@ Requires Laravel 5.5.29+.
     composer require staudenmeir/eloquent-has-many-deep
 
 ## Usage
+
+   * [BelongsToMany](#belongstomany)
+   * [MorphMany](#morphmany)
+   * [MorphToMany](#morphtomany)
+   * [MorphedByMany](#morphedbymany)
+   * [Intermediate and pivot data](#intermediate-and-pivot-data)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
@@ -28,9 +34,9 @@ class Country extends Model
 }
 ```
 
-Just like with `hasManyThrough()`, the first parameter of `hasManyDeep()` is the related model. The second parameter is an array of intermediate models, from the far parent (the model where the relationship is defined) to the related model.
+Just like with `hasManyThrough()`, the first argument of `hasManyDeep()` is the related model. The second argument is an array of intermediate models, from the far parent (the model where the relationship is defined) to the related model.
 
-By default, `hasManyDeep()` uses the Eloquent conventions for foreign and local keys. You can also specify custom foreign keys as the third parameter and custom local keys as the fourth parameter: 
+By default, `hasManyDeep()` uses the Eloquent conventions for foreign and local keys. You can also specify custom foreign keys as the third argument and custom local keys as the fourth argument: 
 
 ```php
 class Country extends Model
@@ -73,7 +79,7 @@ class Country extends Model
 
 ### BelongsToMany
 
-You can also include `BelongsToMany` relationships in the intermediate path.
+You can include `BelongsToMany` relationships in the intermediate path.
 
 Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional level:  
 `User` → belongs to many → `Role` → has many → `Permission`
@@ -92,7 +98,7 @@ class User extends Model
 }
 ```
 
-If you specify custom keys, remember to reverse the foreign and local key on the right side of the pivot table:
+If you specify custom keys, remember to reverse the foreign and local key on the "right" side of the pivot table:
 
 ```php
 class User extends Model
@@ -114,6 +120,85 @@ class User extends Model
               'role_id', // Local key on the "role_user" table (foreign key).
               'id'       // Local key on the "roles" table.
             ]
+        );
+    }
+}
+```
+
+### MorphMany
+
+You can include `MorphMany` relationships in the intermediate path.
+
+Using the [documentation example](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) with an additional level:  
+`User` → has many → `Post` → morph many → `Comment`
+
+Specify the polymorphic foreign keys as an array, starting with the `*_type` column:
+
+```php
+class User extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function postComments()
+    {
+        return $this->hasManyDeep(
+            'App\Comment',
+            ['App\Post'],
+            [null, ['commentable_type', 'commentable_id']]
+        );
+    }
+}
+```
+
+### MorphToMany
+
+You can include `MorphToMany` relationships in the intermediate path.
+
+Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:    
+`User` → has many → `Post` → morph to many → `Tag`
+
+Add the pivot table to the intermediate models and specify the polymorphic foreign keys as an array, starting with the `*_type` column:
+
+```php
+class User extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function postTags()
+    {
+        return $this->hasManyDeep(
+            'App\Tag',
+            ['App\Post', 'taggables'],
+            [null, ['taggable_type', 'taggable_id'], 'id'],
+            [null, null, 'tag_id']
+        );
+    }
+}
+```
+
+Remember to reverse the foreign and local key on the "right" side of the pivot table:
+
+### MorphedByMany
+
+You can include `MorphedByMany` relationships in the intermediate path.
+
+Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:  
+`Tag` → morphed by many → `Post` → has many → `Comment`
+
+Add the pivot table to the intermediate models and specify the polymorphic local keys as an array, starting with the `*_type` column:
+
+```php
+class Tag extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function postComments()
+    {
+        return $this->hasManyDeep(
+            'App\Comment',
+            ['taggables', 'App\Post'],
+            [null, 'id'],
+            [null, ['taggable_type', 'taggable_id']]
         );
     }
 }
@@ -177,7 +262,7 @@ foreach ($country->comments as $comment) {
 }
 ```
 
-Use `withPivot()` for the pivot tables of `BelongsToMany` relationships:
+Use `withPivot()` for the pivot tables of `BelongsToMany` and `MorphToMany`/`MorphedByMany` relationships:
 
 ```php
 public function permissions()

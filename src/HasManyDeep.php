@@ -56,7 +56,27 @@ class HasManyDeep extends HasManyThrough
         $this->foreignKeys = $foreignKeys;
         $this->localKeys = $localKeys;
 
-        parent::__construct($query, $farParent, $throughParents[0], $foreignKeys[0], $foreignKeys[1], $localKeys[0], $localKeys[1]);
+        $firstKey = is_array($foreignKeys[0]) ? $foreignKeys[0][1] : $foreignKeys[0];
+
+        parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKeys[0], $localKeys[1]);
+    }
+
+    /**
+     * Set the base constraints on the relation query.
+     *
+     * @return void
+     */
+    public function addConstraints()
+    {
+        parent::addConstraints();
+
+        if (static::$constraints) {
+            if (is_array($this->foreignKeys[0])) {
+                $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
+
+                $this->query->where($column, '=', $this->farParent->getMorphClass());
+            }
+        }
     }
 
     /**
@@ -78,11 +98,27 @@ class HasManyDeep extends HasManyThrough
         $alias = count($segments) > 1 ? $segments[1] : null;
 
         foreach ($throughParents as $i => $throughParent) {
-            $first = $throughParent->qualifyColumn($localKeys[$i]);
-
             $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
 
-            $foreignKey = ($i === 0 && $alias ? $alias.'.' : '').$foreignKeys[$i];
+            $localKey = $localKeys[$i];
+
+            if (is_array($localKey)) {
+                $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
+
+                $localKey = $localKey[1];
+            }
+
+            $first = $throughParent->qualifyColumn($localKey);
+
+            $foreignKey = $foreignKeys[$i];
+
+            if (is_array($foreignKey)) {
+                $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
+
+                $foreignKey = $foreignKey[1];
+            }
+
+            $foreignKey = ($i === 0 && $alias ? $alias.'.' : '').$foreignKey;
 
             $second = $predecessor->qualifyColumn($foreignKey);
 
@@ -103,6 +139,23 @@ class HasManyDeep extends HasManyThrough
     public function throughParentInstanceSoftDeletes(Model $instance)
     {
         return in_array(SoftDeletes::class, class_uses_recursive($instance));
+    }
+
+    /**
+     * Set the constraints for an eager load of the relation.
+     *
+     * @param  array  $models
+     * @return void
+     */
+    public function addEagerConstraints(array $models)
+    {
+        parent::addEagerConstraints($models);
+
+        if (is_array($this->foreignKeys[0])) {
+            $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
+
+            $this->query->where($column, '=', $this->farParent->getMorphClass());
+        }
     }
 
     /**
@@ -265,6 +318,27 @@ class HasManyDeep extends HasManyThrough
         }
 
         return $attributes;
+    }
+
+    /**
+     * Add the constraints for a relationship query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parentQuery
+     * @param  array|mixed  $columns
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
+    {
+        $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);
+
+        if (is_array($this->foreignKeys[0])) {
+            $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
+
+            $query->where($column, '=', $this->farParent->getMorphClass());
+        }
+
+        return $query;
     }
 
     /**
