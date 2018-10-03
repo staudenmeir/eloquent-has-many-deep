@@ -2,12 +2,8 @@
 
 namespace Tests\Models;
 
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
 class Post extends Model
 {
-    use HasRelationships;
-
     protected $primaryKey = 'post_pk';
 
     public function posts()

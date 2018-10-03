@@ -3,11 +3,10 @@
 namespace Tests\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class User extends Model
 {
-    use HasRelationships, SoftDeletes;
+    use SoftDeletes;
 
     protected $primaryKey = 'user_pk';
 

@@ -2,12 +2,8 @@
 
 namespace Tests\Models;
 
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
 class Country extends Model
 {
-    use HasRelationships;
-
     protected $primaryKey = 'country_pk';
 
     public function comments()

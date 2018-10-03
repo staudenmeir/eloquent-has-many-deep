@@ -2,12 +2,8 @@
 
 namespace Tests\Models;
 
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
 class Tag extends Model
 {
-    use HasRelationships;
-
     protected $primaryKey = 'tag_pk';
 
     public function comments()
