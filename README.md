@@ -5,7 +5,7 @@
 
 ## Introduction
 This extended version of `HasManyThrough` allows relationships with unlimited intermediate models and supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships.  
-Requires Laravel 5.5.29+.
+Supports Laravel 5.5.29+.
 
 ## Installation
 
@@ -17,7 +17,7 @@ Requires Laravel 5.5.29+.
    * [MorphMany](#morphmany)
    * [MorphToMany](#morphtomany)
    * [MorphedByMany](#morphedbymany)
-   * [Intermediate and pivot data](#intermediate-and-pivot-data)
+   * [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
@@ -204,7 +204,7 @@ class Tag extends Model
 }
 ```
 
-### Intermediate and pivot data
+### Intermediate and Pivot Data
 
 Use `withIntermediate()` to retrieve attributes from intermediate tables:
 
