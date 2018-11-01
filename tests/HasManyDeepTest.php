@@ -13,7 +13,7 @@ use Tests\Models\User;
 
 class HasManyDeepTest extends TestCase
 {
-    public function testGet()
+    public function testLazyLoading()
     {
         $comments = Country::first()->comments;
 
@@ -26,7 +26,7 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([1], Capsule::getQueryLog()[1]['bindings']);
     }
 
-    public function testGetWithLeadingMorphMany()
+    public function testLazyLoadingWithLeadingMorphMany()
     {
         $likes = Post::first()->users;
 
@@ -38,7 +38,7 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([1, Post::class], Capsule::getQueryLog()[1]['bindings']);
     }
 
-    public function testGetWithTrailingMorphMany()
+    public function testLazyLoadingWithTrailingMorphMany()
     {
         $likes = User::first()->likes;
 
@@ -50,7 +50,7 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([Post::class, 1], Capsule::getQueryLog()[1]['bindings']);
     }
 
-    public function testGetWithMorphedByMany()
+    public function testLazyLoadingWithMorphedByMany()
     {
         $comments = Tag::first()->comments;
 

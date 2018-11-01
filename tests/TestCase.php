@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use PHPUnit\Framework\TestCase as Base;
 use Tests\Models\Club;
 use Tests\Models\Comment;
 use Tests\Models\Country;
@@ -17,7 +18,7 @@ use Tests\Models\Tag;
 use Tests\Models\Team;
 use Tests\Models\User;
 
-abstract class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends Base
 {
     protected function setUp()
     {

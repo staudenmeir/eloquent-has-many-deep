@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Schema\Builder as SchemaBuilder;
 use Illuminate\Support\Str;
 
 class HasManyDeep extends HasManyThrough
