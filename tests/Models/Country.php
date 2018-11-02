@@ -6,6 +6,11 @@ class Country extends Model
 {
     protected $primaryKey = 'country_pk';
 
+    public function comment()
+    {
+        return $this->hasOneDeep(Comment::class, [User::class, Post::class])->withDefault();
+    }
+
     public function comments()
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class]);

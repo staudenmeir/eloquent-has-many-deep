@@ -20,6 +20,34 @@ trait HasRelationships
      */
     public function hasManyDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
     {
+        return $this->newHasManyDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
+    }
+
+    /**
+     * Define a has-one-deep relationship.
+     *
+     * @param  string  $related
+     * @param  array  $through
+     * @param  array  $foreignKeys
+     * @param  array  $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    public function hasOneDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
+    {
+        return $this->newHasOneDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
+    }
+
+    /**
+     * Prepare a has-one-deep or has-many-deep relationship.
+     *
+     * @param  string  $related
+     * @param  array  $through
+     * @param  array  $foreignKeys
+     * @param  array  $localKeys
+     * @return array
+     */
+    protected function hasOneOrManyDeep($related, array $through, array $foreignKeys, array $localKeys)
+    {
         $relatedInstance = $this->newRelatedInstance($related);
 
         $throughParents = array_map(function ($class) {
@@ -44,7 +72,7 @@ trait HasRelationships
             }
         }
 
-        return $this->newHasManyDeep($relatedInstance->newQuery(), $this, $throughParents, $foreignKeys, $localKeys);
+        return [$relatedInstance->newQuery(), $this, $throughParents, $foreignKeys, $localKeys];
     }
 
     /**
@@ -60,5 +88,20 @@ trait HasRelationships
     protected function newHasManyDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
     {
         return new HasManyDeep($query, $farParent, $throughParents, $foreignKeys, $localKeys);
+    }
+
+    /**
+     * Instantiate a new HasOneDeep relationship.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Model  $farParent
+     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
+     * @param  array  $foreignKeys
+     * @param  array  $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    protected function newHasOneDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
+    {
+        return new HasOneDeep($query, $farParent, $throughParents, $foreignKeys, $localKeys);
     }
 }

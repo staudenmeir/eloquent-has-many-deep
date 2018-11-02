@@ -18,6 +18,7 @@ Supports Laravel 5.5.29+.
    * [MorphToMany](#morphtomany)
    * [MorphedByMany](#morphedbymany)
    * [Intermediate and Pivot Data](#intermediate-and-pivot-data)
+   * [HasOneDeep](#hasonedeep)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
@@ -287,5 +288,22 @@ public function permissions()
 
 foreach ($user->permissions as $permission) {
     // $permission->pivot->expires_at
+}
+```
+
+### HasOneDeep
+
+Use the `HasOneDeep` relationship if you only want to retrieve a single related instance:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function latestComment()
+    {
+        return $this->hasOneDeep('App\Comment', ['App\User', 'App\Post'])
+            ->latest('comments.created_at');
+    }
 }
 ```
