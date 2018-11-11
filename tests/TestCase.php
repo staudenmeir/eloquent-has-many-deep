@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Carbon\Carbon;
-use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase as Base;
@@ -24,70 +24,70 @@ abstract class TestCase extends Base
     {
         parent::setUp();
 
-        $capsule = new Capsule;
-        $capsule->addConnection([
+        $db = new DB;
+        $db->addConnection([
             'driver' => 'sqlite',
             'database' => ':memory:'
         ]);
-        $capsule->setAsGlobal();
-        $capsule->bootEloquent();
+        $db->setAsGlobal();
+        $db->bootEloquent();
 
-        Capsule::schema()->create('countries', function (Blueprint $table) {
+        DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('country_pk');
         });
 
-        Capsule::schema()->create('users', function (Blueprint $table) {
+        DB::schema()->create('users', function (Blueprint $table) {
             $table->increments('user_pk');
             $table->unsignedInteger('country_country_pk');
             $table->unsignedInteger('team_team_pk');
             $table->softDeletes();
         });
 
-        Capsule::schema()->create('posts', function (Blueprint $table) {
+        DB::schema()->create('posts', function (Blueprint $table) {
             $table->increments('post_pk');
             $table->unsignedInteger('user_user_pk');
         });
 
-        Capsule::schema()->create('comments', function (Blueprint $table) {
+        DB::schema()->create('comments', function (Blueprint $table) {
             $table->increments('comment_pk');
             $table->unsignedInteger('post_post_pk');
         });
 
-        Capsule::schema()->create('clubs', function (Blueprint $table) {
+        DB::schema()->create('clubs', function (Blueprint $table) {
             $table->increments('club_pk');
             $table->unsignedInteger('user_user_pk');
         });
 
-        Capsule::schema()->create('teams', function (Blueprint $table) {
+        DB::schema()->create('teams', function (Blueprint $table) {
             $table->increments('team_pk');
             $table->unsignedInteger('club_club_pk');
         });
 
-        Capsule::schema()->create('roles', function (Blueprint $table) {
+        DB::schema()->create('roles', function (Blueprint $table) {
             $table->increments('role_pk');
         });
 
-        Capsule::schema()->create('permissions', function (Blueprint $table) {
+        DB::schema()->create('permissions', function (Blueprint $table) {
             $table->increments('permission_pk');
             $table->unsignedInteger('role_role_pk');
         });
 
-        Capsule::schema()->create('role_user', function (Blueprint $table) {
+        DB::schema()->create('role_user', function (Blueprint $table) {
             $table->unsignedInteger('role_role_pk');
             $table->unsignedInteger('user_user_pk');
         });
 
-        Capsule::schema()->create('likes', function (Blueprint $table) {
+        DB::schema()->create('likes', function (Blueprint $table) {
             $table->increments('like_pk');
             $table->morphs('likeable');
             $table->unsignedInteger('user_user_pk');
         });
 
-        Capsule::schema()->create('tags', function (Blueprint $table) {
+        DB::schema()->create('tags', function (Blueprint $table) {
             $table->increments('tag_pk');
         });
 
-        Capsule::schema()->create('taggables', function (Blueprint $table) {
+        DB::schema()->create('taggables', function (Blueprint $table) {
             $table->unsignedInteger('tag_tag_pk');
             $table->morphs('taggable');
         });
@@ -120,7 +120,7 @@ abstract class TestCase extends Base
 
             Permission::create(['role_role_pk' => 1]);
 
-            Capsule::table('role_user')->insert([
+            DB::table('role_user')->insert([
                 ['role_role_pk' => 1, 'user_user_pk' => 1]
             ]);
 
@@ -132,12 +132,12 @@ abstract class TestCase extends Base
             Tag::create();
             Tag::create();
 
-            Capsule::table('taggables')->insert([
+            DB::table('taggables')->insert([
                 ['tag_tag_pk' => 1, 'taggable_type' => Post::class, 'taggable_id' => 1],
                 ['tag_tag_pk' => 2, 'taggable_type' => Comment::class, 'taggable_id' => 2]
             ]);
         });
 
-        Capsule::enableQueryLog();
+        DB::enableQueryLog();
     }
 }

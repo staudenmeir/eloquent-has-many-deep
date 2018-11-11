@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Capsule\Manager as DB;
 use Tests\Models\Comment;
 use Tests\Models\Country;
 
@@ -17,8 +17,8 @@ class HasOneDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ? limit 1';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testDefault()
@@ -40,7 +40,7 @@ class HasOneDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" in (?, ?)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1, 2], DB::getQueryLog()[1]['bindings']);
     }
 }

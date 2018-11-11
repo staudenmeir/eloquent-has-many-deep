@@ -1,4 +1,5 @@
 language: php
+sudo: false
 
 php:
   - 7.0
@@ -9,8 +10,8 @@ env:
   - PREFER_LOWEST="--prefer-lowest"
   - PREFER_LOWEST=""
 
-sudo: false
+install:
+  - travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable $PREFER_LOWEST
 
-install: travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable $PREFER_LOWEST
-
-script: vendor/bin/phpunit
+script:
+  - vendor/bin/phpunit

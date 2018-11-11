@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Tests\Models\Country;
@@ -22,8 +22,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testLazyLoadingWithLeadingMorphMany()
@@ -34,8 +34,8 @@ class HasManyDeepTest extends TestCase
         $sql = 'select "users".*, "likes"."likeable_id" from "users"'
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
             .' where "likes"."likeable_id" = ? and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1, Post::class], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1, Post::class], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testLazyLoadingWithTrailingMorphMany()
@@ -46,8 +46,8 @@ class HasManyDeepTest extends TestCase
         $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
             .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
             .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" = ?';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testLazyLoadingWithMorphedByMany()
@@ -59,8 +59,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
             .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" = ?';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testPaginate()
@@ -105,8 +105,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" in (?, ?)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithLeadingMorphMany()
@@ -117,8 +117,8 @@ class HasManyDeepTest extends TestCase
         $sql = 'select "users".*, "likes"."likeable_id" from "users"'
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
             .' where "likes"."likeable_id" in (?, ?, ?) and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2, 3, Post::class], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([1, 2, 3, Post::class], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithTrailingMorphMany()
@@ -129,8 +129,8 @@ class HasManyDeepTest extends TestCase
         $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
             .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
             .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" in (?, ?)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1, 2], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithMorphedByMany()
@@ -142,8 +142,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
             .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" in (?, ?)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1, 2], Capsule::getQueryLog()[1]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
+        $this->assertEquals([Post::class, 1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testExistenceQuery()
@@ -157,7 +157,7 @@ class HasManyDeepTest extends TestCase
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "countries"."country_pk" = "users"."country_country_pk"'
             .' and "users"."deleted_at" is null)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
     }
 
     public function testExistenceQueryWithLeadingMorphMany()
@@ -170,8 +170,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
             .' where "posts"."post_pk" = "likes"."likeable_id" and "likes"."likeable_type" = ?'
             .' and "users"."deleted_at" is null)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
-        $this->assertEquals([Post::class], Capsule::getQueryLog()[0]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class], DB::getQueryLog()[0]['bindings']);
     }
 
     public function testExistenceQueryWithTrailingMorphMany()
@@ -184,8 +184,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
             .' where "likes"."likeable_type" = ? and "users"."user_pk" = "posts"."user_user_pk"'
             .' and "likes"."likeable_type" = ?) and "users"."deleted_at" is null';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
-        $this->assertEquals([Post::class, Post::class], Capsule::getQueryLog()[0]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class, Post::class], DB::getQueryLog()[0]['bindings']);
     }
 
     public function testExistenceQueryWithMorphedByMany()
@@ -199,8 +199,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
             .' where "taggables"."taggable_type" = ? and "tags"."tag_pk" = "taggables"."tag_tag_pk"'
             .' and "taggables"."taggable_type" = ?)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
-        $this->assertEquals([Post::class, Post::class], Capsule::getQueryLog()[0]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class, Post::class], DB::getQueryLog()[0]['bindings']);
     }
 
     public function testExistenceQueryForSelfRelation()
@@ -214,7 +214,7 @@ class HasManyDeepTest extends TestCase
             .' inner join "clubs" on "clubs"."club_pk" = "teams"."club_club_pk"'
             .' where "users"."user_pk" = "clubs"."user_user_pk" and "laravel_reserved_0"."deleted_at" is null)'
             .' and "users"."deleted_at" is null';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
     }
 
     public function testExistenceQueryForSelfRelationWithLeadingMorphMany()
@@ -228,8 +228,8 @@ class HasManyDeepTest extends TestCase
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
             .' where "users"."deleted_at" is null and "posts"."post_pk" = "likes"."likeable_id"'
             .' and "likes"."likeable_type" = ? and "users"."deleted_at" is null)';
-        $this->assertEquals($sql, Capsule::getQueryLog()[0]['query']);
-        $this->assertEquals([Post::class], Capsule::getQueryLog()[0]['bindings']);
+        $this->assertEquals($sql, DB::getQueryLog()[0]['query']);
+        $this->assertEquals([Post::class], DB::getQueryLog()[0]['bindings']);
     }
 
     public function testWithIntermediate()
@@ -249,7 +249,7 @@ class HasManyDeepTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
-        $this->assertEquals($sql, Capsule::getQueryLog()[2]['query']);
+        $this->assertEquals($sql, DB::getQueryLog()[2]['query']);
     }
 
     public function testWithPivot()
@@ -268,7 +268,7 @@ class HasManyDeepTest extends TestCase
             .' inner join "roles" on "roles"."role_pk" = "permissions"."role_role_pk"'
             .' inner join "role_user" on "role_user"."role_role_pk" = "roles"."role_pk"'
             .' where "role_user"."user_user_pk" = ?';
-        $this->assertEquals($sql, Capsule::getQueryLog()[1]['query']);
+        $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
     }
 
     public function testWithPivotClass()
