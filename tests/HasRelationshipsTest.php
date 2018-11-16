@@ -69,4 +69,16 @@ class HasRelationshipsTest extends TestCase
         $this->assertEquals($sql, $relation->toSql());
         $this->assertEquals([1], $relation->getBindings());
     }
+
+    public function testHasManyDeepWithAlias()
+    {
+        $relation = (new Country)->forceFill(['country_pk' => 1])->commentsWithAlias();
+
+        $sql = 'select * from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "users" as "alias" on "alias"."user_pk" = "posts"."user_user_pk"'
+            .' where "alias"."deleted_at" is null and "alias"."country_country_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
 }

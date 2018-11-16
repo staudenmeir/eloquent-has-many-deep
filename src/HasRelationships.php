@@ -51,7 +51,15 @@ trait HasRelationships
         $relatedInstance = $this->newRelatedInstance($related);
 
         $throughParents = array_map(function ($class) {
-            return Str::contains($class, '\\') ? new $class : (new Pivot)->setTable($class);
+            $segments = preg_split('/\s+as\s+/i', $class);
+
+            $instance = Str::contains($segments[0], '\\') ? new $segments[0] : (new Pivot)->setTable($segments[0]);
+
+            if (isset($segments[1])) {
+                $instance->setTable($instance->getTable().' as '.$segments[1]);
+            }
+
+            return $instance;
         }, $through);
 
         foreach (array_merge([$this], $throughParents) as $i => $instance) {

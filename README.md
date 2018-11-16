@@ -19,6 +19,7 @@ Supports Laravel 5.5.29+.
    * [MorphedByMany](#morphedbymany)
    * [Intermediate and Pivot Data](#intermediate-and-pivot-data)
    * [HasOneDeep](#hasonedeep)
+   * [Table Aliases](#table-aliases)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
@@ -305,5 +306,30 @@ class Country extends Model
         return $this->hasOneDeep('App\Comment', ['App\User', 'App\Post'])
             ->latest('comments.created_at');
     }
+}
+```
+
+### Table Aliases
+
+If your intermediate path contains the same model multiple times, you can specify a table alias:
+
+```php
+class Post extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function childComments()
+    {
+        return $this->hasManyDeep('App\Comment', ['App\Comment as alias'], [null, 'parent_id']);
+    }
+}
+```
+
+Use the `HasTableAlias` trait in the model(s) you are aliasing:
+
+```php
+class Comment extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 }
 ```
