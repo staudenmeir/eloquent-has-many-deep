@@ -311,7 +311,7 @@ class Country extends Model
 
 ### Table Aliases
 
-If your intermediate path contains the same model multiple times, you can specify a table alias:
+If your relationship path contains the same model multiple times, you can specify a table alias:
 
 ```php
 class Post extends Model
@@ -325,7 +325,7 @@ class Post extends Model
 }
 ```
 
-Use the `HasTableAlias` trait in the model(s) you are aliasing:
+Use the `HasTableAlias` trait in the models you are aliasing:
 
 ```php
 class Comment extends Model
