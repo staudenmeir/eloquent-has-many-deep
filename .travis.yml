@@ -1,5 +1,4 @@
 language: php
-sudo: false
 
 php:
   - 7.0
@@ -7,11 +6,11 @@ php:
   - 7.2
 
 env:
-  - PREFER_LOWEST="--prefer-lowest"
-  - PREFER_LOWEST=""
+  - COMPOSER_FLAGS=""
+  - COMPOSER_FLAGS="--prefer-lowest"
 
 install:
-  - travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable $PREFER_LOWEST
+  - travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable $COMPOSER_FLAGS
 
 script:
   - vendor/bin/phpunit

@@ -4,7 +4,8 @@
 [![License](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/license)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep)
 
 ## Introduction
-This extended version of `HasManyThrough` allows relationships with unlimited intermediate models and supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships.  
+This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
+It supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships and all their possible combinations.   
 Supports Laravel 5.5.29+.
 
 ## Installation
@@ -13,13 +14,13 @@ Supports Laravel 5.5.29+.
 
 ## Usage
 
-   * [BelongsToMany](#belongstomany)
-   * [MorphMany](#morphmany)
-   * [MorphToMany](#morphtomany)
-   * [MorphedByMany](#morphedbymany)
-   * [Intermediate and Pivot Data](#intermediate-and-pivot-data)
-   * [HasOneDeep](#hasonedeep)
-   * [Table Aliases](#table-aliases)
+- [BelongsToMany](#belongstomany)
+- [MorphMany](#morphmany)
+- [MorphToMany](#morphtomany)
+- [MorphedByMany](#morphedbymany)
+- [Intermediate and Pivot Data](#intermediate-and-pivot-data)
+- [HasOneDeep](#hasonedeep)
+- [Table Aliases](#table-aliases)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
