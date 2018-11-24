@@ -5,6 +5,7 @@ namespace Tests;
 use Tests\Models\Comment;
 use Tests\Models\Country;
 use Tests\Models\Post;
+use Tests\Models\Tag;
 use Tests\Models\User;
 
 class HasRelationshipsTest extends TestCase
@@ -78,6 +79,77 @@ class HasRelationshipsTest extends TestCase
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" as "alias" on "alias"."user_pk" = "posts"."user_user_pk"'
             .' where "alias"."deleted_at" is null and "alias"."country_country_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithHasManyThroughAndHasMany()
+    {
+        $relation = (new Country)->forceFill(['country_pk' => 1])->commentsFromRelations();
+
+        $sql = 'select * from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithBelongsToMany()
+    {
+        $relation = (new User)->forceFill(['user_pk' => 1])->permissionsFromRelations();
+
+        $sql = 'select * from "permissions"'
+            .' inner join "roles" on "roles"."role_pk" = "permissions"."role_role_pk"'
+            .' inner join "role_user" on "role_user"."role_role_pk" = "roles"."role_pk"'
+            .' where "role_user"."user_user_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithMorphManyAndBelongsTo()
+    {
+        $relation = (new Post)->forceFill(['post_pk' => 1])->usersFromRelations();
+
+        $sql = 'select * from "users"'
+            .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
+            .' where "likes"."likeable_id" = ? and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1, Post::class], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithMorphToMany()
+    {
+        $relation = (new User)->forceFill(['user_pk' => 1])->tagsFromRelations();
+
+        $sql = 'select * from "tags"'
+            .' inner join "taggables" on "taggables"."tag_tag_pk" = "tags"."tag_pk"'
+            .' inner join "posts" on "posts"."post_pk" = "taggables"."taggable_id"'
+            .' where "taggables"."taggable_type" = ? and "posts"."user_user_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([Post::class, 1], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithMorphedByMany()
+    {
+        $relation = (new Tag)->forceFill(['tag_pk' => 1])->commentsFromRelations();
+
+        $sql = 'select * from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
+            .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([Post::class, 1], $relation->getBindings());
+    }
+
+    public function testHasOneDeepFromRelations()
+    {
+        $relation = (new Country)->forceFill(['country_pk' => 1])->commentFromRelations();
+
+        $sql = 'select * from "comments"'
+            .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
+            .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
         $this->assertEquals($sql, $relation->toSql());
         $this->assertEquals([1], $relation->getBindings());
     }

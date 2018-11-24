@@ -18,6 +18,7 @@ Supports Laravel 5.5.29+.
 - [MorphMany](#morphmany)
 - [MorphToMany](#morphtomany)
 - [MorphedByMany](#morphedbymany)
+- [Existing Relationships](#existing-relationships)
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [HasOneDeep](#hasonedeep)
 - [Table Aliases](#table-aliases)
@@ -203,6 +204,35 @@ class Tag extends Model
             [null, 'id'],
             [null, ['taggable_type', 'taggable_id']]
         );
+    }
+}
+```
+
+### Existing Relationships
+
+In complex cases, you can use existing relationships to define a `HasManyDeep` relationship:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeepFromRelations($this->posts(), (new Post)->comments());
+    }
+
+    public function posts()
+    {
+        return $this->hasManyThrough('App\Post', 'App\User');
+    }
+}
+
+class Post extends Model
+{
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
     }
 }
 ```

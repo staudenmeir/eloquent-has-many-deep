@@ -16,6 +16,21 @@ class Post extends Model
         );
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+
     public function users()
     {
         return $this->hasManyDeep(
@@ -24,5 +39,10 @@ class Post extends Model
             [['likeable_type', 'likeable_id'], 'user_pk'],
             [null, 'user_user_pk']
         );
+    }
+
+    public function usersFromRelations()
+    {
+        return $this->hasManyDeepFromRelations($this->likes(), (new Like)->user());
     }
 }
