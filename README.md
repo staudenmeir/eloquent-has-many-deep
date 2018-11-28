@@ -402,7 +402,8 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])->withTrashed('users.deleted_at');
+        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+            ->withTrashed('users.deleted_at');
     }
 }
 
