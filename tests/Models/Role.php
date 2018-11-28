@@ -4,6 +4,8 @@ namespace Tests\Models;
 
 class Role extends Model
 {
+    public $timestamps = true;
+
     protected $primaryKey = 'role_pk';
 
     public function permissions()

@@ -9,5 +9,7 @@ abstract class Model extends Base
 {
     use HasRelationships;
 
+    public $incrementing = false;
+
     public $timestamps = false;
 }

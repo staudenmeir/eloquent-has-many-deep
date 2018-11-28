@@ -34,6 +34,7 @@ abstract class TestCase extends Base
 
         DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('country_pk');
+            $table->timestamps();
         });
 
         DB::schema()->create('users', function (Blueprint $table) {
@@ -65,6 +66,7 @@ abstract class TestCase extends Base
 
         DB::schema()->create('roles', function (Blueprint $table) {
             $table->increments('role_pk');
+            $table->timestamps();
         });
 
         DB::schema()->create('permissions', function (Blueprint $table) {
@@ -85,6 +87,7 @@ abstract class TestCase extends Base
 
         DB::schema()->create('tags', function (Blueprint $table) {
             $table->increments('tag_pk');
+            $table->timestamps();
         });
 
         DB::schema()->create('taggables', function (Blueprint $table) {

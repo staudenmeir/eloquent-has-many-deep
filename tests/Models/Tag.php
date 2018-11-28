@@ -4,6 +4,8 @@ namespace Tests\Models;
 
 class Tag extends Model
 {
+    public $timestamps = true;
+
     protected $primaryKey = 'tag_pk';
 
     public function comments()
