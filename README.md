@@ -18,9 +18,10 @@ Supports Laravel 5.5.29+.
 - [MorphMany](#morphmany)
 - [MorphToMany](#morphtomany)
 - [MorphedByMany](#morphedbymany)
+- [BelongsTo](#belongsto)
 - [Existing Relationships](#existing-relationships)
-- [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [HasOneDeep](#hasonedeep)
+- [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [Table Aliases](#table-aliases)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
@@ -102,7 +103,7 @@ class User extends Model
 }
 ```
 
-If you specify custom keys, remember to reverse the foreign and local key on the "right" side of the pivot table:
+If you specify custom keys, remember to swap the foreign and local key on the "right" side of the pivot table:
 
 ```php
 class User extends Model
@@ -180,7 +181,7 @@ class User extends Model
 }
 ```
 
-Remember to reverse the foreign and local key on the "right" side of the pivot table:
+Remember to swap the foreign and local key on the "right" side of the pivot table:
 
 ### MorphedByMany
 
@@ -208,9 +209,33 @@ class Tag extends Model
 }
 ```
 
+### BelongsTo
+
+You can include `BelongsTo` relationships in the intermediate path:  
+`Tag` → morphed by many → `Post` → belongs to → `User`
+
+Swap the foreign and local key:
+
+```php
+class Tag extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function postAuthors()
+    {
+        return $this->hasManyDeep(
+            'App\User',
+            ['taggables', 'App\Post'],
+            [null, 'id', 'id'],
+            [null, ['taggable_type', 'taggable_id'], 'user_id']
+        );
+    }
+}
+```
+
 ### Existing Relationships
 
-In complex cases, you can use existing relationships to define a `HasManyDeep` relationship:
+In complex cases, you can define a `HasManyDeep` relationship by chaining existing relationships:
 
 ```php
 class Country extends Model
@@ -233,6 +258,23 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany('App\Comment');
+    }
+}
+```
+
+### HasOneDeep
+
+Use the `HasOneDeep` relationship if you only want to retrieve a single related instance:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function latestComment()
+    {
+        return $this->hasOneDeep('App\Comment', ['App\User', 'App\Post'])
+            ->latest('comments.created_at');
     }
 }
 ```
@@ -320,23 +362,6 @@ public function permissions()
 
 foreach ($user->permissions as $permission) {
     // $permission->pivot->expires_at
-}
-```
-
-### HasOneDeep
-
-Use the `HasOneDeep` relationship if you only want to retrieve a single related instance:
-
-```php
-class Country extends Model
-{
-    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
-    public function latestComment()
-    {
-        return $this->hasOneDeep('App\Comment', ['App\User', 'App\Post'])
-            ->latest('comments.created_at');
-    }
 }
 ```
 
