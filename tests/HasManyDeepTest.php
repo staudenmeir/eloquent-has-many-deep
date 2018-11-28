@@ -5,6 +5,7 @@ namespace Tests;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Tests\Models\Comment;
 use Tests\Models\Country;
 use Tests\Models\Post;
 use Tests\Models\RoleUserPivot;
@@ -279,5 +280,23 @@ class HasManyDeepTest extends TestCase
 
         $this->assertInstanceOf(RoleUserPivot::class, $pivot = $permissions[0]->pivot);
         $this->assertEquals(['role_role_pk' => 1], $pivot->getAttributes());
+    }
+
+    public function testWithTrashed()
+    {
+        $user = Comment::find(3)->user()
+            ->withTrashed()
+            ->first();
+
+        $this->assertEquals(3, $user->user_pk);
+    }
+
+    public function testWithTrashedIntermediate()
+    {
+        $comments = Country::first()->comments()
+            ->withTrashed('users.deleted_at')
+            ->get();
+
+        $this->assertEquals([1, 2, 3], $comments->pluck('comment_pk')->all());
     }
 }

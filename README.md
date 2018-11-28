@@ -23,6 +23,7 @@ Supports Laravel 5.5.29+.
 - [HasOneDeep](#hasonedeep)
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [Table Aliases](#table-aliases)
+- [Soft Deleting](#soft-deleting)
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
@@ -387,5 +388,26 @@ Use the `HasTableAlias` trait in the models you are aliasing:
 class Comment extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
+}
+```
+
+### Soft Deleting
+
+By default, soft-deleted intermediate models will be excluded from the result. Use `withTrashed()` to include them:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])->withTrashed('users.deleted_at');
+    }
+}
+
+class User extends Model
+{
+    use SoftDeletes;
 }
 ```
