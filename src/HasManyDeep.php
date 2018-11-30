@@ -2,15 +2,17 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class HasManyDeep extends HasManyThrough
 {
+    use RetrievesIntermediateTables;
+
     /**
      * The "through" parent model instances.
      *
@@ -31,13 +33,6 @@ class HasManyDeep extends HasManyThrough
      * @var array
      */
     protected $localKeys;
-
-    /**
-     * The intermediate tables to retrieve.
-     *
-     * @var array
-     */
-    protected $intermediateTables = [];
 
     /**
      * Create a new has many deep relationship instance.
@@ -99,27 +94,11 @@ class HasManyDeep extends HasManyThrough
         foreach ($throughParents as $i => $throughParent) {
             $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
 
-            $localKey = $localKeys[$i];
+            $first = $this->firstJoinColumn($query, $throughParent, $predecessor, $localKeys[$i]);
 
-            if (is_array($localKey)) {
-                $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
+            $suffix = ($i === 0 && $alias ? $alias.'.' : '');
 
-                $localKey = $localKey[1];
-            }
-
-            $first = $throughParent->qualifyColumn($localKey);
-
-            $foreignKey = $foreignKeys[$i];
-
-            if (is_array($foreignKey)) {
-                $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
-
-                $foreignKey = $foreignKey[1];
-            }
-
-            $foreignKey = ($i === 0 && $alias ? $alias.'.' : '').$foreignKey;
-
-            $second = $predecessor->qualifyColumn($foreignKey);
+            $second = $this->secondJoinColumn($query, $throughParent, $predecessor, $foreignKeys[$i], $suffix);
 
             $query->join($throughParent->getTable(), $first, '=', $second);
 
@@ -130,7 +109,48 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
-     * Determine whether a "through" parent instance of the relation uses Soft Deletes.
+     * Get the first column for the join clause.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Model  $throughParent
+     * @param  \Illuminate\Database\Eloquent\Model  $predecessor
+     * @param  array|string  $key
+     * @return string
+     */
+    protected function firstJoinColumn(Builder $query, Model $throughParent, Model $predecessor, $key)
+    {
+        if (is_array($key)) {
+            $query->where($throughParent->qualifyColumn($key[0]), '=', $predecessor->getMorphClass());
+
+            $key = $key[1];
+        }
+
+        return $throughParent->qualifyColumn($key);
+    }
+
+    /**
+     * Get the second column for the join clause.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Model  $throughParent
+     * @param  \Illuminate\Database\Eloquent\Model  $predecessor
+     * @param  array|string  $suffix
+     * @param  string  $key
+     * @return string
+     */
+    protected function secondJoinColumn(Builder $query, Model $throughParent, Model $predecessor, $key, $suffix)
+    {
+        if (is_array($key)) {
+            $query->where($predecessor->qualifyColumn($key[0]), '=', $throughParent->getMorphClass());
+
+            $key = $key[1];
+        }
+
+        return $predecessor->qualifyColumn($suffix.$key);
+    }
+
+    /**
+     * Determine whether a "through" parent instance of the relation uses SoftDeletes.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $instance
      * @return bool
@@ -189,7 +209,7 @@ class HasManyDeep extends HasManyThrough
 
         $this->query->addSelect($columns);
 
-        return tap($this->query->paginate($perPage, $columns, $pageName, $page), function ($paginator) {
+        return tap($this->query->paginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
             $this->hydrateIntermediateRelations($paginator->items());
         });
     }
@@ -211,7 +231,7 @@ class HasManyDeep extends HasManyThrough
 
         $this->query->addSelect($columns);
 
-        return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function ($paginator) {
+        return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
             $this->hydrateIntermediateRelations($paginator->items());
         });
     }
@@ -236,87 +256,11 @@ class HasManyDeep extends HasManyThrough
      */
     public function chunk($count, callable $callback)
     {
-        return $this->prepareQueryBuilder()->chunk($count, function ($results) use ($callback) {
+        return $this->prepareQueryBuilder()->chunk($count, function (Collection $results) use ($callback) {
             $this->hydrateIntermediateRelations($results->all());
 
             return $callback($results);
         });
-    }
-
-    /**
-     * Hydrate the intermediate table relationship on the models.
-     *
-     * @param  array  $models
-     * @return void
-     */
-    protected function hydrateIntermediateRelations(array $models)
-    {
-        $intermediateTables = $this->intermediateTables;
-
-        ksort($intermediateTables);
-
-        foreach ($intermediateTables as $accessor => $intermediateTable) {
-            $prefix = $this->prefix($accessor);
-
-            if (Str::contains($accessor, '.')) {
-                list($path, $key) = preg_split('/\.(?=[^.]*$)/', $accessor);
-            } else {
-                list($path, $key) = [null, $accessor];
-            }
-
-            foreach ($models as $model) {
-                $relation = $this->intermediateRelation($model, $intermediateTable, $prefix);
-
-                data_get($model, $path)->setRelation($key, $relation);
-            }
-        }
-    }
-
-    /**
-     * Get the intermediate relationship from the query.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  array  $intermediateTable
-     * @param  string  $prefix
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    protected function intermediateRelation(Model $model, array $intermediateTable, $prefix)
-    {
-        $attributes = $this->intermediateAttributes($model, $prefix);
-
-        $class = $intermediateTable['class'];
-
-        if ($class === Pivot::class) {
-            return $class::fromAttributes($model, $attributes, $intermediateTable['table'], true);
-        }
-
-        if (is_subclass_of($class, Pivot::class)) {
-            return $class::fromRawAttributes($model, $attributes, $intermediateTable['table'], true);
-        }
-
-        return (new $class)->newFromBuilder($attributes);
-    }
-
-    /**
-     * Get the intermediate attributes from a model.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $prefix
-     * @return array
-     */
-    protected function intermediateAttributes(Model $model, $prefix)
-    {
-        $attributes = [];
-
-        foreach ($model->getAttributes() as $key => $value) {
-            if (strpos($key, $prefix) === 0) {
-                $attributes[substr($key, strlen($prefix))] = $value;
-
-                unset($model->$key);
-            }
-        }
-
-        return $attributes;
     }
 
     /**
@@ -359,80 +303,6 @@ class HasManyDeep extends HasManyThrough
         return $query->select($columns)->whereColumn(
             $parentQuery->getQuery()->from.'.'.$query->getModel()->getKeyName(), '=', $this->getQualifiedFirstKeyName()
         );
-    }
-
-    /**
-     * Set the columns on an intermediate table to retrieve.
-     *
-     * @param  string  $class
-     * @param  array  $columns
-     * @param  string|null  $accessor
-     * @return $this
-     */
-    public function withIntermediate($class, array $columns = ['*'], $accessor = null)
-    {
-        $table = (new $class)->getTable();
-
-        $accessor = $accessor ?: snake_case(class_basename($class));
-
-        return $this->withPivot($table, $columns, $class, $accessor);
-    }
-
-    /**
-     * Set the columns on a pivot table to retrieve.
-     *
-     * @param  string  $table
-     * @param  array  $columns
-     * @param  string  $class
-     * @param  string|null  $accessor
-     * @return $this
-     */
-    public function withPivot($table, array $columns = ['*'], $class = Pivot::class, $accessor = null)
-    {
-        if ($columns === ['*']) {
-            $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);
-        }
-
-        $accessor = $accessor ?: $table;
-
-        if (isset($this->intermediateTables[$accessor])) {
-            $columns = array_merge($columns, $this->intermediateTables[$accessor]['columns']);
-        }
-
-        $this->intermediateTables[$accessor] = compact('table', 'columns', 'class');
-
-        return $this;
-    }
-
-    /**
-     * Get the intermediate columns for the relation.
-     *
-     * @return array
-     */
-    protected function intermediateColumns()
-    {
-        $columns = [];
-
-        foreach ($this->intermediateTables as $accessor => $intermediateTable) {
-            $prefix = $this->prefix($accessor);
-
-            foreach ($intermediateTable['columns'] as $column) {
-                $columns[] = $intermediateTable['table'].'.'.$column.' as '.$prefix.$column;
-            }
-        }
-
-        return array_unique($columns);
-    }
-
-    /**
-     * Get the intermediate column alias prefix.
-     *
-     * @param  string  $accessor
-     * @return string
-     */
-    protected function prefix($accessor)
-    {
-        return '__'.$accessor.'__';
     }
 
     /**
