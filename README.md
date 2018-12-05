@@ -14,6 +14,7 @@ Supports Laravel 5.5.29+.
 
 ## Usage
 
+- [HasMany](#hasmany)
 - [BelongsToMany](#belongstomany)
 - [MorphMany](#morphmany)
 - [MorphToMany](#morphtomany)
@@ -24,6 +25,8 @@ Supports Laravel 5.5.29+.
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
+
+### HasMany
 
 Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
