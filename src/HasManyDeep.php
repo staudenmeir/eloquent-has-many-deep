@@ -94,59 +94,46 @@ class HasManyDeep extends HasManyThrough
         foreach ($throughParents as $i => $throughParent) {
             $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
 
-            $first = $this->firstJoinColumn($query, $throughParent, $predecessor, $localKeys[$i]);
+            $prefix = $i === 0 && $alias ? $alias.'.' : '';
 
-            $suffix = ($i === 0 && $alias ? $alias.'.' : '');
-
-            $second = $this->secondJoinColumn($query, $throughParent, $predecessor, $foreignKeys[$i], $suffix);
-
-            $query->join($throughParent->getTable(), $first, '=', $second);
-
-            if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-                $query->whereNull($throughParent->getQualifiedDeletedAtColumn());
-            }
+            $this->joinThroughParent($query, $throughParent, $predecessor, $foreignKeys[$i], $localKeys[$i], $prefix);
         }
     }
 
     /**
-     * Get the first column for the join clause.
+     * Join the through parent table.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $throughParent
      * @param  \Illuminate\Database\Eloquent\Model  $predecessor
-     * @param  array|string  $key
-     * @return string
+     * @param  array|string  $foreignKey
+     * @param  array|string  $localKey
+     * @param  string  $prefix
+     * @return void
      */
-    protected function firstJoinColumn(Builder $query, Model $throughParent, Model $predecessor, $key)
+    protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
     {
-        if (is_array($key)) {
-            $query->where($throughParent->qualifyColumn($key[0]), '=', $predecessor->getMorphClass());
+        if (is_array($localKey)) {
+            $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
 
-            $key = $key[1];
+            $localKey = $localKey[1];
         }
 
-        return $throughParent->qualifyColumn($key);
-    }
+        $first = $throughParent->qualifyColumn($localKey);
 
-    /**
-     * Get the second column for the join clause.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $throughParent
-     * @param  \Illuminate\Database\Eloquent\Model  $predecessor
-     * @param  array|string  $suffix
-     * @param  string  $key
-     * @return string
-     */
-    protected function secondJoinColumn(Builder $query, Model $throughParent, Model $predecessor, $key, $suffix)
-    {
-        if (is_array($key)) {
-            $query->where($predecessor->qualifyColumn($key[0]), '=', $throughParent->getMorphClass());
+        if (is_array($foreignKey)) {
+            $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
 
-            $key = $key[1];
+            $foreignKey = $foreignKey[1];
         }
 
-        return $predecessor->qualifyColumn($suffix.$key);
+        $second = $predecessor->qualifyColumn($prefix.$foreignKey);
+
+        $query->join($throughParent->getTable(), $first, '=', $second);
+
+        if ($this->throughParentInstanceSoftDeletes($throughParent)) {
+            $query->whereNull($throughParent->getQualifiedDeletedAtColumn());
+        }
     }
 
     /**
