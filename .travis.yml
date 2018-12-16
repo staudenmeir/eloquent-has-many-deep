@@ -1,22 +1,46 @@
 language: php
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
-
 env:
-  - COMPOSER_FLAGS=""
-  - COMPOSER_FLAGS="--prefer-lowest"
+  global:
+    - COVERAGE=no
+    - RELEASE=stable
 
 matrix:
+  include:
+    - php: 7.0
+    - php: 7.0
+      env: RELEASE=lowest
+    - php: 7.1
+    - php: 7.1
+      env: RELEASE=lowest
+    - php: 7.2
+      env: COVERAGE=yes
+    - php: 7.2
+      env: RELEASE=lowest
+    - php: 7.3
+    - php: 7.3
+      env: RELEASE=lowest
   allow_failures:
     - php: 7.3
-      env: COMPOSER_FLAGS="--prefer-lowest"
+      env: RELEASE=lowest
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - COMPOSER_FLAGS=$([ $RELEASE == "lowest" ] && echo "--prefer-lowest" || echo "")
+  - PHPUNIT_FLAGS=$([ $COVERAGE == "yes" ] && echo "--coverage-clover=coverage.xml" || echo "")
 
 install:
   - travis_retry composer update --no-interaction --no-suggest --prefer-dist --prefer-stable $COMPOSER_FLAGS
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit $PHPUNIT_FLAGS
+
+after_script:
+  - |
+    if [ $COVERAGE == "yes" ]; then
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      travis_retry php ocular.phar code-coverage:upload --format=php-clover coverage.xml
+    fi

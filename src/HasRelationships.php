@@ -333,7 +333,7 @@ trait HasRelationships
             MorphOneOrMany::class,
             HasOneOrMany::class,
             MorphToMany::class,
-            BelongsToMany::class
+            BelongsToMany::class,
         ];
 
         foreach ($classes as $class) {
@@ -342,7 +342,7 @@ trait HasRelationships
             }
         }
 
-        throw new RuntimeException('This relationship is not supported.');
+        throw new RuntimeException('This relationship is not supported.'); // @codeCoverageIgnore
     }
 
     /**

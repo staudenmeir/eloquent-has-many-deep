@@ -294,7 +294,7 @@ class HasManyDeepTest extends TestCase
     public function testWithTrashedIntermediate()
     {
         $comments = Country::first()->comments()
-            ->withTrashed('users.deleted_at')
+            ->withTrashed(['users.deleted_at'])
             ->get();
 
         $this->assertEquals([1, 2, 3], $comments->pluck('comment_pk')->all());
