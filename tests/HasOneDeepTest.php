@@ -21,7 +21,7 @@ class HasOneDeepTest extends TestCase
         $this->assertEquals([1], DB::getQueryLog()[1]['bindings']);
     }
 
-    public function testDefault()
+    public function testLazyLoadingWithDefault()
     {
         $comment = Country::find(2)->comment;
 

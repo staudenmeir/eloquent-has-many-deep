@@ -27,7 +27,8 @@ abstract class TestCase extends Base
         $db = new DB;
         $db->addConnection([
             'driver' => 'sqlite',
-            'database' => ':memory:'
+            'database' => ':memory:',
+            'prefix' => '',
         ]);
         $db->setAsGlobal();
         $db->bootEloquent();
