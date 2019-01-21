@@ -14,10 +14,10 @@ matrix:
     - php: 7.1
       env: RELEASE=lowest
     - php: 7.2
-      env: COVERAGE=yes
     - php: 7.2
       env: RELEASE=lowest
     - php: 7.3
+      env: COVERAGE=yes
     - php: 7.3
       env: RELEASE=lowest
   allow_failures:
