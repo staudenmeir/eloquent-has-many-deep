@@ -272,6 +272,38 @@ trait HasRelationships
     }
 
     /**
+     * Prepare a has-one-deep or has-many-deep relationship from an existing has-many-deep relationship.
+     *
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $relation
+     * @param  \Illuminate\Database\Eloquent\Model[]  $through
+     * @param  array  $foreignKeys
+     * @param  array  $localKeys
+     * @return array
+     */
+    protected function hasOneOrManyDeepFromHasManyDeep(HasManyDeep $relation, array $through, array $foreignKeys, array $localKeys)
+    {
+        foreach ($relation->getThroughParents() as $throughParent) {
+            $segments = explode(' as ', $throughParent->getTable());
+
+            $class = get_class($throughParent);
+
+            if (isset($segments[1])) {
+                $class .= ' as '.$segments[1];
+            } elseif ($throughParent instanceof Pivot) {
+                $class = $throughParent->getTable();
+            }
+
+            $through[] = $class;
+        }
+        
+        $foreignKeys = array_merge($foreignKeys, $relation->getForeignKeys());
+        
+        $localKeys = array_merge($localKeys, $relation->getLocalKeys());
+
+        return [$through, $foreignKeys, $localKeys];
+    }
+
+    /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-one or morph-many relationship.
      *
      * @param  \Illuminate\Database\Eloquent\Relations\MorphOneOrMany  $relation
@@ -329,6 +361,7 @@ trait HasRelationships
     {
         $classes = [
             BelongsTo::class,
+            HasManyDeep::class,
             HasManyThrough::class,
             MorphOneOrMany::class,
             HasOneOrMany::class,

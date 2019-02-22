@@ -142,6 +142,34 @@ class HasRelationshipsTest extends TestCase
         $this->assertEquals([Post::class, 1], $relation->getBindings());
     }
 
+    public function testHasManyDeepFromRelationsWithHasManyDeepWithPivotAlias()
+    {
+        $relation = (new Country)->forceFill(['country_pk' => 1])
+            ->hasManyDeepFromRelations((new Country)->permissionsWithPivotAlias());
+
+        $sql = 'select * from "permissions"'
+            .' inner join "roles" on "roles"."role_pk" = "permissions"."role_role_pk"'
+            .' inner join "role_user" as "alias" on "alias"."role_role_pk" = "roles"."role_pk"'
+            .' inner join "users" on "users"."user_pk" = "alias"."user_user_pk"'
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
+
+    public function testHasManyDeepFromRelationsWithHasManyDeepWithPivot()
+    {
+        $relation = (new Country)->forceFill(['country_pk' => 1])
+            ->hasManyDeepFromRelations((new Country)->permissions());
+
+        $sql = 'select * from "permissions"'
+            .' inner join "roles" on "roles"."role_pk" = "permissions"."role_role_pk"'
+            .' inner join "role_user" on "role_user"."role_role_pk" = "roles"."role_pk"'
+            .' inner join "users" on "users"."user_pk" = "role_user"."user_user_pk"'
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
+        $this->assertEquals($sql, $relation->toSql());
+        $this->assertEquals([1], $relation->getBindings());
+    }
+
     public function testHasOneDeepFromRelations()
     {
         $relation = (new Country)->forceFill(['country_pk' => 1])->commentFromRelations();

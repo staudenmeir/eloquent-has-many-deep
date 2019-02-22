@@ -317,4 +317,34 @@ class HasManyDeep extends HasManyThrough
 
         return $this;
     }
+
+    /**
+     * Get the "through" parent model instances.
+     *
+     * @return \Illuminate\Database\Eloquent\Model[]
+     */
+    public function getThroughParents()
+    {
+        return $this->throughParents;
+    }
+
+    /**
+     * Get the foreign keys on the relationship.
+     *
+     * @return array
+     */
+    public function getForeignKeys()
+    {
+        return $this->foreignKeys;
+    }
+
+    /**
+     * Get the local keys on the relationship.
+     *
+     * @return array
+     */
+    public function getLocalKeys()
+    {
+        return $this->localKeys;
+    }
 }
