@@ -33,6 +33,20 @@ abstract class TestCase extends Base
         $db->setAsGlobal();
         $db->bootEloquent();
 
+        $this->migrate();
+
+        $this->seed();
+
+        DB::enableQueryLog();
+    }
+
+    /**
+     * Migrate the database.
+     *
+     * @return void
+     */
+    protected function migrate()
+    {
         DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('country_pk');
             $table->timestamps();
@@ -95,53 +109,61 @@ abstract class TestCase extends Base
             $table->unsignedInteger('tag_tag_pk');
             $table->morphs('taggable');
         });
+    }
 
-        Model::unguarded(function () {
-            Country::create();
-            Country::create();
+    /**
+     * Seed the database.
+     *
+     * @return void
+     */
+    protected function seed()
+    {
+        Model::unguard();
 
-            User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
-            User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
-            User::create(['country_country_pk' => 1, 'team_team_pk' => 2, 'deleted_at' => Carbon::yesterday()]);
+        Country::create();
+        Country::create();
 
-            Post::create(['user_user_pk' => 1]);
-            Post::create(['user_user_pk' => 2]);
-            Post::create(['user_user_pk' => 3]);
+        User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
+        User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
+        User::create(['country_country_pk' => 1, 'team_team_pk' => 2, 'deleted_at' => Carbon::yesterday()]);
 
-            Comment::create(['post_post_pk' => 1]);
-            Comment::create(['post_post_pk' => 2]);
-            Comment::create(['post_post_pk' => 3]);
+        Post::create(['user_user_pk' => 1]);
+        Post::create(['user_user_pk' => 2]);
+        Post::create(['user_user_pk' => 3]);
 
-            Club::create(['user_user_pk' => 1]);
-            Club::create(['user_user_pk' => 2]);
-            Club::create(['user_user_pk' => 3]);
+        Comment::create(['post_post_pk' => 1]);
+        Comment::create(['post_post_pk' => 2]);
+        Comment::create(['post_post_pk' => 3]);
 
-            Team::create(['club_club_pk' => 1]);
-            Team::create(['club_club_pk' => 2]);
-            Team::create(['club_club_pk' => 3]);
+        Club::create(['user_user_pk' => 1]);
+        Club::create(['user_user_pk' => 2]);
+        Club::create(['user_user_pk' => 3]);
 
-            Role::create();
+        Team::create(['club_club_pk' => 1]);
+        Team::create(['club_club_pk' => 2]);
+        Team::create(['club_club_pk' => 3]);
 
-            Permission::create(['role_role_pk' => 1]);
+        Role::create();
 
-            DB::table('role_user')->insert([
-                ['role_role_pk' => 1, 'user_user_pk' => 1]
-            ]);
+        Permission::create(['role_role_pk' => 1]);
 
-            Like::create(['likeable_type' => Post::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
-            Like::create(['likeable_type' => Post::class, 'likeable_id' => 3, 'user_user_pk' => 2]);
-            Like::create(['likeable_type' => Comment::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
-            Like::create(['likeable_type' => Comment::class, 'likeable_id' => 2, 'user_user_pk' => 2]);
+        DB::table('role_user')->insert([
+            ['role_role_pk' => 1, 'user_user_pk' => 1]
+        ]);
 
-            Tag::create();
-            Tag::create();
+        Like::create(['likeable_type' => Post::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
+        Like::create(['likeable_type' => Post::class, 'likeable_id' => 3, 'user_user_pk' => 2]);
+        Like::create(['likeable_type' => Comment::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
+        Like::create(['likeable_type' => Comment::class, 'likeable_id' => 2, 'user_user_pk' => 2]);
 
-            DB::table('taggables')->insert([
-                ['tag_tag_pk' => 1, 'taggable_type' => Post::class, 'taggable_id' => 1],
-                ['tag_tag_pk' => 2, 'taggable_type' => Comment::class, 'taggable_id' => 2]
-            ]);
-        });
+        Tag::create();
+        Tag::create();
 
-        DB::enableQueryLog();
+        DB::table('taggables')->insert([
+            ['tag_tag_pk' => 1, 'taggable_type' => Post::class, 'taggable_id' => 1],
+            ['tag_tag_pk' => 2, 'taggable_type' => Comment::class, 'taggable_id' => 2]
+        ]);
+
+        Model::reguard();
     }
 }

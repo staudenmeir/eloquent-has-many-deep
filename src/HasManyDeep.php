@@ -74,7 +74,7 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
-     * Set the join clause on the query.
+     * Set the join clauses on the query.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|null  $query
      * @return void
@@ -89,10 +89,10 @@ class HasManyDeep extends HasManyThrough
 
         $segments = explode(' as ', $query->getQuery()->from);
 
-        $alias = count($segments) > 1 ? $segments[1] : null;
+        $alias = $segments[1] ?? null;
 
         foreach ($throughParents as $i => $throughParent) {
-            $predecessor = $i > 0 ? $throughParents[$i - 1] : $this->related;
+            $predecessor = $throughParents[$i - 1] ?? $this->related;
 
             $prefix = $i === 0 && $alias ? $alias.'.' : '';
 
@@ -101,7 +101,7 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
-     * Join the through parent table.
+     * Join a through parent table.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $throughParent
