@@ -12,7 +12,13 @@ Supports Laravel 5.5.29+.
 
 ## Installation
 
+Laravel 5.8:
+
     composer require staudenmeir/eloquent-has-many-deep
+    
+Laravel 5.5–5.7:
+
+    composer require staudenmeir/eloquent-has-many-deep:"1.7.*"
 
 ## Usage
 
