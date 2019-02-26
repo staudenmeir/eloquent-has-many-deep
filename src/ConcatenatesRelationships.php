@@ -2,7 +2,6 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
-use Closure;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -35,7 +34,7 @@ trait ConcatenatesRelationships
         foreach ($relations as $i => $relation) {
             $method = $this->hasOneOrManyDeepRelationMethod($relation);
 
-            list($through, $foreignKeys, $localKeys) = $this->$method($relation, $through, $foreignKeys, $localKeys);
+            [$through, $foreignKeys, $localKeys] = $this->$method($relation, $through, $foreignKeys, $localKeys);
 
             if ($i === count($relations) - 1) {
                 $related = get_class($relation->getRelated());
@@ -58,9 +57,9 @@ trait ConcatenatesRelationships
      */
     protected function hasOneOrManyDeepFromBelongsTo(BelongsTo $relation, array $through, array $foreignKeys, array $localKeys)
     {
-        $foreignKeys[] = $relation->getOwnerKey();
+        $foreignKeys[] = $relation->getOwnerKeyName();
 
-        $localKeys[] = $relation->getForeignKey();
+        $localKeys[] = $relation->getForeignKeyName();
 
         return [$through, $foreignKeys, $localKeys];
     }
@@ -79,9 +78,9 @@ trait ConcatenatesRelationships
         $through[] = $relation->getTable();
 
         $foreignKeys[] = $relation->getForeignPivotKeyName();
-        $foreignKeys[] = $this->getProtectedProperty($relation, 'relatedKey');
+        $foreignKeys[] = $relation->getRelatedKeyName();
 
-        $localKeys[] = $this->getProtectedProperty($relation, 'parentKey');
+        $localKeys[] = $relation->getParentKeyName();
         $localKeys[] = $relation->getRelatedPivotKeyName();
 
         return [$through, $foreignKeys, $localKeys];
@@ -100,7 +99,7 @@ trait ConcatenatesRelationships
     {
         $foreignKeys[] = $relation->getQualifiedForeignKeyName();
 
-        $localKeys[] = $this->getProtectedProperty($relation, 'localKey');
+        $localKeys[] = $relation->getLocalKeyName();
 
         return [$through, $foreignKeys, $localKeys];
     }
@@ -118,11 +117,11 @@ trait ConcatenatesRelationships
     {
         $through[] = get_class($relation->getParent());
 
-        $foreignKeys[] = $this->getProtectedProperty($relation, 'firstKey');
-        $foreignKeys[] = $this->getProtectedProperty($relation, 'secondKey');
+        $foreignKeys[] = $relation->getFirstKeyName();
+        $foreignKeys[] = $relation->getForeignKeyName();
 
-        $localKeys[] = $this->getProtectedProperty($relation, 'localKey');
-        $localKeys[] = $this->getProtectedProperty($relation, 'secondLocalKey');
+        $localKeys[] = $relation->getLocalKeyName();
+        $localKeys[] = $relation->getSecondLocalKeyName();
 
         return [$through, $foreignKeys, $localKeys];
     }
@@ -172,7 +171,7 @@ trait ConcatenatesRelationships
     {
         $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getQualifiedForeignKeyName()];
 
-        $localKeys[] = $this->getProtectedProperty($relation, 'localKey');
+        $localKeys[] = $relation->getLocalKeyName();
 
         return [$through, $foreignKeys, $localKeys];
     }
@@ -190,17 +189,17 @@ trait ConcatenatesRelationships
     {
         $through[] = $relation->getTable();
 
-        if ($this->getProtectedProperty($relation, 'inverse')) {
+        if ($relation->getInverse()) {
             $foreignKeys[] = $relation->getForeignPivotKeyName();
-            $foreignKeys[] = $this->getProtectedProperty($relation, 'relatedKey');
+            $foreignKeys[] = $relation->getRelatedKeyName();
 
-            $localKeys[] = $this->getProtectedProperty($relation, 'parentKey');
+            $localKeys[] = $relation->getParentKeyName();
             $localKeys[] = [$relation->getMorphType(), $relation->getRelatedPivotKeyName()];
         } else {
             $foreignKeys[] = [$relation->getMorphType(), $relation->getForeignPivotKeyName()];
-            $foreignKeys[] = $this->getProtectedProperty($relation, 'relatedKey');
+            $foreignKeys[] = $relation->getRelatedKeyName();
 
-            $localKeys[] = $this->getProtectedProperty($relation, 'parentKey');
+            $localKeys[] = $relation->getParentKeyName();
             $localKeys[] = $relation->getRelatedPivotKeyName();
         }
 
@@ -232,21 +231,5 @@ trait ConcatenatesRelationships
         }
 
         throw new RuntimeException('This relationship is not supported.'); // @codeCoverageIgnore
-    }
-
-    /**
-     * Get a protected property from a relationship instance.
-     *
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $relation
-     * @param  string  $property
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
-     */
-    protected function getProtectedProperty(Relation $relation, $property)
-    {
-        $closure = Closure::bind(function (Relation $relation) use ($property) {
-            return $relation->$property;
-        }, null, $relation);
-
-        return $closure($relation);
     }
 }

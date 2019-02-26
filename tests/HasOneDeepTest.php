@@ -13,7 +13,7 @@ class HasOneDeepTest extends TestCase
         $comment = Country::first()->comment;
 
         $this->assertEquals(1, $comment->comment_pk);
-        $sql = 'select "comments".*, "users"."country_country_pk" from "comments"'
+        $sql = 'select "comments".*, "users"."country_country_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ? limit 1';
@@ -36,11 +36,10 @@ class HasOneDeepTest extends TestCase
         $this->assertEquals(1, $countries[0]->comment->comment_pk);
         $this->assertInstanceOf(Comment::class, $countries[1]->comment);
         $this->assertFalse($countries[1]->comment->exists);
-        $sql = 'select "comments".*, "users"."country_country_pk" from "comments"'
+        $sql = 'select "comments".*, "users"."country_country_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
-            .' where "users"."deleted_at" is null and "users"."country_country_pk" in (?, ?)';
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" in (1, 2)';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2], DB::getQueryLog()[1]['bindings']);
     }
 }

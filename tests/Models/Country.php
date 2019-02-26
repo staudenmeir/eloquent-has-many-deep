@@ -4,8 +4,6 @@ namespace Tests\Models;
 
 class Country extends Model
 {
-    public $timestamps = true;
-
     protected $primaryKey = 'country_pk';
 
     public function comment()

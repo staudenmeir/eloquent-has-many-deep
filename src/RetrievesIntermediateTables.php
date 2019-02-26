@@ -27,7 +27,7 @@ trait RetrievesIntermediateTables
     {
         $table = (new $class)->getTable();
 
-        $accessor = $accessor ?: snake_case(class_basename($class));
+        $accessor = $accessor ?: Str::snake(class_basename($class));
 
         return $this->withPivot($table, $columns, $class, $accessor);
     }
@@ -94,9 +94,9 @@ trait RetrievesIntermediateTables
             $prefix = $this->prefix($accessor);
 
             if (Str::contains($accessor, '.')) {
-                list($path, $key) = preg_split('/\.(?=[^.]*$)/', $accessor);
+                [$path, $key] = preg_split('/\.(?=[^.]*$)/', $accessor);
             } else {
-                list($path, $key) = [null, $accessor];
+                [$path, $key] = [null, $accessor];
             }
 
             foreach ($models as $model) {

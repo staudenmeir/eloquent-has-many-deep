@@ -192,7 +192,7 @@ class HasManyDeep extends HasManyThrough
     {
         $columns = $this->shouldSelect($columns);
 
-        unset($columns[array_search($this->getQualifiedFirstKeyName(), $columns)]);
+        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
 
         $this->query->addSelect($columns);
 
@@ -214,7 +214,7 @@ class HasManyDeep extends HasManyThrough
     {
         $columns = $this->shouldSelect($columns);
 
-        unset($columns[array_search($this->getQualifiedFirstKeyName(), $columns)]);
+        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
 
         $this->query->addSelect($columns);
 

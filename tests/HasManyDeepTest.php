@@ -19,7 +19,7 @@ class HasManyDeepTest extends TestCase
         $comments = Country::first()->comments;
 
         $this->assertEquals([1, 2], $comments->pluck('comment_pk')->all());
-        $sql = 'select "comments".*, "users"."country_country_pk" from "comments"'
+        $sql = 'select "comments".*, "users"."country_country_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
             .' where "users"."deleted_at" is null and "users"."country_country_pk" = ?';
@@ -32,7 +32,7 @@ class HasManyDeepTest extends TestCase
         $likes = Post::first()->users;
 
         $this->assertEquals([1], $likes->pluck('user_pk')->all());
-        $sql = 'select "users".*, "likes"."likeable_id" from "users"'
+        $sql = 'select "users".*, "likes"."likeable_id" as "laravel_through_key" from "users"'
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
             .' where "likes"."likeable_id" = ? and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
@@ -44,7 +44,7 @@ class HasManyDeepTest extends TestCase
         $likes = User::first()->likes;
 
         $this->assertEquals([1], $likes->pluck('like_pk')->all());
-        $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
+        $sql = 'select "likes".*, "posts"."user_user_pk" as "laravel_through_key" from "likes"'
             .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
             .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" = ?';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
@@ -56,7 +56,7 @@ class HasManyDeepTest extends TestCase
         $comments = Tag::first()->comments;
 
         $this->assertEquals([1], $comments->pluck('comment_pk')->all());
-        $sql = 'select "comments".*, "taggables"."tag_tag_pk" from "comments"'
+        $sql = 'select "comments".*, "taggables"."tag_tag_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
             .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" = ?';
@@ -71,7 +71,7 @@ class HasManyDeepTest extends TestCase
             ->paginate();
 
         $this->assertTrue($comments[0]->relationLoaded('post'));
-        $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
+        $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
     public function testSimplePaginate()
@@ -81,7 +81,7 @@ class HasManyDeepTest extends TestCase
             ->simplePaginate();
 
         $this->assertTrue($comments[0]->relationLoaded('post'));
-        $this->assertArrayNotHasKey('country_country_pk', $comments[0]->getAttributes());
+        $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
     public function testChunk()
@@ -102,12 +102,11 @@ class HasManyDeepTest extends TestCase
         $countries = Country::with('comments')->get();
 
         $this->assertEquals([1, 2], $countries[0]->comments->pluck('comment_pk')->all());
-        $sql = 'select "comments".*, "users"."country_country_pk" from "comments"'
+        $sql = 'select "comments".*, "users"."country_country_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "users" on "users"."user_pk" = "posts"."user_user_pk"'
-            .' where "users"."deleted_at" is null and "users"."country_country_pk" in (?, ?)';
+            .' where "users"."deleted_at" is null and "users"."country_country_pk" in (1, 2)';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithLeadingMorphMany()
@@ -115,11 +114,10 @@ class HasManyDeepTest extends TestCase
         $posts = Post::with('users')->get();
 
         $this->assertEquals([1], $posts[0]->users->pluck('user_pk')->all());
-        $sql = 'select "users".*, "likes"."likeable_id" from "users"'
+        $sql = 'select "users".*, "likes"."likeable_id" as "laravel_through_key" from "users"'
             .' inner join "likes" on "likes"."user_user_pk" = "users"."user_pk"'
-            .' where "likes"."likeable_id" in (?, ?, ?) and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
+            .' where "likes"."likeable_id" in (1, 2, 3) and "likes"."likeable_type" = ? and "users"."deleted_at" is null';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
-        $this->assertEquals([1, 2, 3, Post::class], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithTrailingMorphMany()
@@ -127,11 +125,10 @@ class HasManyDeepTest extends TestCase
         $users = User::with('likes')->get();
 
         $this->assertEquals([1], $users[0]->likes->pluck('like_pk')->all());
-        $sql = 'select "likes".*, "posts"."user_user_pk" from "likes"'
+        $sql = 'select "likes".*, "posts"."user_user_pk" as "laravel_through_key" from "likes"'
             .' inner join "posts" on "posts"."post_pk" = "likes"."likeable_id"'
-            .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" in (?, ?)';
+            .' where "likes"."likeable_type" = ? and "posts"."user_user_pk" in (1, 2)';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testEagerLoadingWithMorphedByMany()
@@ -139,12 +136,11 @@ class HasManyDeepTest extends TestCase
         $tags = Tag::with('comments')->get();
 
         $this->assertEquals([1], $tags[0]->comments->pluck('comment_pk')->all());
-        $sql = 'select "comments".*, "taggables"."tag_tag_pk" from "comments"'
+        $sql = 'select "comments".*, "taggables"."tag_tag_pk" as "laravel_through_key" from "comments"'
             .' inner join "posts" on "posts"."post_pk" = "comments"."post_post_pk"'
             .' inner join "taggables" on "taggables"."taggable_id" = "posts"."post_pk"'
-            .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" in (?, ?)';
+            .' where "taggables"."taggable_type" = ? and "taggables"."tag_tag_pk" in (1, 2)';
         $this->assertEquals($sql, DB::getQueryLog()[1]['query']);
-        $this->assertEquals([Post::class, 1, 2], DB::getQueryLog()[1]['bindings']);
     }
 
     public function testExistenceQuery()
@@ -243,7 +239,7 @@ class HasManyDeepTest extends TestCase
         $this->assertInstanceOf(Post::class, $post = $comments[0]->post);
         $this->assertEquals(['post_pk' => 1, 'user_user_pk' => 1], $post->getAttributes());
         $this->assertEquals(['user_pk' => 1, 'deleted_at' => null], $post->user->getAttributes());
-        $sql = 'select "comments".*, "users"."country_country_pk",'
+        $sql = 'select "comments".*, "users"."country_country_pk" as "laravel_through_key",'
             .' "users"."user_pk" as "__post.user__user_pk", "users"."deleted_at" as "__post.user__deleted_at",'
             .' "posts"."post_pk" as "__post__post_pk", "posts"."user_user_pk" as "__post__user_user_pk"'
             .' from "comments"'
@@ -262,7 +258,7 @@ class HasManyDeepTest extends TestCase
 
         $this->assertInstanceOf(Pivot::class, $pivot = $permissions[0]->role_user);
         $this->assertEquals(['role_role_pk' => 1, 'user_user_pk' => 1], $pivot->getAttributes());
-        $sql = 'select "permissions".*, "role_user"."user_user_pk",'
+        $sql = 'select "permissions".*, "role_user"."user_user_pk" as "laravel_through_key",'
             .' "role_user"."user_user_pk" as "__role_user__user_user_pk",'
             .' "role_user"."role_role_pk" as "__role_user__role_role_pk"'
             .' from "permissions"'
