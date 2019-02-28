@@ -72,6 +72,7 @@ trait HasRelationships
      */
     protected function hasOneOrManyDeep($related, array $through, array $foreignKeys, array $localKeys)
     {
+        /** @var \Illuminate\Database\Eloquent\Model $relatedInstance */
         $relatedInstance = $this->newRelatedInstance($related);
 
         $throughParents = $this->hasOneOrManyDeepThroughParents($through);
@@ -117,6 +118,7 @@ trait HasRelationships
     protected function hasOneOrManyDeepForeignKeys(Model $related, array $throughParents, array $foreignKeys)
     {
         foreach (array_merge([$this], $throughParents) as $i => $instance) {
+            /** @var \Illuminate\Database\Eloquent\Model $instance */
             if (! isset($foreignKeys[$i])) {
                 if ($instance instanceof Pivot) {
                     $foreignKeys[$i] = ($throughParents[$i] ?? $related)->getKeyName();
@@ -140,6 +142,7 @@ trait HasRelationships
     protected function hasOneOrManyDeepLocalKeys(Model $related, array $throughParents, array $localKeys)
     {
         foreach (array_merge([$this], $throughParents) as $i => $instance) {
+            /** @var \Illuminate\Database\Eloquent\Model $instance */
             if (! isset($localKeys[$i])) {
                 if ($instance instanceof Pivot) {
                     $localKeys[$i] = ($throughParents[$i] ?? $related)->getForeignKey();

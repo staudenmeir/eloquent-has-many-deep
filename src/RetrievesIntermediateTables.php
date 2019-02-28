@@ -25,11 +25,12 @@ trait RetrievesIntermediateTables
      */
     public function withIntermediate($class, array $columns = ['*'], $accessor = null)
     {
-        $table = (new $class)->getTable();
+        /** @var \Illuminate\Database\Eloquent\Model $instance */
+        $instance = new $class;
 
         $accessor = $accessor ?: Str::snake(class_basename($class));
 
-        return $this->withPivot($table, $columns, $class, $accessor);
+        return $this->withPivot($instance->getTable(), $columns, $class, $accessor);
     }
 
     /**
@@ -129,7 +130,10 @@ trait RetrievesIntermediateTables
             return $class::fromRawAttributes($model, $attributes, $intermediateTable['table'], true);
         }
 
-        return (new $class)->newFromBuilder($attributes);
+        /** @var \Illuminate\Database\Eloquent\Model $instance */
+        $instance = new $class;
+
+        return $instance->newFromBuilder($attributes);
     }
 
     /**
