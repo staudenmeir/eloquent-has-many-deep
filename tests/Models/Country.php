@@ -38,7 +38,7 @@ class Country extends Model
 
     public function permissionsWithPivotAlias()
     {
-        return $this->hasManyDeep(Permission::class, [User::class, RoleUserPivot::class.' as alias', Role::class]);
+        return $this->hasManyDeep(Permission::class, [User::class, RoleUser::class.' as alias', Role::class]);
     }
 
     public function posts()

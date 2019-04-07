@@ -363,7 +363,7 @@ You can specify a custom pivot model as the third argument and a custom accessor
 public function permissions()
 {
     return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role'])
-        ->withPivot('role_user', ['expires_at'], 'App\RoleUserPivot', 'pivot');
+        ->withPivot('role_user', ['expires_at'], 'App\RoleUser', 'pivot');
 }
 
 foreach ($user->permissions as $permission) {
@@ -391,6 +391,25 @@ Use the `HasTableAlias` trait in the models you are aliasing:
 
 ```php
 class Comment extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
+}
+```
+
+For pivot tables, this requires custom models:
+
+```php
+class User extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function permissions()
+    {
+        return $this->hasManyDeep('App\Permission', ['App\RoleUser as alias', 'App\Role']);
+    }
+}
+
+class RoleUser extends Pivot
 {
     use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 }

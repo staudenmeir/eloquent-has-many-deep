@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Tests\Models\Comment;
 use Tests\Models\Country;
 use Tests\Models\Post;
-use Tests\Models\RoleUserPivot;
+use Tests\Models\RoleUser;
 use Tests\Models\Tag;
 use Tests\Models\User;
 
@@ -271,10 +271,10 @@ class HasManyDeepTest extends TestCase
     public function testWithPivotClass()
     {
         $permissions = User::first()->permissions()
-            ->withPivot('role_user', ['role_role_pk'], RoleUserPivot::class, 'pivot')
+            ->withPivot('role_user', ['role_role_pk'], RoleUser::class, 'pivot')
             ->get();
 
-        $this->assertInstanceOf(RoleUserPivot::class, $pivot = $permissions[0]->pivot);
+        $this->assertInstanceOf(RoleUser::class, $pivot = $permissions[0]->pivot);
         $this->assertEquals(['role_role_pk' => 1], $pivot->getAttributes());
     }
 
