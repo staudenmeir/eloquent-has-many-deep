@@ -37,11 +37,11 @@ class HasManyDeep extends HasManyThrough
     /**
      * Create a new has many deep relationship instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $farParent
-     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
-     * @param  array  $foreignKeys
-     * @param  array  $localKeys
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $farParent
+     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param array $foreignKeys
+     * @param array $localKeys
      * @return void
      */
     public function __construct(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
@@ -76,7 +76,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Set the join clauses on the query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder|null  $query
+     * @param \Illuminate\Database\Eloquent\Builder|null $query
      * @return void
      */
     protected function performJoin(Builder $query = null)
@@ -103,12 +103,12 @@ class HasManyDeep extends HasManyThrough
     /**
      * Join a through parent table.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $throughParent
-     * @param  \Illuminate\Database\Eloquent\Model  $predecessor
-     * @param  array|string  $foreignKey
-     * @param  array|string  $localKey
-     * @param  string  $prefix
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $throughParent
+     * @param \Illuminate\Database\Eloquent\Model $predecessor
+     * @param array|string $foreignKey
+     * @param array|string $localKey
+     * @param string $prefix
      * @return void
      */
     protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
@@ -139,7 +139,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Determine whether a "through" parent instance of the relation uses SoftDeletes.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $instance
+     * @param \Illuminate\Database\Eloquent\Model $instance
      * @return bool
      */
     public function throughParentInstanceSoftDeletes(Model $instance)
@@ -150,7 +150,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param  array  $models
+     * @param array $models
      * @return void
      */
     public function addEagerConstraints(array $models)
@@ -167,7 +167,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Execute the query as a "select" statement.
      *
-     * @param  array  $columns
+     * @param array $columns
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function get($columns = ['*'])
@@ -182,10 +182,10 @@ class HasManyDeep extends HasManyThrough
     /**
      * Get a paginator for the "select" statement.
      *
-     * @param  int  $perPage
-     * @param  array  $columns
-     * @param  string  $pageName
-     * @param  int  $page
+     * @param int $perPage
+     * @param array $columns
+     * @param string $pageName
+     * @param int $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
@@ -204,10 +204,10 @@ class HasManyDeep extends HasManyThrough
     /**
      * Paginate the given query into a simple paginator.
      *
-     * @param  int  $perPage
-     * @param  array  $columns
-     * @param  string  $pageName
-     * @param  int|null  $page
+     * @param int $perPage
+     * @param array $columns
+     * @param string $pageName
+     * @param int|null $page
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
@@ -226,7 +226,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Set the select clause for the relation query.
      *
-     * @param  array  $columns
+     * @param array $columns
      * @return array
      */
     protected function shouldSelect(array $columns = ['*'])
@@ -237,8 +237,8 @@ class HasManyDeep extends HasManyThrough
     /**
      * Chunk the results of the query.
      *
-     * @param  int  $count
-     * @param  callable  $callback
+     * @param int $count
+     * @param callable $callback
      * @return bool
      */
     public function chunk($count, callable $callback)
@@ -253,9 +253,9 @@ class HasManyDeep extends HasManyThrough
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parentQuery
-     * @param  array|mixed  $columns
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
+     * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
@@ -274,9 +274,9 @@ class HasManyDeep extends HasManyThrough
     /**
      * Add the constraints for a relationship query on the same table.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parentQuery
-     * @param  array|mixed  $columns
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
+     * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*'])
@@ -295,7 +295,7 @@ class HasManyDeep extends HasManyThrough
     /**
      * Restore soft-deleted models.
      *
-     * @param  string  ...$columns
+     * @param array|string ...$columns
      * @return $this
      */
     public function withTrashed(...$columns)

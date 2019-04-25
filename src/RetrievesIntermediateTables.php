@@ -18,9 +18,9 @@ trait RetrievesIntermediateTables
     /**
      * Set the columns on an intermediate table to retrieve.
      *
-     * @param  string  $class
-     * @param  array  $columns
-     * @param  string|null  $accessor
+     * @param string $class
+     * @param array $columns
+     * @param string|null $accessor
      * @return $this
      */
     public function withIntermediate($class, array $columns = ['*'], $accessor = null)
@@ -36,10 +36,10 @@ trait RetrievesIntermediateTables
     /**
      * Set the columns on a pivot table to retrieve.
      *
-     * @param  string  $table
-     * @param  array  $columns
-     * @param  string  $class
-     * @param  string|null  $accessor
+     * @param string $table
+     * @param array $columns
+     * @param string $class
+     * @param string|null $accessor
      * @return $this
      */
     public function withPivot($table, array $columns = ['*'], $class = Pivot::class, $accessor = null)
@@ -82,7 +82,7 @@ trait RetrievesIntermediateTables
     /**
      * Hydrate the intermediate table relationship on the models.
      *
-     * @param  array  $models
+     * @param array $models
      * @return void
      */
     protected function hydrateIntermediateRelations(array $models)
@@ -111,9 +111,9 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate relationship from the query.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  array  $intermediateTable
-     * @param  string  $prefix
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param array $intermediateTable
+     * @param string $prefix
      * @return \Illuminate\Database\Eloquent\Model
      */
     protected function intermediateRelation(Model $model, array $intermediateTable, $prefix)
@@ -139,8 +139,8 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate attributes from a model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $prefix
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param string $prefix
      * @return array
      */
     protected function intermediateAttributes(Model $model, $prefix)
@@ -161,7 +161,7 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate column alias prefix.
      *
-     * @param  string  $accessor
+     * @param string $accessor
      * @return string
      */
     protected function prefix($accessor)

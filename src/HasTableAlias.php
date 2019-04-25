@@ -9,7 +9,7 @@ trait HasTableAlias
     /**
      * Qualify the given column name by the model's table.
      *
-     * @param  string  $column
+     * @param string $column
      * @return string
      */
     public function qualifyColumn($column)
