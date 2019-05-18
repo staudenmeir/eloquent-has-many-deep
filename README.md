@@ -7,7 +7,8 @@
 
 ## Introduction
 This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
-It supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships and all their possible combinations.   
+It supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
+
 Supports Laravel 5.5.29+.
 
 ## Installation
