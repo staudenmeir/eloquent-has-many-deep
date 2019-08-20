@@ -9,12 +9,12 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
-        "illuminate/database": "5.8.*"
+        "php": "^7.2",
+        "illuminate/database": "^6.0"
     },
     "require-dev": {
-        "illuminate/pagination": "5.8.*",
-        "phpunit/phpunit": "^7.0"
+        "illuminate/pagination": "^6.0",
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -25,5 +25,7 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable" : true
 }
