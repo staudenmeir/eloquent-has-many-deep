@@ -36,8 +36,6 @@ abstract class TestCase extends Base
         $this->migrate();
 
         $this->seed();
-
-        DB::enableQueryLog();
     }
 
     /**
@@ -48,62 +46,62 @@ abstract class TestCase extends Base
     protected function migrate()
     {
         DB::schema()->create('countries', function (Blueprint $table) {
-            $table->increments('country_pk');
+            $table->increments('id');
         });
 
         DB::schema()->create('users', function (Blueprint $table) {
-            $table->increments('user_pk');
-            $table->unsignedInteger('country_country_pk');
-            $table->unsignedInteger('team_team_pk');
+            $table->increments('id');
+            $table->unsignedInteger('country_id');
+            $table->unsignedInteger('team_id');
             $table->softDeletes();
         });
 
         DB::schema()->create('posts', function (Blueprint $table) {
-            $table->increments('post_pk');
-            $table->unsignedInteger('user_user_pk');
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
         });
 
         DB::schema()->create('comments', function (Blueprint $table) {
-            $table->increments('comment_pk');
-            $table->unsignedInteger('post_post_pk');
+            $table->increments('id');
+            $table->unsignedInteger('post_id');
         });
 
         DB::schema()->create('clubs', function (Blueprint $table) {
-            $table->increments('club_pk');
-            $table->unsignedInteger('user_user_pk');
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
         });
 
         DB::schema()->create('teams', function (Blueprint $table) {
-            $table->increments('team_pk');
-            $table->unsignedInteger('club_club_pk');
+            $table->increments('id');
+            $table->unsignedInteger('club_id');
         });
 
         DB::schema()->create('roles', function (Blueprint $table) {
-            $table->increments('role_pk');
+            $table->increments('id');
         });
 
         DB::schema()->create('permissions', function (Blueprint $table) {
-            $table->increments('permission_pk');
-            $table->unsignedInteger('role_role_pk');
+            $table->increments('id');
+            $table->unsignedInteger('role_id');
         });
 
         DB::schema()->create('role_user', function (Blueprint $table) {
-            $table->unsignedInteger('role_role_pk');
-            $table->unsignedInteger('user_user_pk');
+            $table->unsignedInteger('role_id');
+            $table->unsignedInteger('user_id');
         });
 
         DB::schema()->create('likes', function (Blueprint $table) {
-            $table->increments('like_pk');
+            $table->increments('id');
             $table->morphs('likeable');
-            $table->unsignedInteger('user_user_pk');
+            $table->unsignedInteger('user_id');
         });
 
         DB::schema()->create('tags', function (Blueprint $table) {
-            $table->increments('tag_pk');
+            $table->increments('id');
         });
 
         DB::schema()->create('taggables', function (Blueprint $table) {
-            $table->unsignedInteger('tag_tag_pk');
+            $table->unsignedInteger('tag_id');
             $table->morphs('taggable');
         });
     }
@@ -117,48 +115,48 @@ abstract class TestCase extends Base
     {
         Model::unguard();
 
-        Country::create();
-        Country::create();
+        Country::create(['id' => 1]);
+        Country::create(['id' => 2]);
 
-        User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
-        User::create(['country_country_pk' => 1, 'team_team_pk' => 1, 'deleted_at' => null]);
-        User::create(['country_country_pk' => 1, 'team_team_pk' => 2, 'deleted_at' => Carbon::yesterday()]);
+        User::create(['id' => 11, 'country_id' => 1, 'team_id' => 51, 'deleted_at' => null]);
+        User::create(['id' => 12, 'country_id' => 1, 'team_id' => 51, 'deleted_at' => null]);
+        User::create(['id' => 13, 'country_id' => 1, 'team_id' => 52, 'deleted_at' => Carbon::yesterday()]);
 
-        Post::create(['user_user_pk' => 1]);
-        Post::create(['user_user_pk' => 2]);
-        Post::create(['user_user_pk' => 3]);
+        Post::create(['id' => 21, 'user_id' => 11]);
+        Post::create(['id' => 22, 'user_id' => 12]);
+        Post::create(['id' => 23, 'user_id' => 13]);
 
-        Comment::create(['post_post_pk' => 1]);
-        Comment::create(['post_post_pk' => 2]);
-        Comment::create(['post_post_pk' => 3]);
+        Comment::create(['id' => 31, 'post_id' => 21]);
+        Comment::create(['id' => 32, 'post_id' => 22]);
+        Comment::create(['id' => 33, 'post_id' => 23]);
 
-        Club::create(['user_user_pk' => 1]);
-        Club::create(['user_user_pk' => 2]);
-        Club::create(['user_user_pk' => 3]);
+        Club::create(['id' => 41, 'user_id' => 11]);
+        Club::create(['id' => 42, 'user_id' => 12]);
+        Club::create(['id' => 43, 'user_id' => 13]);
 
-        Team::create(['club_club_pk' => 1]);
-        Team::create(['club_club_pk' => 2]);
-        Team::create(['club_club_pk' => 3]);
+        Team::create(['id' => 51, 'club_id' => 41]);
+        Team::create(['id' => 52, 'club_id' => 42]);
+        Team::create(['id' => 53, 'club_id' => 43]);
 
-        Role::create();
+        Role::create(['id' => 61]);
 
-        Permission::create(['role_role_pk' => 1]);
+        Permission::create(['id' => 71, 'role_id' => 61]);
 
         DB::table('role_user')->insert([
-            ['role_role_pk' => 1, 'user_user_pk' => 1]
+            ['role_id' => 61, 'user_id' => 11]
         ]);
 
-        Like::create(['likeable_type' => Post::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
-        Like::create(['likeable_type' => Post::class, 'likeable_id' => 3, 'user_user_pk' => 2]);
-        Like::create(['likeable_type' => Comment::class, 'likeable_id' => 1, 'user_user_pk' => 1]);
-        Like::create(['likeable_type' => Comment::class, 'likeable_id' => 2, 'user_user_pk' => 2]);
+        Like::create(['id' => 81, 'likeable_type' => Post::class, 'likeable_id' => 21, 'user_id' => 11]);
+        Like::create(['id' => 82, 'likeable_type' => Post::class, 'likeable_id' => 23, 'user_id' => 12]);
+        Like::create(['id' => 83, 'likeable_type' => Comment::class, 'likeable_id' => 31, 'user_id' => 11]);
+        Like::create(['id' => 84, 'likeable_type' => Comment::class, 'likeable_id' => 32, 'user_id' => 12]);
 
-        Tag::create();
-        Tag::create();
+        Tag::create(['id' => 91]);
+        Tag::create(['id' => 92]);
 
         DB::table('taggables')->insert([
-            ['tag_tag_pk' => 1, 'taggable_type' => Post::class, 'taggable_id' => 1],
-            ['tag_tag_pk' => 2, 'taggable_type' => Comment::class, 'taggable_id' => 2]
+            ['tag_id' => 91, 'taggable_type' => Post::class, 'taggable_id' => 21],
+            ['tag_id' => 92, 'taggable_type' => Comment::class, 'taggable_id' => 32]
         ]);
 
         Model::reguard();

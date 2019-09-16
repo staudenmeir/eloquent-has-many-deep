@@ -4,8 +4,6 @@ namespace Tests\Models;
 
 class Country extends Model
 {
-    protected $primaryKey = 'country_pk';
-
     public function comment()
     {
         return $this->hasOneDeep(Comment::class, [User::class, Post::class])->withDefault();
@@ -36,9 +34,19 @@ class Country extends Model
         return $this->hasManyDeep(Permission::class, [User::class, 'role_user', Role::class]);
     }
 
+    public function permissionsFromRelations()
+    {
+        return $this->hasManyDeepFromRelations($this->permissions());
+    }
+
     public function permissionsWithPivotAlias()
     {
         return $this->hasManyDeep(Permission::class, [User::class, RoleUser::class.' as alias', Role::class]);
+    }
+
+    public function permissionsWithPivotAliasFromRelations()
+    {
+        return $this->hasManyDeepFromRelations($this->permissionsWithPivotAlias());
     }
 
     public function posts()

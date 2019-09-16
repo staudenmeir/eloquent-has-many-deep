@@ -4,18 +4,6 @@ namespace Tests\Models;
 
 class Post extends Model
 {
-    protected $primaryKey = 'post_pk';
-
-    public function posts()
-    {
-        return $this->hasManyDeep(
-            self::class,
-            [Like::class, User::class],
-            [['likeable_type', 'likeable_id'], 'user_pk'],
-            [null, 'user_user_pk']
-        );
-    }
-
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -24,6 +12,16 @@ class Post extends Model
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function posts()
+    {
+        return $this->hasManyDeep(
+            self::class,
+            [Like::class, User::class],
+            [['likeable_type', 'likeable_id'], 'id'],
+            [null, 'user_id']
+        );
     }
 
     public function tags()
@@ -36,8 +34,8 @@ class Post extends Model
         return $this->hasManyDeep(
             User::class,
             [Like::class],
-            [['likeable_type', 'likeable_id'], 'user_pk'],
-            [null, 'user_user_pk']
+            [['likeable_type', 'likeable_id'], 'id'],
+            [null, 'user_id']
         );
     }
 
