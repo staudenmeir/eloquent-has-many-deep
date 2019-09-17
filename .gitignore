@@ -1,6 +1,7 @@
 /.idea
 /.vagrant
 /vendor
+.phpunit.result.cache
 after.sh
 aliases
 composer.lock
