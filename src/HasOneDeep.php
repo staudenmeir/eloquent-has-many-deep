@@ -51,7 +51,8 @@ class HasOneDeep extends HasManyDeep
         foreach ($models as $model) {
             if (isset($dictionary[$key = $model->getAttribute($this->localKey)])) {
                 $model->setRelation(
-                    $relation, reset($dictionary[$key])
+                    $relation,
+                    reset($dictionary[$key])
                 );
             }
         }
