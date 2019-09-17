@@ -2,8 +2,12 @@
 
 namespace Tests\Models;
 
+use Staudenmeir\EloquentEagerLimit\HasEagerLimit;
+
 class Comment extends Model
 {
+    use HasEagerLimit;
+
     public function user()
     {
         return $this->hasOneDeep(

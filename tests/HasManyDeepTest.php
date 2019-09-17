@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Tests\Models\Comment;
 use Tests\Models\Country;
 use Tests\Models\Post;
@@ -68,11 +69,19 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
 
+    public function testLazyLoadingWithLimit()
+    {
+        $comments = Country::first()->comments()->limit(1)->offset(1)->get();
+
+        $this->assertEquals([32], $comments->pluck('id')->all());
+    }
+
     public function testEagerLoading()
     {
         $countries = Country::with('comments')->get();
 
         $this->assertEquals([31, 32], $countries[0]->comments->pluck('id')->all());
+        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testEagerLoadingWithLeadingMorphMany()
@@ -96,6 +105,16 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([31], $tags[0]->comments->pluck('id')->all());
     }
 
+    public function testEagerLoadingWithLimit()
+    {
+        $countries = Country::with(['comments' => function (HasManyDeep $query) {
+            $query->orderByDesc('comments.id')->limit(1);
+        }])->get();
+
+        $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
+        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
+    }
+
     public function testLazyEagerLoading()
     {
         $countries = Country::all()->load('comments');
@@ -103,11 +122,21 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([31, 32], $countries[0]->comments->pluck('id')->all());
     }
 
+    public function testLazyEagerLoadingWithLimit()
+    {
+        $countries = Country::all()->load(['comments' => function (HasManyDeep $query) {
+            $query->orderByDesc('comments.id')->take(1);
+        }]);
+
+        $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
+        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
+    }
+
     public function testExistenceQuery()
     {
         $countries = Country::has('comments')->get();
 
-        $this->assertEquals([1], $countries->pluck('id')->all());
+        $this->assertEquals([1, 2], $countries->pluck('id')->all());
     }
 
     public function testExistenceQueryWithLeadingMorphMany()

@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class HasManyDeep extends HasManyThrough
 {
-    use RetrievesIntermediateTables;
+    use HasEagerLimit, RetrievesIntermediateTables;
 
     /**
      * The "through" parent model instances.

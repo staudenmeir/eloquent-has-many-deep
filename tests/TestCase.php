@@ -24,12 +24,10 @@ abstract class TestCase extends Base
     {
         parent::setUp();
 
+        $config = require __DIR__.'/config/database.php';
+
         $db = new DB;
-        $db->addConnection([
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
+        $db->addConnection($config[getenv('DB') ?: 'sqlite']);
         $db->setAsGlobal();
         $db->bootEloquent();
 
@@ -45,6 +43,8 @@ abstract class TestCase extends Base
      */
     protected function migrate()
     {
+        DB::schema()->dropAllTables();
+
         DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('id');
         });
@@ -117,18 +117,22 @@ abstract class TestCase extends Base
 
         Country::create(['id' => 1]);
         Country::create(['id' => 2]);
+        Country::create(['id' => 3]);
 
         User::create(['id' => 11, 'country_id' => 1, 'team_id' => 51, 'deleted_at' => null]);
         User::create(['id' => 12, 'country_id' => 1, 'team_id' => 51, 'deleted_at' => null]);
         User::create(['id' => 13, 'country_id' => 1, 'team_id' => 52, 'deleted_at' => Carbon::yesterday()]);
+        User::create(['id' => 14, 'country_id' => 2, 'team_id' => 53, 'deleted_at' => null]);
 
         Post::create(['id' => 21, 'user_id' => 11]);
         Post::create(['id' => 22, 'user_id' => 12]);
         Post::create(['id' => 23, 'user_id' => 13]);
+        Post::create(['id' => 24, 'user_id' => 14]);
 
         Comment::create(['id' => 31, 'post_id' => 21]);
         Comment::create(['id' => 32, 'post_id' => 22]);
         Comment::create(['id' => 33, 'post_id' => 23]);
+        Comment::create(['id' => 34, 'post_id' => 24]);
 
         Club::create(['id' => 41, 'user_id' => 11]);
         Club::create(['id' => 42, 'user_id' => 12]);
