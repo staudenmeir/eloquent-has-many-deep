@@ -15,6 +15,14 @@ Supports Laravel 5.5.29+.
 
     composer require staudenmeir/eloquent-has-many-deep:"^1.7"
 
+## Versions
+
+ Laravel | Package
+:--------|:----------
+ 5.5–5.7 | 1.7
+ 5.8     | 1.8
+ 6.x     | 1.11
+
 ## Usage
 
 - [HasMany](#hasmany)
@@ -29,9 +37,12 @@ Supports Laravel 5.5.29+.
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
 
+The package offers two ways of defining deep relationships:  
+You can specify the intermediate models, foreign and local keys manually or concatenate [existing relationships](#existing-relationships).
+
 ### HasMany
 
-Using the  [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
 
 ```php
@@ -75,7 +86,7 @@ class Country extends Model
 }
 ```
 
-You can use `null` placeholders for the default keys:
+You can use `null` placeholders for default keys:
 
 ```php
 class Country extends Model
@@ -93,7 +104,7 @@ class Country extends Model
 
 You can include `BelongsToMany` relationships in the intermediate path.
 
-Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional level:  
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional level:  
 `User` → belongs to many → `Role` → has many → `Permission`
 
 Add the pivot table to the intermediate models:
@@ -141,7 +152,7 @@ class User extends Model
 
 You can include `MorphMany` relationships in the intermediate path.
 
-Using the [documentation example](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) with an additional level:  
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) with an additional level:  
 `User` → has many → `Post` → morph many → `Comment`
 
 Specify the polymorphic foreign keys as an array, starting with the `*_type` column:
@@ -166,7 +177,7 @@ class User extends Model
 
 You can include `MorphToMany` relationships in the intermediate path.
 
-Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:    
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:    
 `User` → has many → `Post` → morph to many → `Tag`
 
 Add the pivot table to the intermediate models and specify the polymorphic foreign keys as an array, starting with the `*_type` column:
@@ -194,7 +205,7 @@ Remember to swap the foreign and local key on the "right" side of the pivot tabl
 
 You can include `MorphedByMany` relationships in the intermediate path.
 
-Using the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:  
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) with an additional level:  
 `Tag` → morphed by many → `Post` → has many → `Comment`
 
 Add the pivot table to the intermediate models and specify the polymorphic local keys as an array, starting with the `*_type` column:
@@ -242,7 +253,7 @@ class Tag extends Model
 
 ### Existing Relationships
 
-In complex cases, you can define a `HasManyDeep` relationship by concatenating existing relationships:
+You can also define a `HasManyDeep` relationship by concatenating existing relationships:
 
 ```php
 class Country extends Model
@@ -271,7 +282,7 @@ class Post extends Model
 
 ### HasOneDeep
 
-Use the `HasOneDeep` relationship if you only want to retrieve a single related instance:
+Define a `HasOneDeep` relationship if you only want to retrieve a single related instance:
 
 ```php
 class Country extends Model
