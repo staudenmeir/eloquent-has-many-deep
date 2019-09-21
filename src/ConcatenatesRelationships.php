@@ -39,7 +39,7 @@ trait ConcatenatesRelationships
             if ($i === count($relations) - 1) {
                 $related = get_class($relation->getRelated());
             } else {
-                $through[] = get_class($relation->getRelated());
+                $through[] = $this->hasOneOrManyThroughParent($relation, $relations[$i + 1]);
             }
         }
 
@@ -231,5 +231,29 @@ trait ConcatenatesRelationships
         }
 
         throw new RuntimeException('This relationship is not supported.'); // @codeCoverageIgnore
+    }
+
+    /**
+     * Prepare the through parent class from an existing relationship and its successor.
+     *
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $successor
+     * @return string
+     */
+    protected function hasOneOrManyThroughParent(Relation $relation, Relation $successor)
+    {
+        $through = get_class($relation->getRelated());
+
+        if (get_class($relation->getRelated()) === get_class($successor->getParent())) {
+            $table = $successor->getParent()->getTable();
+
+            $segments = explode(' as ', $table);
+
+            if (isset($segments[1])) {
+                $through .= ' as '.$segments[1];
+            }
+        }
+
+        return $through;
     }
 }

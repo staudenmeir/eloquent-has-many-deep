@@ -9,6 +9,11 @@ class Comment extends Model
 {
     use HasEagerLimit, HasTableAlias;
 
+    public function replies()
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
     public function user()
     {
         return $this->hasOneDeep(

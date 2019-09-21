@@ -18,6 +18,14 @@ class Post extends Model
         );
     }
 
+    public function commentRepliesFromRelations()
+    {
+        return $this->hasManyDeepFromRelations(
+            $this->comments(),
+            (new Comment)->setAlias('alias')->replies()
+        );
+    }
+
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');

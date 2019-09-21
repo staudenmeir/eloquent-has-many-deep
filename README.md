@@ -242,7 +242,7 @@ class Tag extends Model
 
 ### Existing Relationships
 
-In complex cases, you can define a `HasManyDeep` relationship by chaining existing relationships:
+In complex cases, you can define a `HasManyDeep` relationship by concatenating existing relationships:
 
 ```php
 class Country extends Model
@@ -413,6 +413,38 @@ class User extends Model
 class RoleUser extends Pivot
 {
     use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
+}
+```
+
+Use `setAlias()` to specify a table alias when concatenating existing relationships:
+
+```php
+class Post extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function commentReplies()
+    {
+        return $this->hasManyDeepFromRelations(
+            $this->comments(),
+            (new Comment)->setAlias('alias')->replies()
+        );
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+}
+
+class Comment extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasTableAlias;
+
+    public function replies()
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
 }
 ```
 

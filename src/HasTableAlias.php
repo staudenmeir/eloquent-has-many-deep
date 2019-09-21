@@ -26,4 +26,15 @@ trait HasTableAlias
 
         return $table.'.'.$column;
     }
+
+    /**
+     * Set an alias for the model's table.
+     *
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        return $this->setTable($this->getTable().' as '.$alias);
+    }
 }

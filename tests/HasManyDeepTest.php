@@ -302,4 +302,11 @@ class HasManyDeepTest extends TestCase
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
+
+    public function testFromRelationsWithAlias()
+    {
+        $comments = Post::find(24)->commentRepliesFromRelations;
+
+        $this->assertEquals([35], $comments->pluck('id')->all());
+    }
 }
