@@ -9,6 +9,15 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function commentReplies()
+    {
+        return $this->hasManyDeep(
+            Comment::class,
+            [Comment::class.' as alias'],
+            [null, 'parent_id']
+        );
+    }
+
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');

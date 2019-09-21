@@ -381,7 +381,7 @@ class Post extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function childComments()
+    public function commentReplies()
     {
         return $this->hasManyDeep('App\Comment', ['App\Comment as alias'], [null, 'parent_id']);
     }

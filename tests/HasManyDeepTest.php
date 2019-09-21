@@ -64,9 +64,9 @@ class HasManyDeepTest extends TestCase
 
     public function testLazyLoadingWithAlias()
     {
-        $comments = Country::first()->commentsWithAlias;
+        $comments = Post::find(24)->commentReplies;
 
-        $this->assertEquals([31, 32], $comments->pluck('id')->all());
+        $this->assertEquals([35], $comments->pluck('id')->all());
     }
 
     public function testLazyLoadingWithLimit()
@@ -81,7 +81,7 @@ class HasManyDeepTest extends TestCase
         $countries = Country::with('comments')->get();
 
         $this->assertEquals([31, 32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([34, 35], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testEagerLoadingWithLeadingMorphMany()
@@ -112,7 +112,7 @@ class HasManyDeepTest extends TestCase
         }])->get();
 
         $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([35], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testLazyEagerLoading()
@@ -129,7 +129,7 @@ class HasManyDeepTest extends TestCase
         }]);
 
         $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([34], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([35], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testExistenceQuery()

@@ -3,11 +3,10 @@
 namespace Tests\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 class User extends Model
 {
-    use HasTableAlias, SoftDeletes;
+    use SoftDeletes;
 
     public function likes()
     {

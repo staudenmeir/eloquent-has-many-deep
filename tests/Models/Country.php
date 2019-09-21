@@ -24,11 +24,6 @@ class Country extends Model
         return $this->hasManyDeepFromRelations([$this->posts(), (new Post)->comments()]);
     }
 
-    public function commentsWithAlias()
-    {
-        return $this->hasManyDeep(Comment::class, [User::class.' as alias', Post::class]);
-    }
-
     public function permissions()
     {
         return $this->hasManyDeep(Permission::class, [User::class, 'role_user', Role::class]);

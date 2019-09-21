@@ -3,10 +3,11 @@
 namespace Tests\Models;
 
 use Staudenmeir\EloquentEagerLimit\HasEagerLimit;
+use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 class Comment extends Model
 {
-    use HasEagerLimit;
+    use HasEagerLimit, HasTableAlias;
 
     public function user()
     {
