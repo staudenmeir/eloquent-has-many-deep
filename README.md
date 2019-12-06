@@ -26,7 +26,7 @@ Supports Laravel 5.5.29+.
 ## Usage
 
 - [HasMany](#hasmany)
-- [BelongsToMany](#belongstomany)
+- [ManyToMany](#manytomany)
 - [MorphMany](#morphmany)
 - [MorphToMany](#morphtomany)
 - [MorphedByMany](#morphedbymany)
