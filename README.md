@@ -100,12 +100,14 @@ class Country extends Model
 }
 ```
 
-### BelongsToMany
+### ManyToMany
 
-You can include `BelongsToMany` relationships in the intermediate path.
+You can include `ManyToMany` relationships in the intermediate path.
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional level:  
-`User` → belongs to many → `Role` → has many → `Permission`
+#### ManyToMany -> HasMany
+
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional `hasMany` level:  
+`User` → many to many → `Role` → has many → `Permission`
 
 Add the pivot table to the intermediate models:
 
@@ -144,6 +146,25 @@ class User extends Model
               'id'       // Local key on the "roles" table.
             ]
         );
+    }
+}
+```
+
+#### ManyToMany -> ManyToMany
+
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional `ManyToMany` level:  
+`User` → many to many → `Role` → many to many → `Permission`
+
+Add the pivot table to the intermediate models:
+
+```php
+class User extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function permissions()
+    {
+        return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role', 'permission_role']);
     }
 }
 ```
