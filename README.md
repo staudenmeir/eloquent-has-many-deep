@@ -7,7 +7,7 @@
 
 ## Introduction
 This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
-It supports [many-to-many](#belongstomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
+It supports [many-to-many](#manytomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
 
 Supports Laravel 5.5.29+.
 
@@ -104,9 +104,9 @@ class Country extends Model
 
 You can include `ManyToMany` relationships in the intermediate path.
 
-#### ManyToMany -> HasMany
+#### ManyToMany → HasMany
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional `hasMany` level:  
+Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional `HasMany` level:  
 `User` → many to many → `Role` → has many → `Permission`
 
 Add the pivot table to the intermediate models:
@@ -150,7 +150,7 @@ class User extends Model
 }
 ```
 
-#### ManyToMany -> ManyToMany
+#### ManyToMany → ManyToMany
 
 Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an additional `ManyToMany` level:  
 `User` → many to many → `Role` → many to many → `Permission`
