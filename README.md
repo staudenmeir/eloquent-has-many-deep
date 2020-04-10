@@ -22,7 +22,8 @@ Supports Laravel 5.5.29+.
  5.5–5.7 | 1.7
  5.8     | 1.8
  6.x     | 1.11
-
+ 7.x     | 1.12
+ 
 ## Usage
 
 - [HasMany](#hasmany)
