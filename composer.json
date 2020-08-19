@@ -15,7 +15,7 @@
     "require-dev": {
         "illuminate/pagination": "^7.0",
         "laravel/homestead": "^10.0",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.3",
         "staudenmeir/eloquent-eager-limit": "^1.5"
     },
     "autoload": {
