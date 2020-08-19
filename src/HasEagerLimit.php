@@ -30,7 +30,7 @@ trait HasEagerLimit
             $this->query->limit($value);
         } else {
             if (!class_exists('Staudenmeir\EloquentEagerLimit\Builder')) {
-                $message = 'Please install staudenmeir/eloquent-eager-limit to limit eager loading queries.'; // @codeCoverageIgnore
+                $message = 'Please install staudenmeir/eloquent-eager-limit and add the HasEagerLimit trait as shown in the README.'; // @codeCoverageIgnore
 
                 throw new RuntimeException($message); // @codeCoverageIgnore
             }
