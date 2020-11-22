@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer/files
           key: php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
       - uses: shivammathur/setup-php@v2
         with:
