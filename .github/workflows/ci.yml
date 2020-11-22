@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -37,12 +37,6 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: bcmath, ctype, json, mbstring, openssl, pdo, pdo_${{ matrix.database }}, tokenizer, xml
           coverage: ${{ matrix.coverage }}
-      - run: |
-          PHP_API=$(php -i | sed -n 's/PHP API => //p')
-          SQLITE=$(wget -qO- https://github.com/staudenmeir/php-sqlite/raw/master/LATEST)
-          sudo wget -q https://github.com/staudenmeir/php-sqlite/raw/master/$SQLITE/libsqlite3.so -O /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
-          sudo wget -q https://github.com/staudenmeir/php-sqlite/raw/master/$SQLITE/${{ matrix.php }}/pdo_sqlite.so -O /usr/lib/php/$PHP_API/pdo_sqlite.so
-        if: matrix.database == 'sqlite'
       - run: composer update --no-interaction --no-progress --no-suggest --prefer-dist --prefer-${{ matrix.release }}
       - run: cp tests/config/database.ci.php tests/config/database.php
       - run: |
