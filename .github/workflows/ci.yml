@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.4, 7.3, 7.2]
+        php: [8.0, 7.4, 7.3, 7.2]
         database: [mysql, sqlite]
         release: [stable, lowest]
         include:

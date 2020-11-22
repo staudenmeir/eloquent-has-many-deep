@@ -9,12 +9,12 @@
         }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.2.5|^8.0",
         "illuminate/database": "^7.0"
     },
     "require-dev": {
         "illuminate/pagination": "^7.0",
-        "laravel/homestead": "^10.0",
+        "laravel/homestead": "^10.0|^11.0",
         "phpunit/phpunit": "^8.5",
         "staudenmeir/eloquent-eager-limit": "^1.5"
     },
