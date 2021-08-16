@@ -196,6 +196,10 @@ class HasManyDeepTest extends TestCase
 
     public function testCursorPaginator()
     {
+        if (!interface_exists('Illuminate\Pagination\CursorPaginator')) {
+            $this->markTestSkipped();
+        }
+
         $comments = Country::first()->comments()
             ->withIntermediate(Post::class)
             ->cursorPaginate();
