@@ -196,7 +196,7 @@ class HasManyDeepTest extends TestCase
 
     public function testCursorPaginator()
     {
-        if (!interface_exists('Illuminate\Pagination\CursorPaginator')) {
+        if (!class_exists('Illuminate\Pagination\CursorPaginator')) {
             $this->markTestSkipped();
         }
 
