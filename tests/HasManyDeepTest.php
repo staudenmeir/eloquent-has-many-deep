@@ -194,6 +194,16 @@ class HasManyDeepTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
+    public function testCursorPaginator()
+    {
+        $comments = Country::first()->comments()
+            ->withIntermediate(Post::class)
+            ->cursorPaginate();
+
+        $this->assertTrue($comments[0]->relationLoaded('post'));
+        $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
+    }
+
     public function testChunk()
     {
         Country::first()->comments()

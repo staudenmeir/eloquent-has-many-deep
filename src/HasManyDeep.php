@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
 
 class HasManyDeep extends HasManyThrough
@@ -220,6 +221,28 @@ class HasManyDeep extends HasManyThrough
         $this->query->addSelect($columns);
 
         return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
+            $this->hydrateIntermediateRelations($paginator->items());
+        });
+    }
+
+    /**
+     * Paginate the given query into a cursor paginator.
+     *
+     * @param  int|null  $perPage
+     * @param  array  $columns
+     * @param  string  $cursorName
+     * @param  string|null  $cursor
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     */
+    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
+    {
+        $columns = $this->shouldSelect($columns);
+
+        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
+
+        $this->query->addSelect($columns);
+
+        return tap($this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor), function (CursorPaginator $paginator) {
             $this->hydrateIntermediateRelations($paginator->items());
         });
     }
