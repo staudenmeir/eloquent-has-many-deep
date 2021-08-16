@@ -7,7 +7,8 @@ use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 class Comment extends Model
 {
-    use HasEagerLimit, HasTableAlias;
+    use HasEagerLimit;
+    use HasTableAlias;
 
     public function replies()
     {

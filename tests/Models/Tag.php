@@ -16,7 +16,7 @@ class Tag extends Model
 
     public function commentsFromRelations()
     {
-        return $this->hasManyDeepFromRelations($this->posts(), (new Post)->comments());
+        return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
     public function posts()

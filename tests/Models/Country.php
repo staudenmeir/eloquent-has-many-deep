@@ -11,7 +11,7 @@ class Country extends Model
 
     public function commentFromRelations()
     {
-        return $this->hasOneDeepFromRelations($this->posts(), (new Post)->comments());
+        return $this->hasOneDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
     public function comments()
@@ -21,7 +21,7 @@ class Country extends Model
 
     public function commentsFromRelations()
     {
-        return $this->hasManyDeepFromRelations([$this->posts(), (new Post)->comments()]);
+        return $this->hasManyDeepFromRelations([$this->posts(), (new Post())->comments()]);
     }
 
     public function permissions()

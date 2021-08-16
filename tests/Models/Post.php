@@ -22,7 +22,7 @@ class Post extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->comments(),
-            (new Comment)->setAlias('alias')->replies()
+            (new Comment())->setAlias('alias')->replies()
         );
     }
 
@@ -58,6 +58,6 @@ class Post extends Model
 
     public function usersFromRelations()
     {
-        return $this->hasManyDeepFromRelations($this->likes(), (new Like)->user());
+        return $this->hasManyDeepFromRelations($this->likes(), (new Like())->user());
     }
 }

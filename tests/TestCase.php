@@ -26,7 +26,7 @@ abstract class TestCase extends Base
 
         $config = require __DIR__.'/config/database.php';
 
-        $db = new DB;
+        $db = new DB();
         $db->addConnection($config[getenv('DATABASE') ?: 'sqlite']);
         $db->setAsGlobal();
         $db->bootEloquent();

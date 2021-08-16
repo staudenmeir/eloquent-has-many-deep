@@ -20,7 +20,7 @@ class User extends Model
 
     public function permissionsFromRelations()
     {
-        return $this->hasManyDeepFromRelations($this->roles(), (new Role)->permissions());
+        return $this->hasManyDeepFromRelations($this->roles(), (new Role())->permissions());
     }
 
     public function players()
@@ -40,6 +40,6 @@ class User extends Model
 
     public function tagsFromRelations()
     {
-        return $this->hasManyDeepFromRelations($this->posts(), (new Post)->tags());
+        return $this->hasManyDeepFromRelations($this->posts(), (new Post())->tags());
     }
 }

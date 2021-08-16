@@ -26,7 +26,7 @@ trait RetrievesIntermediateTables
     public function withIntermediate($class, array $columns = ['*'], $accessor = null)
     {
         /** @var \Illuminate\Database\Eloquent\Model $instance */
-        $instance = new $class;
+        $instance = new $class();
 
         $accessor = $accessor ?: Str::snake(class_basename($class));
 
@@ -131,7 +131,7 @@ trait RetrievesIntermediateTables
         }
 
         /** @var \Illuminate\Database\Eloquent\Model $instance */
-        $instance = new $class;
+        $instance = new $class();
 
         return $instance->newFromBuilder($attributes);
     }
