@@ -268,6 +268,13 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
     }
 
+    public function testWithTrashedIntermediateAndWithCount()
+    {
+        $country = Country::withCount('commentsWithTrashedUsers as count')->first();
+
+        $this->assertEquals(3, $country->count);
+    }
+
     public function testFromRelations()
     {
         $comments = Country::first()->commentsFromRelations;

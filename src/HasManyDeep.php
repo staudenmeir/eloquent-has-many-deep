@@ -134,7 +134,11 @@ class HasManyDeep extends HasManyThrough
         $query->join($throughParent->getTable(), $first, '=', $second);
 
         if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-            $query->whereNull($throughParent->getQualifiedDeletedAtColumn());
+            $column= $throughParent->getQualifiedDeletedAtColumn();
+
+            $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
+                $query->whereNull($column);
+            });
         }
     }
 
@@ -336,10 +340,9 @@ class HasManyDeep extends HasManyThrough
             $columns = $columns[0];
         }
 
-        $this->query->getQuery()->wheres = collect($this->query->getQuery()->wheres)
-            ->reject(function ($where) use ($columns) {
-                return $where['type'] === 'Null' && in_array($where['column'], $columns);
-            })->values()->all();
+        foreach ($columns as $column) {
+            $this->query->withoutGlobalScope(__CLASS__ . ":$column");
+        }
 
         return $this;
     }

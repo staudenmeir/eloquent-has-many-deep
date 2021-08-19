@@ -24,6 +24,11 @@ class Country extends Model
         return $this->hasManyDeepFromRelations([$this->posts(), (new Post())->comments()]);
     }
 
+    public function commentsWithTrashedUsers()
+    {
+        return $this->comments()->withTrashed('users.deleted_at');
+    }
+
     public function permissions()
     {
         return $this->hasManyDeep(Permission::class, [User::class, 'role_user', Role::class]);
