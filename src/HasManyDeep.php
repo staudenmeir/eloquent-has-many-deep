@@ -316,7 +316,7 @@ class HasManyDeep extends HasManyThrough
         $query->getModel()->setTable($hash);
 
         return $query->select($columns)->whereColumn(
-            $parentQuery->getQuery()->from.'.'.$query->getModel()->getKeyName(),
+            $parentQuery->getQuery()->from.'.'.$this->localKey,
             '=',
             $this->getQualifiedFirstKeyName()
         );
