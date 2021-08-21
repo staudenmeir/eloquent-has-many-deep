@@ -293,11 +293,11 @@ class HasManyDeep extends HasManyThrough
             if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
                 if (!in_array(HasTableAlias::class, class_uses_recursive($throughParent))) {
                     $traitClass = HasTableAlias::class;
-                    $throughParentClass = get_class($throughParent);
+                    $parentClass = get_class($throughParent);
 
                     throw new Exception(
                         <<<EOT
-This query requires an additional trait. Please add the $traitClass trait to $throughParentClass.
+This query requires an additional trait. Please add the $traitClass trait to $parentClass.
 See https://github.com/staudenmeir/eloquent-has-many-deep/issues/137 for details.
 EOT
                     );
