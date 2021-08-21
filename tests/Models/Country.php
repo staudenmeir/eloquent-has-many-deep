@@ -24,6 +24,20 @@ class Country extends Model
         return $this->hasManyDeepFromRelations([$this->posts(), (new Post())->comments()]);
     }
 
+    public function commentsFromRelationsWithCustomTable()
+    {
+        $comment = (new Comment())->setTable('my_comments');
+
+        $comments = (new Post())->newHasMany(
+            $comment->newQuery(),
+            $this,
+            $comment->getTable().'.post_id',
+            'id'
+        );
+
+        return $this->hasManyDeepFromRelations([$this->posts(), $comments]);
+    }
+
     public function commentsWithTrashedUsers()
     {
         return $this->comments()->withTrashed('users.deleted_at');

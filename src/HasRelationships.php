@@ -72,8 +72,14 @@ trait HasRelationships
      */
     protected function hasOneOrManyDeep($related, array $through, array $foreignKeys, array $localKeys)
     {
+        $relatedSegments = preg_split('/\s+from\s+/i', $related);
+
         /** @var \Illuminate\Database\Eloquent\Model $relatedInstance */
-        $relatedInstance = $this->newRelatedInstance($related);
+        $relatedInstance = $this->newRelatedInstance($relatedSegments[0]);
+
+        if (isset($relatedSegments[1])) {
+            $relatedInstance->setTable($relatedSegments[1]);
+        }
 
         $throughParents = $this->hasOneOrManyDeepThroughParents($through);
 

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Tests\Models\Comment;
@@ -344,5 +345,14 @@ class HasManyDeepTest extends TestCase
         $comments = Post::find(24)->commentRepliesFromRelations;
 
         $this->assertEquals([35], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithCustomTable()
+    {
+        DB::schema()->rename('comments', 'my_comments');
+
+        $comments = Country::first()->commentsFromRelationsWithCustomTable;
+
+        $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
 }

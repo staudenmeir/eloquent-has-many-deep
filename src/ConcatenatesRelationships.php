@@ -38,6 +38,10 @@ trait ConcatenatesRelationships
 
             if ($i === count($relations) - 1) {
                 $related = get_class($relation->getRelated());
+
+                if ((new $related())->getTable() !== $relation->getRelated()->getTable()) {
+                    $related .= ' from ' . $relation->getRelated()->getTable();
+                }
             } else {
                 $through[] = $this->hasOneOrManyThroughParent($relation, $relations[$i + 1]);
             }
