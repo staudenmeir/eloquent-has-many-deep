@@ -2,6 +2,7 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
+use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -288,6 +289,28 @@ class HasManyDeep extends HasManyThrough
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
+        foreach ($this->throughParents as $throughParent) {
+            if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
+                if (!in_array(HasTableAlias::class, class_uses_recursive($throughParent))) {
+                    $traitClass = HasTableAlias::class;
+                    $throughParentClass = get_class($throughParent);
+
+                    throw new Exception(
+                        <<<EOT
+This query requires an additional trait. Please add the $traitClass trait to $throughParentClass.
+See https://github.com/staudenmeir/eloquent-has-many-deep/issues/137 for details.
+EOT
+                    );
+                }
+
+                $table = $throughParent->getTable() . ' as ' . $this->getRelationCountHash();
+
+                $throughParent->setTable($table);
+
+                break;
+            }
+        }
+
         $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);
 
         if (is_array($this->foreignKeys[0])) {
@@ -309,7 +332,9 @@ class HasManyDeep extends HasManyThrough
      */
     public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
-        $query->from($query->getModel()->getTable().' as '.$hash = $this->getRelationCountHash());
+        $hash = $this->getRelationCountHash();
+
+        $query->from($query->getModel()->getTable().' as '.$hash);
 
         $this->performJoin($query);
 

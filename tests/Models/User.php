@@ -42,4 +42,9 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations($this->posts(), (new Post())->tags());
     }
+
+    public function teamPosts()
+    {
+        return $this->hasManyDeep(Post::class, [Team::class, static::class], ['id', null, 'user_id'], ['team_id']);
+    }
 }

@@ -10,6 +10,7 @@ use Tests\Models\Post;
 use Tests\Models\RoleUser;
 use Tests\Models\Tag;
 use Tests\Models\User;
+use Tests\Models\UserWithAliasTrait;
 
 class HasManyDeepTest extends TestCase
 {
@@ -172,6 +173,20 @@ class HasManyDeepTest extends TestCase
         $posts = Post::has('posts')->get();
 
         $this->assertEquals([21, 23], $posts->pluck('id')->all());
+    }
+
+    public function testExistenceQueryForThroughSelfRelation()
+    {
+        $users = UserWithAliasTrait::withCount('teamPosts')->get();
+
+        $this->assertEquals([2, 2, 1], $users->pluck('team_posts_count')->all());
+    }
+
+    public function testExistenceQueryForThroughSelfRelationWithoutAliasTrait()
+    {
+        $this->expectExceptionMessageMatches('/' . preg_quote(User::class) . '/');
+
+        User::withCount('teamPosts')->get();
     }
 
     public function testPaginate()
