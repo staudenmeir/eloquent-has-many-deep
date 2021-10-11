@@ -15,6 +15,10 @@ Supports Laravel 5.5.29+.
 
     composer require staudenmeir/eloquent-has-many-deep:"^1.7"
 
+Use this command if you are in PowerShell on Windows (e.g. in VS Code):
+
+    composer require staudenmeir/eloquent-has-many-deep:"^^^^1.7"
+
 ## Versions
 
  Laravel | Package
