@@ -48,5 +48,5 @@ jobs:
         env:
           DATABASE: ${{ matrix.database }}
           MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
-      - run: vendor/bin/ocular code-coverage:upload --format=php-clover coverage.xml
+      - run: php tests/coverage/scrutinizer.php
         if: matrix.coverage == 'xdebug'
