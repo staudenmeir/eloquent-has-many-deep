@@ -28,6 +28,7 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
  6.x     | 1.11
  7.x     | 1.12
  8.x     | 1.13
+ 9.x     | dev-master
  
 ## Usage
 
