@@ -1,6 +1,7 @@
 /.idea
 /.vagrant
 /vendor
+.php-cs-fixer.cache
 .phpunit.result.cache
 after.sh
 aliases
