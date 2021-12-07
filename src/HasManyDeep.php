@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @extends Relation<TRelatedModel>
+ */
 class HasManyDeep extends HasManyThrough
 {
     use HasEagerLimit;
