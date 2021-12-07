@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
- * @extends Relation<TRelatedModel>
+ * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
  */
 class HasManyDeep extends HasManyThrough
 {
