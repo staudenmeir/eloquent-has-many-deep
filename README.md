@@ -59,7 +59,7 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post']);
+        return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
     }
 }
 ```
@@ -76,8 +76,8 @@ class Country extends Model
     public function comments()
     {
         return $this->hasManyDeep(
-            'App\Comment',
-            ['App\User', 'App\Post'], // Intermediate models, beginning at the far parent (Country).
+            Comment::class,
+            [User::class, Post::class], // Intermediate models, beginning at the far parent (Country).
             [
                'country_id', // Foreign key on the "users" table.
                'user_id',    // Foreign key on the "posts" table.
@@ -102,7 +102,7 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'], [null, 'custom_user_id']);
+        return $this->hasManyDeep(Comment::class, [User::class, Post::class], [null, 'custom_user_id']);
     }
 }
 ```
@@ -125,7 +125,7 @@ class User extends Model
 
     public function permissions()
     {
-        return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role']);
+        return $this->hasManyDeep(Permission::class, ['role_user', Role::class]);
     }
 }
 ```
@@ -140,8 +140,8 @@ class User extends Model
     public function permissions()
     {
         return $this->hasManyDeep(
-            'App\Permission',
-            ['role_user', 'App\Role'], // Intermediate models and tables, beginning at the far parent (User).
+            Permission::class,
+            ['role_user', Role::class], // Intermediate models and tables, beginning at the far parent (User).
             [           
                'user_id', // Foreign key on the "role_user" table.
                'id',      // Foreign key on the "roles" table (local key).
@@ -171,7 +171,7 @@ class User extends Model
 
     public function permissions()
     {
-        return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role', 'permission_role']);
+        return $this->hasManyDeep(Permission::class, ['role_user', Role::class, 'permission_role']);
     }
 }
 ```
@@ -193,8 +193,8 @@ class User extends Model
     public function postComments()
     {
         return $this->hasManyDeep(
-            'App\Comment',
-            ['App\Post'],
+            Comment::class,
+            [Post::class],
             [null, ['commentable_type', 'commentable_id']]
         );
     }
@@ -218,8 +218,8 @@ class User extends Model
     public function postTags()
     {
         return $this->hasManyDeep(
-            'App\Tag',
-            ['App\Post', 'taggables'],
+            Tag::class,
+            [Post::class, 'taggables'],
             [null, ['taggable_type', 'taggable_id'], 'id'],
             [null, null, 'tag_id']
         );
@@ -246,8 +246,8 @@ class Tag extends Model
     public function postComments()
     {
         return $this->hasManyDeep(
-            'App\Comment',
-            ['taggables', 'App\Post'],
+            Comment::class,
+            ['taggables', Post::class],
             [null, 'id'],
             [null, ['taggable_type', 'taggable_id']]
         );
@@ -270,8 +270,8 @@ class Tag extends Model
     public function postAuthors()
     {
         return $this->hasManyDeep(
-            'App\User',
-            ['taggables', 'App\Post'],
+            User::class,
+            ['taggables', Post::class],
             [null, 'id', 'id'],
             [null, ['taggable_type', 'taggable_id'], 'user_id']
         );
@@ -295,7 +295,7 @@ class Country extends Model
 
     public function posts()
     {
-        return $this->hasManyThrough('App\Post', 'App\User');
+        return $this->hasManyThrough(Post::class, User::class);
     }
 }
 
@@ -303,7 +303,7 @@ class Post extends Model
 {
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany(Comment::class);
     }
 }
 ```
@@ -319,7 +319,7 @@ class Country extends Model
 
     public function latestComment()
     {
-        return $this->hasOneDeep('App\Comment', ['App\User', 'App\Post'])
+        return $this->hasOneDeep(Comment::class, [User::class, Post::class])
             ->latest('comments.created_at');
     }
 }
@@ -332,8 +332,8 @@ Use `withIntermediate()` to retrieve attributes from intermediate tables:
 ```php
 public function comments()
 {
-    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
-        ->withIntermediate('App\Post');
+    return $this->hasManyDeep(Comment::class, [User::class, Post::class])
+        ->withIntermediate(Post::class);
 }
 
 foreach ($country->comments as $comment) {
@@ -348,8 +348,8 @@ You can specify the selected columns as the second argument:
 ```php
 public function comments()
 {
-    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
-        ->withIntermediate('App\Post', ['id', 'title']);
+    return $this->hasManyDeep(Comment::class, [User::class, Post::class])
+        ->withIntermediate(Post::class, ['id', 'title']);
 }
 ```
 
@@ -358,8 +358,8 @@ As the third argument, you can specify a custom accessor:
 ```php
 public function comments()
 {
-    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
-        ->withIntermediate('App\Post', ['id', 'title'], 'accessor');
+    return $this->hasManyDeep(Comment::class, [User::class, Post::class])
+        ->withIntermediate(Post::class, ['id', 'title'], 'accessor');
 }
 
 foreach ($country->comments as $comment) {
@@ -372,9 +372,9 @@ If you retrieve data from multiple tables, you can use nested accessors:
 ```php
 public function comments()
 {
-    return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
-        ->withIntermediate('App\Post')
-        ->withIntermediate('App\User', ['*'], 'post.user');
+    return $this->hasManyDeep(Comment::class, [User::class, Post::class])
+        ->withIntermediate(Post::class)
+        ->withIntermediate(User::class, ['*'], 'post.user');
 }
 
 foreach ($country->comments as $comment) {
@@ -388,7 +388,7 @@ Use `withPivot()` for the pivot tables of `BelongsToMany` and `MorphToMany`/`Mor
 ```php
 public function permissions()
 {
-    return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role'])
+    return $this->hasManyDeep(Permission::class, ['role_user', Role::class])
         ->withPivot('role_user', ['expires_at']);
 }
 
@@ -402,8 +402,8 @@ You can specify a custom pivot model as the third argument and a custom accessor
 ```php
 public function permissions()
 {
-    return $this->hasManyDeep('App\Permission', ['role_user', 'App\Role'])
-        ->withPivot('role_user', ['expires_at'], 'App\RoleUser', 'pivot');
+    return $this->hasManyDeep(Permission::class, ['role_user', Role::class])
+        ->withPivot('role_user', ['expires_at'], RoleUser::class, 'pivot');
 }
 
 foreach ($user->permissions as $permission) {
@@ -422,7 +422,7 @@ class Post extends Model
 
     public function commentReplies()
     {
-        return $this->hasManyDeep('App\Comment', ['App\Comment as alias'], [null, 'parent_id']);
+        return $this->hasManyDeep(Comment::class, ['App\Comment as alias'], [null, 'parent_id']);
     }
 }
 ```
@@ -445,7 +445,7 @@ class User extends Model
 
     public function permissions()
     {
-        return $this->hasManyDeep('App\Permission', ['App\RoleUser as alias', 'App\Role']);
+        return $this->hasManyDeep(Permission::class, ['App\RoleUser as alias', Role::class]);
     }
 }
 
@@ -498,7 +498,7 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeep('App\Comment', ['App\User', 'App\Post'])
+        return $this->hasManyDeep(Comment::class, [User::class, Post::class])
             ->withTrashed('users.deleted_at');
     }
 }
