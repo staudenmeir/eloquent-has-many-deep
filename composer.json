@@ -15,7 +15,7 @@
     "require-dev": {
         "illuminate/pagination": "^9.0",
         "phpunit/phpunit": "^9.5",
-        "staudenmeir/eloquent-eager-limit": "dev-master"
+        "staudenmeir/eloquent-eager-limit": "^1.7"
     },
     "autoload": {
         "psr-4": {
