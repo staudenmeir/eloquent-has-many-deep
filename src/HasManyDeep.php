@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
 
@@ -126,17 +127,26 @@ class HasManyDeep extends HasManyThrough
             $localKey = $localKey[1];
         }
 
-        $first = $throughParent->qualifyColumn($localKey);
+        if (is_callable($foreignKey)) {
+            $query->join(
+                $throughParent->getTable(),
+                function (JoinClause $join) use ($foreignKey, $throughParent, $predecessor, $prefix) {
+                    $foreignKey($join, $throughParent, $predecessor, $prefix);
+                }
+            );
+        } else {
+            $first = $throughParent->qualifyColumn($localKey);
 
-        if (is_array($foreignKey)) {
-            $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
+            if (is_array($foreignKey)) {
+                $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
 
-            $foreignKey = $foreignKey[1];
+                $foreignKey = $foreignKey[1];
+            }
+
+            $second = $predecessor->qualifyColumn($prefix.$foreignKey);
+
+            $query->join($throughParent->getTable(), $first, '=', $second);
         }
-
-        $second = $predecessor->qualifyColumn($prefix.$foreignKey);
-
-        $query->join($throughParent->getTable(), $first, '=', $second);
 
         if ($this->throughParentInstanceSoftDeletes($throughParent)) {
             $column= $throughParent->getQualifiedDeletedAtColumn();

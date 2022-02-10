@@ -2,6 +2,7 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -10,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Query\JoinClause;
+use Kalnoy\Nestedset\DescendantsRelation;
+use Kalnoy\Nestedset\NestedSet;
 use RuntimeException;
 
 trait ConcatenatesRelationships
@@ -211,6 +216,37 @@ trait ConcatenatesRelationships
     }
 
     /**
+     * Prepare a has-one-deep or has-many-deep relationship from an existing kalnoy/nestedset's descendants relationship.
+     *
+     * @param \Kalnoy\Nestedset\DescendantsRelation $relation
+     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param array $foreignKeys
+     * @param array $localKeys
+     * @return array
+     */
+    protected function hasOneOrManyDeepFromDescendantsRelation(DescendantsRelation $relation, array $through, array $foreignKeys, array $localKeys)
+    {
+        $foreignKeys[] = function (JoinClause $join, Model $throughParent, Model $predecessor, $prefix) use ($relation) {
+            $min = new Expression(
+                $throughParent->newQuery()->getGrammar()->wrap(
+                    $throughParent->qualifyColumn($prefix . NestedSet::LFT)
+                ) . ' + 1'
+            );
+
+            $max = $throughParent->qualifyColumn($prefix . NestedSet::RGT);
+
+            $join->whereBetweenColumns(
+                $predecessor->qualifyColumn(NestedSet::LFT),
+                [$min, $max]
+            );
+        };
+
+        $localKeys[] = $relation->getModel()->getKeyName();
+
+        return [$through, $foreignKeys, $localKeys];
+    }
+
+    /**
      * Get the relationship method name.
      *
      * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
@@ -225,6 +261,7 @@ trait ConcatenatesRelationships
             MorphOneOrMany::class,
             HasOneOrMany::class,
             MorphToMany::class,
+            DescendantsRelation::class,
             BelongsToMany::class,
         ];
 
