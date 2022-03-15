@@ -8,6 +8,11 @@ class User extends Model
 {
     use SoftDeletes;
 
+    public function comments()
+    {
+        return $this->hasManyThrough(Comment::class, Post::class);
+    }
+
     public function likes()
     {
         return $this->hasManyDeep(Like::class, [Post::class], [null, ['likeable_type', 'likeable_id']]);

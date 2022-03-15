@@ -248,6 +248,10 @@ trait ConcatenatesRelationships
     {
         $through = get_class($relation->getRelated());
 
+        if ((new $through())->getTable() !== $relation->getRelated()->getTable()) {
+            $through .= ' from ' . $relation->getRelated()->getTable();
+        }
+
         if (get_class($relation->getRelated()) === get_class($successor->getParent())) {
             $table = $successor->getParent()->getTable();
 

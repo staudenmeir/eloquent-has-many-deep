@@ -24,7 +24,7 @@ class Country extends Model
         return $this->hasManyDeepFromRelations([$this->posts(), (new Post())->comments()]);
     }
 
-    public function commentsFromRelationsWithCustomTable()
+    public function commentsFromRelationsWithCustomRelatedTable()
     {
         $comment = (new Comment())->setTable('my_comments');
 
@@ -36,6 +36,20 @@ class Country extends Model
         );
 
         return $this->hasManyDeepFromRelations([$this->posts(), $comments]);
+    }
+
+    public function commentsFromRelationsWithCustomThroughTable()
+    {
+        $user = (new User())->setTable('my_users');
+
+        $users = (new Country())->newHasMany(
+            $user->newQuery(),
+            $this,
+            $user->getTable().'.country_id',
+            'id'
+        );
+
+        return $this->hasManyDeepFromRelations([$users, (new User())->comments()]);
     }
 
     public function commentsWithTrashedUsers()

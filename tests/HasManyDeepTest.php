@@ -347,11 +347,20 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([35], $comments->pluck('id')->all());
     }
 
-    public function testFromRelationsWithCustomTable()
+    public function testFromRelationsWithCustomRelatedTable()
     {
         DB::schema()->rename('comments', 'my_comments');
 
-        $comments = Country::first()->commentsFromRelationsWithCustomTable;
+        $comments = Country::first()->commentsFromRelationsWithCustomRelatedTable;
+
+        $this->assertEquals([31, 32], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithCustomThroughTable()
+    {
+        DB::schema()->rename('users', 'my_users');
+
+        $comments = Country::first()->commentsFromRelationsWithCustomThroughTable;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }

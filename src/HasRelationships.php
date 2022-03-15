@@ -99,7 +99,7 @@ trait HasRelationships
     protected function hasOneOrManyDeepThroughParents(array $through)
     {
         return array_map(function ($class) {
-            $segments = preg_split('/\s+as\s+/i', $class);
+            $segments = preg_split('/\s+(as|from)\s+/i', $class, -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $instance = Str::contains($segments[0], '\\')
                 ? (method_exists($this, 'newRelatedThroughInstance')
@@ -108,7 +108,11 @@ trait HasRelationships
                 : (new Pivot())->setTable($segments[0]);
 
             if (isset($segments[1])) {
-                $instance->setTable($instance->getTable().' as '.$segments[1]);
+                $instance->setTable(
+                    $segments[1] === 'as'
+                        ? $instance->getTable().' as '.$segments[2]
+                        : $segments[2]
+                );
             }
 
             return $instance;
