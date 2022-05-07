@@ -42,6 +42,7 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 - [Existing Relationships](#existing-relationships)
 - [HasOneDeep](#hasonedeep)
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
+- [Intermediate and Pivot Constraints](#intermediate-and-pivot-constraints)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
 
@@ -422,6 +423,24 @@ public function permissions()
 foreach ($user->permissions as $permission) {
     // $permission->pivot->expires_at
 }
+```
+
+### Intermediate and Pivot Constraints
+
+You can apply constraints on intermediate and pivot tables:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
+    }
+}
+
+$commentsFromActiveUsers = $country->comments()->where('users.active', true)->get();
 ```
 
 ### Table Aliases
