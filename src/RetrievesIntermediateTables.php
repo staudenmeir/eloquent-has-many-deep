@@ -13,7 +13,7 @@ trait RetrievesIntermediateTables
      *
      * @var array
      */
-    protected $intermediateTables = [];
+    protected array $intermediateTables = [];
 
     /**
      * Set the columns on an intermediate table to retrieve.
@@ -23,7 +23,7 @@ trait RetrievesIntermediateTables
      * @param string|null $accessor
      * @return $this
      */
-    public function withIntermediate($class, array $columns = ['*'], $accessor = null)
+    public function withIntermediate(string $class, array $columns = ['*'], string|null $accessor = null): self
     {
         /** @var \Illuminate\Database\Eloquent\Model $instance */
         $instance = new $class();
@@ -42,7 +42,7 @@ trait RetrievesIntermediateTables
      * @param string|null $accessor
      * @return $this
      */
-    public function withPivot($table, array $columns = ['*'], $class = Pivot::class, $accessor = null)
+    public function withPivot(string $table, array $columns = ['*'], string $class = Pivot::class, string|null $accessor = null): self
     {
         if ($columns === ['*']) {
             $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);
@@ -64,7 +64,7 @@ trait RetrievesIntermediateTables
      *
      * @return array
      */
-    protected function intermediateColumns()
+    protected function intermediateColumns(): array
     {
         $columns = [];
 
@@ -85,7 +85,7 @@ trait RetrievesIntermediateTables
      * @param array $models
      * @return void
      */
-    protected function hydrateIntermediateRelations(array $models)
+    protected function hydrateIntermediateRelations(array $models): void
     {
         $intermediateTables = $this->intermediateTables;
 
@@ -116,7 +116,7 @@ trait RetrievesIntermediateTables
      * @param string $prefix
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function intermediateRelation(Model $model, array $intermediateTable, $prefix)
+    protected function intermediateRelation(Model $model, array $intermediateTable, string $prefix): \Illuminate\Database\Eloquent\Model
     {
         $attributes = $this->intermediateAttributes($model, $prefix);
 
@@ -143,12 +143,12 @@ trait RetrievesIntermediateTables
      * @param string $prefix
      * @return array
      */
-    protected function intermediateAttributes(Model $model, $prefix)
+    protected function intermediateAttributes(Model $model, string $prefix): array
     {
         $attributes = [];
 
         foreach ($model->getAttributes() as $key => $value) {
-            if (strpos($key, $prefix) === 0) {
+            if (str_starts_with($key, $prefix)) {
                 $attributes[substr($key, strlen($prefix))] = $value;
 
                 unset($model->$key);
@@ -164,7 +164,7 @@ trait RetrievesIntermediateTables
      * @param string $accessor
      * @return string
      */
-    protected function prefix($accessor)
+    protected function prefix(string $accessor): string
     {
         return '__'.$accessor.'__';
     }

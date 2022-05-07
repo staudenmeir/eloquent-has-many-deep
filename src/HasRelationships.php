@@ -20,7 +20,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
      */
-    public function hasManyDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
+    public function hasManyDeep(string $related, array $through, array $foreignKeys = [], array $localKeys = []): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->newHasManyDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
     }
@@ -31,7 +31,7 @@ trait HasRelationships
      * @param \Illuminate\Database\Eloquent\Relations\Relation ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
      */
-    public function hasManyDeepFromRelations(...$relations)
+    public function hasManyDeepFromRelations(...$relations): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(...$this->hasOneOrManyDeepFromRelations($relations));
     }
@@ -45,7 +45,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
      */
-    public function hasOneDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
+    public function hasOneDeep(string $related, array $through, array $foreignKeys = [], array $localKeys = []): \Staudenmeir\EloquentHasManyDeep\HasOneDeep
     {
         return $this->newHasOneDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
     }
@@ -56,7 +56,7 @@ trait HasRelationships
      * @param \Illuminate\Database\Eloquent\Relations\Relation ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
      */
-    public function hasOneDeepFromRelations(...$relations)
+    public function hasOneDeepFromRelations(...$relations): \Staudenmeir\EloquentHasManyDeep\HasOneDeep
     {
         return $this->hasOneDeep(...$this->hasOneOrManyDeepFromRelations($relations));
     }
@@ -70,7 +70,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeep($related, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeep(string $related, array $through, array $foreignKeys, array $localKeys): array
     {
         $relatedSegments = preg_split('/\s+from\s+/i', $related);
 
@@ -96,7 +96,7 @@ trait HasRelationships
      * @param array $through
      * @return array
      */
-    protected function hasOneOrManyDeepThroughParents(array $through)
+    protected function hasOneOrManyDeepThroughParents(array $through): array
     {
         return array_map(function ($class) {
             $segments = preg_split('/\s+(as|from)\s+/i', $class, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -127,7 +127,7 @@ trait HasRelationships
      * @param array $foreignKeys
      * @return array
      */
-    protected function hasOneOrManyDeepForeignKeys(Model $related, array $throughParents, array $foreignKeys)
+    protected function hasOneOrManyDeepForeignKeys(Model $related, array $throughParents, array $foreignKeys): array
     {
         foreach (array_merge([$this], $throughParents) as $i => $instance) {
             /** @var \Illuminate\Database\Eloquent\Model $instance */
@@ -151,7 +151,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepLocalKeys(Model $related, array $throughParents, array $localKeys)
+    protected function hasOneOrManyDeepLocalKeys(Model $related, array $throughParents, array $localKeys): array
     {
         foreach (array_merge([$this], $throughParents) as $i => $instance) {
             /** @var \Illuminate\Database\Eloquent\Model $instance */
@@ -177,7 +177,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
      */
-    protected function newHasManyDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
+    protected function newHasManyDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return new HasManyDeep($query, $farParent, $throughParents, $foreignKeys, $localKeys);
     }
@@ -192,7 +192,7 @@ trait HasRelationships
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
      */
-    protected function newHasOneDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
+    protected function newHasOneDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys): \Staudenmeir\EloquentHasManyDeep\HasOneDeep
     {
         return new HasOneDeep($query, $farParent, $throughParents, $foreignKeys, $localKeys);
     }

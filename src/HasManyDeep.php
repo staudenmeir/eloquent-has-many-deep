@@ -25,21 +25,21 @@ class HasManyDeep extends HasManyThrough
      *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
-    protected $throughParents;
+    protected array $throughParents;
 
     /**
      * The foreign keys on the relationship.
      *
      * @var array
      */
-    protected $foreignKeys;
+    protected array $foreignKeys;
 
     /**
      * The local keys on the relationship.
      *
      * @var array
      */
-    protected $localKeys;
+    protected array $localKeys;
 
     /**
      * Create a new has many deep relationship instance.
@@ -67,7 +67,7 @@ class HasManyDeep extends HasManyThrough
      *
      * @return void
      */
-    public function addConstraints()
+    public function addConstraints(): void
     {
         parent::addConstraints();
 
@@ -86,7 +86,7 @@ class HasManyDeep extends HasManyThrough
      * @param \Illuminate\Database\Eloquent\Builder|null $query
      * @return void
      */
-    protected function performJoin(Builder $query = null)
+    protected function performJoin(Builder $query = null): void
     {
         $query = $query ?: $this->query;
 
@@ -118,7 +118,7 @@ class HasManyDeep extends HasManyThrough
      * @param string $prefix
      * @return void
      */
-    protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
+    protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, array|string $foreignKey, array|string $localKey, string $prefix): void
     {
         if (is_array($localKey)) {
             $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
@@ -153,7 +153,7 @@ class HasManyDeep extends HasManyThrough
      * @param \Illuminate\Database\Eloquent\Model $instance
      * @return bool
      */
-    public function throughParentInstanceSoftDeletes(Model $instance)
+    public function throughParentInstanceSoftDeletes(Model $instance): bool
     {
         return in_array(SoftDeletes::class, class_uses_recursive($instance));
     }
@@ -164,7 +164,7 @@ class HasManyDeep extends HasManyThrough
      * @param array $models
      * @return void
      */
-    public function addEagerConstraints(array $models)
+    public function addEagerConstraints(array $models): void
     {
         parent::addEagerConstraints($models);
 
@@ -181,7 +181,7 @@ class HasManyDeep extends HasManyThrough
      * @param array $columns
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function get($columns = ['*'])
+    public function get($columns = ['*']): \Illuminate\Database\Eloquent\Collection
     {
         $models = parent::get($columns);
 
@@ -199,7 +199,7 @@ class HasManyDeep extends HasManyThrough
      * @param int $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $columns = $this->shouldSelect($columns);
 
@@ -221,7 +221,7 @@ class HasManyDeep extends HasManyThrough
      * @param int|null $page
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null): \Illuminate\Contracts\Pagination\Paginator
     {
         $columns = $this->shouldSelect($columns);
 
@@ -243,7 +243,7 @@ class HasManyDeep extends HasManyThrough
      * @param  string|null  $cursor
      * @return \Illuminate\Contracts\Pagination\CursorPaginator
      */
-    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
+    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null): \Illuminate\Contracts\Pagination\CursorPaginator
     {
         $columns = $this->shouldSelect($columns);
 
@@ -262,7 +262,7 @@ class HasManyDeep extends HasManyThrough
      * @param array $columns
      * @return array
      */
-    protected function shouldSelect(array $columns = ['*'])
+    protected function shouldSelect(array $columns = ['*']): array
     {
         return array_merge(parent::shouldSelect($columns), $this->intermediateColumns());
     }
@@ -274,7 +274,7 @@ class HasManyDeep extends HasManyThrough
      * @param callable $callback
      * @return bool
      */
-    public function chunk($count, callable $callback)
+    public function chunk($count, callable $callback): bool
     {
         return $this->prepareQueryBuilder()->chunk($count, function (Collection $results) use ($callback) {
             $this->hydrateIntermediateRelations($results->all());
@@ -291,7 +291,7 @@ class HasManyDeep extends HasManyThrough
      * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
+    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*']): \Illuminate\Database\Eloquent\Builder
     {
         foreach ($this->throughParents as $throughParent) {
             if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
@@ -334,7 +334,7 @@ EOT
      * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*'])
+    public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*']): \Illuminate\Database\Eloquent\Builder
     {
         $hash = $this->getRelationCountHash();
 
@@ -357,7 +357,7 @@ EOT
      * @param array|string ...$columns
      * @return $this
      */
-    public function withTrashed(...$columns)
+    public function withTrashed(...$columns): self
     {
         if (empty($columns)) {
             $this->query->withTrashed();
@@ -381,7 +381,7 @@ EOT
      *
      * @return \Illuminate\Database\Eloquent\Model[]
      */
-    public function getThroughParents()
+    public function getThroughParents(): array
     {
         return $this->throughParents;
     }
@@ -391,7 +391,7 @@ EOT
      *
      * @return array
      */
-    public function getForeignKeys()
+    public function getForeignKeys(): array
     {
         return $this->foreignKeys;
     }
@@ -401,7 +401,7 @@ EOT
      *
      * @return array
      */
-    public function getLocalKeys()
+    public function getLocalKeys(): array
     {
         return $this->localKeys;
     }

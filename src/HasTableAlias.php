@@ -12,7 +12,7 @@ trait HasTableAlias
      * @param string $column
      * @return string
      */
-    public function qualifyColumn($column)
+    public function qualifyColumn($column): string
     {
         if (Str::contains($column, '.')) {
             return $column;
@@ -33,7 +33,7 @@ trait HasTableAlias
      * @param string $alias
      * @return $this
      */
-    public function setAlias($alias)
+    public function setAlias(string $alias): self
     {
         return $this->setTable($this->getTable().' as '.$alias);
     }

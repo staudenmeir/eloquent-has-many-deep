@@ -2,9 +2,12 @@
 
 namespace Tests\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+
 class Tag extends Model
 {
-    public function comments()
+    public function comments(): HasManyDeep
     {
         return $this->hasManyDeep(
             Comment::class,
@@ -14,12 +17,12 @@ class Tag extends Model
         );
     }
 
-    public function commentsFromRelations()
+    public function commentsFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
-    public function posts()
+    public function posts(): MorphToMany
     {
         return $this->morphedByMany(Post::class, 'taggable');
     }

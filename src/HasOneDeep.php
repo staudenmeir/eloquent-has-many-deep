@@ -15,7 +15,7 @@ class HasOneDeep extends HasManyDeep
      *
      * @return mixed
      */
-    public function getResults()
+    public function getResults(): mixed
     {
         return $this->first() ?: $this->getDefaultFor(end($this->throughParents));
     }
@@ -27,7 +27,7 @@ class HasOneDeep extends HasManyDeep
      * @param string $relation
      * @return array
      */
-    public function initRelation(array $models, $relation)
+    public function initRelation(array $models, $relation): array
     {
         foreach ($models as $model) {
             $model->setRelation($relation, $this->getDefaultFor($model));
@@ -44,7 +44,7 @@ class HasOneDeep extends HasManyDeep
      * @param string $relation
      * @return array
      */
-    public function match(array $models, Collection $results, $relation)
+    public function match(array $models, Collection $results, $relation): array
     {
         $dictionary = $this->buildDictionary($results);
 
@@ -66,7 +66,7 @@ class HasOneDeep extends HasManyDeep
      * @param \Illuminate\Database\Eloquent\Model $parent
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function newRelatedInstanceFor(Model $parent)
+    public function newRelatedInstanceFor(Model $parent): \Illuminate\Database\Eloquent\Model
     {
         return $this->related->newInstance();
     }

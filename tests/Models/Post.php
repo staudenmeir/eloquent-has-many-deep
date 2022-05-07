@@ -2,14 +2,19 @@
 
 namespace Tests\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+
 class Post extends Model
 {
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function commentReplies()
+    public function commentReplies(): HasManyDeep
     {
         return $this->hasManyDeep(
             Comment::class,
@@ -18,7 +23,7 @@ class Post extends Model
         );
     }
 
-    public function commentRepliesFromRelations()
+    public function commentRepliesFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
             $this->comments(),
@@ -26,12 +31,12 @@ class Post extends Model
         );
     }
 
-    public function likes()
+    public function likes(): MorphMany
     {
         return $this->morphMany(Like::class, 'likeable');
     }
 
-    public function posts()
+    public function posts(): HasManyDeep
     {
         return $this->hasManyDeep(
             self::class,
@@ -41,12 +46,12 @@ class Post extends Model
         );
     }
 
-    public function tags()
+    public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    public function users()
+    public function users(): HasManyDeep
     {
         return $this->hasManyDeep(
             User::class,
@@ -56,7 +61,7 @@ class Post extends Model
         );
     }
 
-    public function usersFromRelations()
+    public function usersFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->likes(), (new Like())->user());
     }

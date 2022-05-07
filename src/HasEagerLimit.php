@@ -13,7 +13,7 @@ trait HasEagerLimit
      * @param int $value
      * @return $this
      */
-    public function take($value)
+    public function take(int $value): self
     {
         return $this->limit($value);
     }
@@ -24,7 +24,7 @@ trait HasEagerLimit
      * @param int $value
      * @return $this
      */
-    public function limit($value)
+    public function limit(int $value): self
     {
         if ($this->farParent->exists) {
             $this->query->limit($value);

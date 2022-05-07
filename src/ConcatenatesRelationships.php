@@ -20,7 +20,7 @@ trait ConcatenatesRelationships
      * @param \Illuminate\Database\Eloquent\Relations\Relation[] $relations
      * @return array
      */
-    protected function hasOneOrManyDeepFromRelations(array $relations)
+    protected function hasOneOrManyDeepFromRelations(array $relations): array
     {
         if (is_array($relations[0])) {
             $relations = $relations[0];
@@ -59,7 +59,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromBelongsTo(BelongsTo $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromBelongsTo(BelongsTo $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $foreignKeys[] = $relation->getOwnerKeyName();
 
@@ -77,7 +77,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromBelongsToMany(BelongsToMany $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromBelongsToMany(BelongsToMany $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $through[] = $relation->getTable();
 
@@ -99,7 +99,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromHasOneOrMany(HasOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromHasOneOrMany(HasOneOrMany $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $foreignKeys[] = $relation->getQualifiedForeignKeyName();
 
@@ -117,7 +117,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromHasManyThrough(HasManyThrough $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromHasManyThrough(HasManyThrough $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $through[] = get_class($relation->getParent());
 
@@ -139,7 +139,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromHasManyDeep(HasManyDeep $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromHasManyDeep(HasManyDeep $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         foreach ($relation->getThroughParents() as $throughParent) {
             $segments = explode(' as ', $throughParent->getTable());
@@ -171,7 +171,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromMorphOneOrMany(MorphOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromMorphOneOrMany(MorphOneOrMany $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getQualifiedForeignKeyName()];
 
@@ -189,7 +189,7 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromMorphToMany(MorphToMany $relation, array $through, array $foreignKeys, array $localKeys)
+    protected function hasOneOrManyDeepFromMorphToMany(MorphToMany $relation, array $through, array $foreignKeys, array $localKeys): array
     {
         $through[] = $relation->getTable();
 
@@ -216,7 +216,7 @@ trait ConcatenatesRelationships
      * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
      * @return string
      */
-    protected function hasOneOrManyDeepRelationMethod(Relation $relation)
+    protected function hasOneOrManyDeepRelationMethod(Relation $relation): string
     {
         $classes = [
             BelongsTo::class,
@@ -244,7 +244,7 @@ trait ConcatenatesRelationships
      * @param \Illuminate\Database\Eloquent\Relations\Relation $successor
      * @return string
      */
-    protected function hasOneOrManyThroughParent(Relation $relation, Relation $successor)
+    protected function hasOneOrManyThroughParent(Relation $relation, Relation $successor): string
     {
         $through = get_class($relation->getRelated());
 

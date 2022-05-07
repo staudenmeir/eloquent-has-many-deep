@@ -7,14 +7,14 @@ use Tests\Models\Country;
 
 class HasOneDeepTest extends TestCase
 {
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $comment = Country::first()->comment;
 
         $this->assertEquals(31, $comment->id);
     }
 
-    public function testLazyLoadingWithDefault()
+    public function testLazyLoadingWithDefault(): void
     {
         $comment = Country::find(3)->comment;
 
@@ -22,7 +22,7 @@ class HasOneDeepTest extends TestCase
         $this->assertFalse($comment->exists);
     }
 
-    public function testEagerLoading()
+    public function testEagerLoading(): void
     {
         $countries = Country::with('comment')->get();
 
@@ -31,7 +31,7 @@ class HasOneDeepTest extends TestCase
         $this->assertFalse($countries[2]->comment->exists);
     }
 
-    public function testLazyEagerLoading()
+    public function testLazyEagerLoading(): void
     {
         $countries = Country::all()->load('comment');
 
@@ -40,7 +40,7 @@ class HasOneDeepTest extends TestCase
         $this->assertFalse($countries[2]->comment->exists);
     }
 
-    public function testFromRelations()
+    public function testFromRelations(): void
     {
         $comment = Country::first()->commentFromRelations;
 

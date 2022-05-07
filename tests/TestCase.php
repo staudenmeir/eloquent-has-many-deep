@@ -41,7 +41,7 @@ abstract class TestCase extends Base
      *
      * @return void
      */
-    protected function migrate()
+    protected function migrate(): void
     {
         DB::schema()->dropAllTables();
 
@@ -112,7 +112,7 @@ abstract class TestCase extends Base
      *
      * @return void
      */
-    protected function seed()
+    protected function seed(): void
     {
         Model::unguard();
 
