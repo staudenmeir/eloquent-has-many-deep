@@ -102,7 +102,7 @@ trait HasRelationships
             $segments = preg_split('/\s+(as|from)\s+/i', $class, -1, PREG_SPLIT_DELIM_CAPTURE);
 
             $instance = Str::contains($segments[0], '\\')
-                ? (method_exists($this, 'newRelatedThroughInstance')
+                ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
                     ? $this->newRelatedThroughInstance($segments[0])
                     : new $segments[0]())
                 : (new Pivot())->setTable($segments[0]);
