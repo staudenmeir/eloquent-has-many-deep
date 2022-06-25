@@ -378,6 +378,16 @@ EOT
     }
 
     /**
+     * Get the far parent model instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getFarParent(): Model
+    {
+        return $this->farParent;
+    }
+
+    /**
      * Get the "through" parent model instances.
      *
      * @return \Illuminate\Database\Eloquent\Model[]

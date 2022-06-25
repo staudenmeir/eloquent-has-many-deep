@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Capsule\Manager as DB;
 use Tests\Models\Comment;
 use Tests\Models\Country;
 
@@ -45,5 +46,28 @@ class HasOneDeepTest extends TestCase
         $comment = Country::first()->commentFromRelations;
 
         $this->assertEquals(31, $comment->id);
+    }
+
+    public function testReverse()
+    {
+        $country = Comment::find(31)->country;
+
+        $this->assertEquals(1, $country->id);
+    }
+
+    public function testReverseWithAlias()
+    {
+        $post = Comment::find(36)->rootPost;
+
+        $this->assertEquals(24, $post->id);
+    }
+
+    public function testReverseWithCustomThroughTable()
+    {
+        DB::schema()->rename('users', 'my_users');
+
+        $country = Comment::find(31)->countryWithCustomThroughTable;
+
+        $this->assertEquals(1, $country->id);
     }
 }

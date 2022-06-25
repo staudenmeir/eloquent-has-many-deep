@@ -45,6 +45,7 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 - [Intermediate and Pivot Constraints](#intermediate-and-pivot-constraints)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
+- [Reversing Relationships](#reversing-relationships)
 
 The package offers two ways of defining deep relationships:  
 You can specify the intermediate models, foreign and local keys manually or
@@ -538,6 +539,35 @@ class Country extends Model
 class User extends Model
 {
     use SoftDeletes;
+}
+```
+
+### Reversing Relationships
+
+You can define `HasManyDeep`/`HasOneDeep` by reversing existing deep relationships using `hasManyDeepFromReverse()`
+/`hasOneDeepFromReverse()`:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
+    }
+}
+
+class Comment extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function country()
+    {
+        return $this->hasOneDeepFromReverse(
+            (new Country())->comments()
+        );
+    }
 }
 ```
 

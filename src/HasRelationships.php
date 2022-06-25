@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Staudenmeir\EloquentHasManyDeep\Traits\ConcatenatesRelationships;
+use Staudenmeir\EloquentHasManyDeep\Traits\ReversesRelationships;
 
 trait HasRelationships
 {
     use ConcatenatesRelationships;
+    use ReversesRelationships;
 
     /**
      * Define a has-many-deep relationship.

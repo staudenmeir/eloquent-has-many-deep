@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\Permission;
 use Tests\Models\Post;
 use Tests\Models\RoleUser;
 use Tests\Models\Tag;
@@ -68,7 +69,7 @@ class HasManyDeepTest extends TestCase
     {
         $comments = Post::find(24)->commentReplies;
 
-        $this->assertEquals([35], $comments->pluck('id')->all());
+        $this->assertEquals([35, 36], $comments->pluck('id')->all());
     }
 
     public function testLazyLoadingWithLimit()
@@ -83,7 +84,7 @@ class HasManyDeepTest extends TestCase
         $countries = Country::with('comments')->get();
 
         $this->assertEquals([31, 32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([34, 35], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([34, 35, 36], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testEagerLoadingWithLeadingMorphMany()
@@ -114,7 +115,7 @@ class HasManyDeepTest extends TestCase
         }])->get();
 
         $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([35], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([36], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testLazyEagerLoading()
@@ -131,7 +132,7 @@ class HasManyDeepTest extends TestCase
         }]);
 
         $this->assertEquals([32], $countries[0]->comments->pluck('id')->all());
-        $this->assertEquals([35], $countries[1]->comments->pluck('id')->all());
+        $this->assertEquals([36], $countries[1]->comments->pluck('id')->all());
     }
 
     public function testExistenceQuery()
@@ -344,7 +345,7 @@ class HasManyDeepTest extends TestCase
     {
         $comments = Post::find(24)->commentRepliesFromRelations;
 
-        $this->assertEquals([35], $comments->pluck('id')->all());
+        $this->assertEquals([35, 36], $comments->pluck('id')->all());
     }
 
     public function testFromRelationsWithCustomRelatedTable()
@@ -363,5 +364,19 @@ class HasManyDeepTest extends TestCase
         $comments = Country::first()->commentsFromRelationsWithCustomThroughTable;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
+    }
+
+    public function testReverse()
+    {
+        $tags = Comment::find(31)->tags;
+
+        $this->assertEquals([91], $tags->pluck('id')->all());
+    }
+
+    public function testReverseWithPivotAlias()
+    {
+        $countries = Permission::find(71)->countries;
+
+        $this->assertEquals([1], $countries->pluck('id')->all());
     }
 }

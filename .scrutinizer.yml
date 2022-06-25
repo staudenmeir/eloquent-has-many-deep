@@ -1,5 +1,5 @@
 build:
   environment:
-    php: 8.0.2
+    php: 8.1
 tools:
   external_code_coverage: true

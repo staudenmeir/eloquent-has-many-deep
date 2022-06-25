@@ -135,6 +135,7 @@ abstract class TestCase extends Base
         Comment::create(['id' => 33, 'post_id' => 23, 'parent_id' => null]);
         Comment::create(['id' => 34, 'post_id' => 24, 'parent_id' => null]);
         Comment::create(['id' => 35, 'post_id' => 24, 'parent_id' => 34]);
+        Comment::create(['id' => 36, 'post_id' => 24, 'parent_id' => 35]);
 
         Club::create(['id' => 41, 'user_id' => 11]);
         Club::create(['id' => 42, 'user_id' => 12]);

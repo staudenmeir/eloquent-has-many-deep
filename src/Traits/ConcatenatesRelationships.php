@@ -102,7 +102,7 @@ trait ConcatenatesRelationships
      */
     protected function hasOneOrManyDeepFromHasOneOrMany(HasOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
     {
-        $foreignKeys[] = $relation->getQualifiedForeignKeyName();
+        $foreignKeys[] = $relation->getForeignKeyName();
 
         $localKeys[] = $relation->getLocalKeyName();
 
@@ -174,7 +174,7 @@ trait ConcatenatesRelationships
      */
     protected function hasOneOrManyDeepFromMorphOneOrMany(MorphOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
     {
-        $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getQualifiedForeignKeyName()];
+        $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getForeignKeyName()];
 
         $localKeys[] = $relation->getLocalKeyName();
 
