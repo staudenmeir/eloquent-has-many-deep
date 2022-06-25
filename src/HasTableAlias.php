@@ -2,8 +2,6 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
-use Illuminate\Support\Str;
-
 trait HasTableAlias
 {
     /**
@@ -14,13 +12,13 @@ trait HasTableAlias
      */
     public function qualifyColumn($column)
     {
-        if (Str::contains($column, '.')) {
+        if (str_contains($column, '.')) {
             return $column;
         }
 
         $table = $this->getTable();
 
-        if (Str::contains($table, ' as ')) {
+        if (str_contains($table, ' as ')) {
             $table = explode(' as ', $table)[1];
         }
 

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
+use Staudenmeir\EloquentHasManyDeep\Traits\RetrievesIntermediateTables;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model

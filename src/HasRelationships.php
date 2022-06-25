@@ -5,7 +5,7 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Str;
+use Staudenmeir\EloquentHasManyDeep\Traits\ConcatenatesRelationships;
 
 trait HasRelationships
 {
@@ -101,7 +101,7 @@ trait HasRelationships
         return array_map(function ($class) {
             $segments = preg_split('/\s+(as|from)\s+/i', $class, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-            $instance = Str::contains($segments[0], '\\')
+            $instance = str_contains($segments[0], '\\')
                 ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
                     ? $this->newRelatedThroughInstance($segments[0])
                     : new $segments[0]())
