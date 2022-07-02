@@ -14,6 +14,14 @@ class Country extends Model
         return $this->hasOneDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
+    public function commentFromRelationsWithConstraints()
+    {
+        return $this->hasOneDeepFromRelationsWithConstraints(
+            [$this, 'postsWithConstraints'],
+            [new Post(), 'comments']
+        )->orderByDesc('comments.id');
+    }
+
     public function comments()
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
@@ -22,6 +30,39 @@ class Country extends Model
     public function commentsFromRelations()
     {
         return $this->hasManyDeepFromRelations([$this->posts(), (new Post())->comments()]);
+    }
+
+    public function commentsFromRelationsWithConstraints()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints(
+            [[$this, 'postsWithConstraints'], [new Post(), 'comments']]
+        );
+    }
+
+    public function commentsFromRelationsWithTrashedFinalRelatedModel()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints(
+            [[$this, 'posts'], [new Post(), 'commentsWithTrashed']]
+        );
+    }
+
+    public function commentsFromRelationsWithTrashedIntermediateDeepModel()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'commentsWithTrashedUsers']);
+    }
+
+    public function commentsFromRelationsWithTrashedIntermediateRelatedModel()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints(
+            [[$this, 'usersWithTrashed'], [new User(), 'comments']]
+        );
+    }
+
+    public function commentsFromRelationsWithTrashedParents()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints(
+            [[$this, 'postsWithTrashedParents'], [new Post(), 'comments']]
+        );
     }
 
     public function commentsFromRelationsWithCustomRelatedTable()
@@ -82,8 +123,23 @@ class Country extends Model
         return $this->hasManyThrough(Post::class, User::class);
     }
 
+    public function postsWithConstraints()
+    {
+        return $this->posts()->where('posts.published', true);
+    }
+
+    public function postsWithTrashedParents()
+    {
+        return $this->posts()->withTrashedParents();
+    }
+
     public function roles()
     {
         return $this->hasManyDeep(Role::class, [User::class, 'role_user']);
+    }
+
+    public function usersWithTrashed()
+    {
+        return $this->hasMany(User::class)->withTrashed();
     }
 }

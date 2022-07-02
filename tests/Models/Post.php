@@ -26,6 +26,11 @@ class Post extends Model
         );
     }
 
+    public function commentsWithTrashed()
+    {
+        return $this->hasMany(Comment::class)->withTrashed();
+    }
+
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');

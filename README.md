@@ -304,7 +304,7 @@ class Country extends Model
 
     public function comments()
     {
-        return $this->hasManyDeepFromRelations($this->posts(), (new Post)->comments());
+        return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
     public function posts()
@@ -321,6 +321,41 @@ class Post extends Model
     }
 }
 ```
+
+Use `hasOneDeepFromRelations()` to define a `HasOneDeep` relationship.
+
+#### <a name="existing-relationships-constraints">Constraints</a>
+
+By default, constraints from the concatenated relationships are not transferred to the new deep relationship.
+Use `hasManyDeepFromRelationsWithConstraints()` to apply these constraints and pass the relationships as callables:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'posts'], [new Post(), 'comments']);
+    }
+
+    public function posts()
+    {
+        return $this->hasManyThrough(Post::class, User::class)->where('posts.published', true);
+    }
+}
+
+class Post extends Model
+{
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->withTrashed();
+    }
+}
+```
+
+Make sure to qualify the constraints' column names if they appear in multiple tables:  
+`->where('posts.published', true)` instead of `->where('published', true)`
 
 ### HasOneDeep
 
@@ -499,7 +534,7 @@ class Post extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->comments(),
-            (new Comment)->setAlias('alias')->replies()
+            (new Comment())->setAlias('alias')->replies()
         );
     }
 

@@ -10,21 +10,49 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use RuntimeException;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 
 trait ConcatenatesRelationships
 {
     /**
+     * Define a has-many-deep relationship from existing relationships.
+     *
+     * @param \Illuminate\Database\Eloquent\Relations\Relation|callable ...$relations
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
+     */
+    public function hasManyDeepFromRelations(...$relations)
+    {
+        return $this->hasManyDeep(...$this->hasOneOrManyDeepFromRelations($relations));
+    }
+
+    /**
+     * Define a has-one-deep relationship from existing relationships.
+     *
+     * @param \Illuminate\Database\Eloquent\Relations\Relation|callable ...$relations
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    public function hasOneDeepFromRelations(...$relations)
+    {
+        return $this->hasOneDeep(...$this->hasOneOrManyDeepFromRelations($relations));
+    }
+
+    /**
      * Prepare a has-one-deep or has-many-deep relationship from existing relationships.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation[] $relations
+     * @param \Illuminate\Database\Eloquent\Relations\Relation[]|callable[] $relations
      * @return array
      */
     protected function hasOneOrManyDeepFromRelations(array $relations)
     {
-        if (is_array($relations[0])) {
-            $relations = $relations[0];
+        $relations = $this->normalizeVariadicRelations($relations);
+
+        foreach ($relations as $i => $relation) {
+            if (is_callable($relation)) {
+                $relations[$i] = $relation();
+            }
         }
 
         $related = null;
@@ -264,5 +292,113 @@ trait ConcatenatesRelationships
         }
 
         return $through;
+    }
+
+    /**
+     * Define a has-many-deep relationship with constraints from existing relationships.
+     *
+     * @param callable ...$relations
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
+     */
+    public function hasManyDeepFromRelationsWithConstraints(...$relations): HasManyDeep
+    {
+        $hasManyDeep = $this->hasManyDeepFromRelations(...$relations);
+
+        return $this->addConstraintsToHasOneOrManyDeepRelationship($hasManyDeep, $relations);
+    }
+
+    /**
+     * Define a has-one-deep relationship with constraints from existing relationships.
+     *
+     * @param callable ...$relations
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    public function hasOneDeepFromRelationsWithConstraints(...$relations): HasOneDeep
+    {
+        $hasOneDeep = $this->hasOneDeepFromRelations(...$relations);
+
+        return $this->addConstraintsToHasOneOrManyDeepRelationship($hasOneDeep, $relations);
+    }
+
+    /**
+     * Add the constraints from existing relationships to a has-one-deep or has-many-deep relationship.
+     *
+     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep $deepRelation
+     * @param callable[] $relations
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep|\Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    protected function addConstraintsToHasOneOrManyDeepRelationship(
+        HasManyDeep $deepRelation,
+        array $relations
+    ): HasManyDeep|HasOneDeep {
+        $relations = $this->normalizeVariadicRelations($relations);
+
+        foreach ($relations as $i => $relation) {
+            $relationWithoutConstraints = Relation::noConstraints(function () use ($relation) {
+                return $relation();
+            });
+
+            $deepRelation->getQuery()->mergeWheres(
+                $relationWithoutConstraints->getQuery()->getQuery()->wheres,
+                $relationWithoutConstraints->getQuery()->getQuery()->getRawBindings()['where'] ?? []
+            );
+
+            $isLast = $i === count($relations) - 1;
+
+            $this->addRemovedScopesToHasOneOrManyDeepRelationship($deepRelation, $relationWithoutConstraints, $isLast);
+        }
+
+        return $deepRelation;
+    }
+
+    /**
+     * Add the removed scopes from an existing relationship to a has-one-deep or has-many-deep relationship.
+     *
+     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep $deepRelation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
+     * @param bool $isLastRelation
+     * @return void
+     */
+    protected function addRemovedScopesToHasOneOrManyDeepRelationship(
+        HasManyDeep $deepRelation,
+        Relation $relation,
+        bool $isLastRelation
+    ): void {
+        $removedScopes = $relation->getQuery()->removedScopes();
+
+        foreach ($removedScopes as $scope) {
+            if ($scope === SoftDeletingScope::class) {
+                if ($isLastRelation) {
+                    $deepRelation->withTrashed();
+                } else {
+                    $deletedAtColumn = $relation->getRelated()->getQualifiedDeletedAtColumn();
+
+                    $deepRelation->withTrashed($deletedAtColumn);
+                }
+            }
+
+            if ($scope === 'SoftDeletableHasManyThrough') {
+                $deletedAtColumn = $relation->getParent()->getQualifiedDeletedAtColumn();
+
+                $deepRelation->withTrashed($deletedAtColumn);
+            }
+
+            if (str_starts_with($scope, HasManyDeep::class . ':')) {
+                $deletedAtColumn = explode(':', $scope)[1];
+
+                $deepRelation->withTrashed($deletedAtColumn);
+            }
+        }
+    }
+
+    /**
+     * Normalize the relations from a variadic parameter.
+     *
+     * @param array $relations
+     * @return array
+     */
+    protected function normalizeVariadicRelations(array $relations): array
+    {
+        return is_array($relations[0]) && !is_callable($relations[0]) ? $relations[0] : $relations;
     }
 }

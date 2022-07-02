@@ -2,12 +2,14 @@
 
 namespace Tests\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentEagerLimit\HasEagerLimit;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 class Comment extends Model
 {
     use HasEagerLimit;
+    use SoftDeletes;
     use HasTableAlias;
 
     public function country()

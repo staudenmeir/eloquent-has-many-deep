@@ -59,12 +59,14 @@ abstract class TestCase extends Base
         DB::schema()->create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
+            $table->boolean('published');
         });
 
         DB::schema()->create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('post_id');
             $table->unsignedInteger('parent_id')->nullable();
+            $table->softDeletes();
         });
 
         DB::schema()->create('clubs', function (Blueprint $table) {
@@ -125,17 +127,18 @@ abstract class TestCase extends Base
         User::create(['id' => 13, 'country_id' => 1, 'team_id' => 52, 'deleted_at' => Carbon::yesterday()]);
         User::create(['id' => 14, 'country_id' => 2, 'team_id' => 53, 'deleted_at' => null]);
 
-        Post::create(['id' => 21, 'user_id' => 11]);
-        Post::create(['id' => 22, 'user_id' => 12]);
-        Post::create(['id' => 23, 'user_id' => 13]);
-        Post::create(['id' => 24, 'user_id' => 14]);
+        Post::create(['id' => 21, 'user_id' => 11, 'published' => true]);
+        Post::create(['id' => 22, 'user_id' => 12, 'published' => false]);
+        Post::create(['id' => 23, 'user_id' => 13, 'published' => true]);
+        Post::create(['id' => 24, 'user_id' => 14, 'published' => true]);
 
-        Comment::create(['id' => 31, 'post_id' => 21, 'parent_id' => null]);
-        Comment::create(['id' => 32, 'post_id' => 22, 'parent_id' => null]);
-        Comment::create(['id' => 33, 'post_id' => 23, 'parent_id' => null]);
-        Comment::create(['id' => 34, 'post_id' => 24, 'parent_id' => null]);
-        Comment::create(['id' => 35, 'post_id' => 24, 'parent_id' => 34]);
-        Comment::create(['id' => 36, 'post_id' => 24, 'parent_id' => 35]);
+        Comment::create(['id' => 31, 'post_id' => 21, 'parent_id' => null, 'deleted_at' => null]);
+        Comment::create(['id' => 32, 'post_id' => 22, 'parent_id' => null, 'deleted_at' => null]);
+        Comment::create(['id' => 33, 'post_id' => 23, 'parent_id' => null, 'deleted_at' => null]);
+        Comment::create(['id' => 34, 'post_id' => 24, 'parent_id' => null, 'deleted_at' => null]);
+        Comment::create(['id' => 35, 'post_id' => 24, 'parent_id' => 34, 'deleted_at' => null]);
+        Comment::create(['id' => 36, 'post_id' => 24, 'parent_id' => 35, 'deleted_at' => null]);
+        Comment::create(['id' => 37, 'post_id' => 21, 'parent_id' => null, 'deleted_at' => Carbon::yesterday()]);
 
         Club::create(['id' => 41, 'user_id' => 11]);
         Club::create(['id' => 42, 'user_id' => 12]);

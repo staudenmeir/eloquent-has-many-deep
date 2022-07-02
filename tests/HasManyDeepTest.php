@@ -18,7 +18,7 @@ class HasManyDeepTest extends TestCase
 {
     public function testLazyLoading()
     {
-        $comments = Country::first()->comments;
+        $comments = Country::find(1)->comments;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
@@ -32,14 +32,14 @@ class HasManyDeepTest extends TestCase
 
     public function testLazyLoadingWithIntermediateBelongsToMany()
     {
-        $permissions = Country::first()->permissions;
+        $permissions = Country::find(1)->permissions;
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
 
     public function testLazyLoadingWithTrailingBelongsToMany()
     {
-        $roles = Country::first()->roles;
+        $roles = Country::find(1)->roles;
 
         $this->assertEquals([61], $roles->pluck('id')->all());
     }
@@ -74,7 +74,7 @@ class HasManyDeepTest extends TestCase
 
     public function testLazyLoadingWithLimit()
     {
-        $comments = Country::first()->comments()->limit(1)->offset(1)->get();
+        $comments = Country::find(1)->comments()->limit(1)->offset(1)->get();
 
         $this->assertEquals([32], $comments->pluck('id')->all());
     }
@@ -193,7 +193,7 @@ class HasManyDeepTest extends TestCase
 
     public function testPaginate()
     {
-        $comments = Country::first()->comments()
+        $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
             ->paginate();
 
@@ -203,7 +203,7 @@ class HasManyDeepTest extends TestCase
 
     public function testSimplePaginate()
     {
-        $comments = Country::first()->comments()
+        $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
             ->simplePaginate();
 
@@ -217,7 +217,7 @@ class HasManyDeepTest extends TestCase
             $this->markTestSkipped();
         }
 
-        $comments = Country::first()->comments()
+        $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
             ->cursorPaginate();
 
@@ -227,7 +227,7 @@ class HasManyDeepTest extends TestCase
 
     public function testChunk()
     {
-        Country::first()->comments()
+        Country::find(1)->comments()
             ->withIntermediate(Post::class)
             ->chunk(1, function ($results) {
                 $this->assertTrue($results[0]->relationLoaded('post'));
@@ -236,13 +236,13 @@ class HasManyDeepTest extends TestCase
 
     public function testWithIntermediate()
     {
-        $comments = Country::first()->comments()
+        $comments = Country::find(1)->comments()
             ->withIntermediate(User::class, ['id', 'deleted_at'], 'post.user')
             ->withIntermediate(Post::class)
             ->get();
 
         $this->assertInstanceOf(Post::class, $post = $comments[0]->post);
-        $this->assertEquals(['id' => 21, 'user_id' => 11], $post->getAttributes());
+        $this->assertEquals(['id' => 21, 'user_id' => 11, 'published' => true], $post->getAttributes());
         $this->assertEquals(['id' => 11, 'deleted_at' => null], $post->user->getAttributes());
     }
 
@@ -278,7 +278,7 @@ class HasManyDeepTest extends TestCase
 
     public function testWithTrashedIntermediate()
     {
-        $comments = Country::first()->comments()
+        $comments = Country::find(1)->comments()
             ->withTrashed(['users.deleted_at'])
             ->get();
 
@@ -294,7 +294,7 @@ class HasManyDeepTest extends TestCase
 
     public function testFromRelations()
     {
-        $comments = Country::first()->commentsFromRelations;
+        $comments = Country::find(1)->commentsFromRelations;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
@@ -329,14 +329,14 @@ class HasManyDeepTest extends TestCase
 
     public function testFromRelationsWithHasManyDeepWithPivot()
     {
-        $permissions = Country::first()->permissionsFromRelations;
+        $permissions = Country::find(1)->permissionsFromRelations;
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
 
     public function testFromRelationsWithHasManyDeepWithPivotAlias()
     {
-        $permissions = Country::first()->permissionsWithPivotAliasFromRelations;
+        $permissions = Country::find(1)->permissionsWithPivotAliasFromRelations;
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
@@ -352,7 +352,7 @@ class HasManyDeepTest extends TestCase
     {
         DB::schema()->rename('comments', 'my_comments');
 
-        $comments = Country::first()->commentsFromRelationsWithCustomRelatedTable;
+        $comments = Country::find(1)->commentsFromRelationsWithCustomRelatedTable;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
@@ -361,9 +361,44 @@ class HasManyDeepTest extends TestCase
     {
         DB::schema()->rename('users', 'my_users');
 
-        $comments = Country::first()->commentsFromRelationsWithCustomThroughTable;
+        $comments = Country::find(1)->commentsFromRelationsWithCustomThroughTable;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithConstraints()
+    {
+        $comments = Country::find(1)->commentsFromRelationsWithConstraints;
+
+        $this->assertEquals([31], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithTrashedFinalRelatedModel()
+    {
+        $comments = Country::find(1)->commentsFromRelationsWithTrashedFinalRelatedModel;
+
+        $this->assertEquals([31, 32, 37], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithTrashedIntermediateRelatedModel()
+    {
+        $comments = Country::find(1)->commentsFromRelationsWithTrashedIntermediateRelatedModel;
+
+        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithTrashedParents()
+    {
+        $comments = Country::find(1)->commentsFromRelationsWithTrashedParents;
+
+        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
+    }
+
+    public function testFromRelationsWithTrashedIntermediateDeepModel()
+    {
+        $comments = Country::find(1)->commentsFromRelationsWithTrashedIntermediateDeepModel;
+
+        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
     }
 
     public function testReverse()

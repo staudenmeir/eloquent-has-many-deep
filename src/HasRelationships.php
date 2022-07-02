@@ -28,17 +28,6 @@ trait HasRelationships
     }
 
     /**
-     * Define a has-many-deep relationship from existing relationships.
-     *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation ...$relations
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
-     */
-    public function hasManyDeepFromRelations(...$relations)
-    {
-        return $this->hasManyDeep(...$this->hasOneOrManyDeepFromRelations($relations));
-    }
-
-    /**
      * Define a has-one-deep relationship.
      *
      * @param string $related
@@ -50,17 +39,6 @@ trait HasRelationships
     public function hasOneDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
     {
         return $this->newHasOneDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
-    }
-
-    /**
-     * Define a has-one-deep relationship from existing relationships.
-     *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation ...$relations
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
-     */
-    public function hasOneDeepFromRelations(...$relations)
-    {
-        return $this->hasOneDeep(...$this->hasOneOrManyDeepFromRelations($relations));
     }
 
     /**

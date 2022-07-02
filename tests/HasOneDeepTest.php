@@ -10,7 +10,7 @@ class HasOneDeepTest extends TestCase
 {
     public function testLazyLoading()
     {
-        $comment = Country::first()->comment;
+        $comment = Country::find(1)->comment;
 
         $this->assertEquals(31, $comment->id);
     }
@@ -43,7 +43,14 @@ class HasOneDeepTest extends TestCase
 
     public function testFromRelations()
     {
-        $comment = Country::first()->commentFromRelations;
+        $comment = Country::find(1)->commentFromRelations;
+
+        $this->assertEquals(31, $comment->id);
+    }
+
+    public function testFromRelationsWithConstraints()
+    {
+        $comment = Country::find(1)->commentFromRelationsWithConstraints;
 
         $this->assertEquals(31, $comment->id);
     }
