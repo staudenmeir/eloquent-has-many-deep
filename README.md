@@ -327,7 +327,7 @@ Use `hasOneDeepFromRelations()` to define a `HasOneDeep` relationship.
 #### <a name="existing-relationships-constraints">Constraints</a>
 
 By default, constraints from the concatenated relationships are not transferred to the new deep relationship.
-Use `hasManyDeepFromRelationsWithConstraints()` to apply these constraints and pass the relationships as callables:
+Use `hasManyDeepFromRelationsWithConstraints()` with the relationships as callable arrays to apply these constraints:
 
 ```php
 class Country extends Model
