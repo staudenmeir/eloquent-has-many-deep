@@ -36,85 +36,75 @@ abstract class TestCase extends Base
         $this->seed();
     }
 
-    /**
-     * Migrate the database.
-     *
-     * @return void
-     */
-    protected function migrate()
+    protected function migrate(): void
     {
         DB::schema()->dropAllTables();
 
         DB::schema()->create('countries', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
         });
 
         DB::schema()->create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('country_id');
-            $table->unsignedInteger('team_id');
+            $table->id();
+            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('team_id');
             $table->softDeletes();
         });
 
         DB::schema()->create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->boolean('published');
         });
 
         DB::schema()->create('comments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('post_id');
-            $table->unsignedInteger('parent_id')->nullable();
+            $table->id();
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->softDeletes();
         });
 
         DB::schema()->create('clubs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->id();
+            $table->unsignedBigInteger('user_id');
         });
 
         DB::schema()->create('teams', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('club_id');
+            $table->id();
+            $table->unsignedBigInteger('club_id');
         });
 
         DB::schema()->create('roles', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
         });
 
         DB::schema()->create('permissions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('role_id');
+            $table->id();
+            $table->unsignedBigInteger('role_id');
         });
 
         DB::schema()->create('role_user', function (Blueprint $table) {
-            $table->unsignedInteger('role_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('user_id');
         });
 
         DB::schema()->create('likes', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->morphs('likeable');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
         });
 
         DB::schema()->create('tags', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
         });
 
         DB::schema()->create('taggables', function (Blueprint $table) {
-            $table->unsignedInteger('tag_id');
+            $table->unsignedBigInteger('tag_id');
             $table->morphs('taggable');
         });
     }
 
-    /**
-     * Seed the database.
-     *
-     * @return void
-     */
-    protected function seed()
+    protected function seed(): void
     {
         Model::unguard();
 
