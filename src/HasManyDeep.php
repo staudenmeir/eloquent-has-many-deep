@@ -75,9 +75,11 @@ class HasManyDeep extends HasManyThrough
 
         if (static::$constraints) {
             if (is_array($this->foreignKeys[0])) {
-                $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
-
-                $this->query->where($column, '=', $this->farParent->getMorphClass());
+                $this->query->where(
+                    $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
+                    '=',
+                    $this->farParent->getMorphClass()
+                );
             }
         }
     }
@@ -171,7 +173,13 @@ class HasManyDeep extends HasManyThrough
         parent::addEagerConstraints($models);
 
         if (is_array($this->foreignKeys[0])) {
-            $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
+            $this->query->where(
+                $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
+                '=',
+                $this->farParent->getMorphClass()
+            );
+        }
+    }
 
             $this->query->where($column, '=', $this->farParent->getMorphClass());
         }
