@@ -1,6 +1,6 @@
 <?php
 
-namespace Staudenmeir\EloquentHasManyDeep\Traits;
+namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;

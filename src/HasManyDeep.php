@@ -5,12 +5,13 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Collection;
-use Staudenmeir\EloquentHasManyDeep\Traits\RetrievesIntermediateTables;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model

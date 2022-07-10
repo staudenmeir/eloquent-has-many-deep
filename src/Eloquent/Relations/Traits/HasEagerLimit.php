@@ -1,6 +1,6 @@
 <?php
 
-namespace Staudenmeir\EloquentHasManyDeep;
+namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use RuntimeException;
