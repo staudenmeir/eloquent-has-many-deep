@@ -13,6 +13,7 @@
         "illuminate/database": "^9.0"
     },
     "require-dev": {
+        "awobaz/compoships": "^2.1",
         "illuminate/pagination": "^9.0",
         "phpunit/phpunit": "^9.5",
         "staudenmeir/eloquent-eager-limit": "^1.7"

@@ -10,13 +10,17 @@ use PHPUnit\Framework\TestCase as Base;
 use Tests\Models\Club;
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\Employee;
 use Tests\Models\Like;
 use Tests\Models\Permission;
 use Tests\Models\Post;
+use Tests\Models\Project;
 use Tests\Models\Role;
 use Tests\Models\Tag;
+use Tests\Models\Task;
 use Tests\Models\Team;
 use Tests\Models\User;
+use Tests\Models\WorkStream;
 
 abstract class TestCase extends Base
 {
@@ -102,6 +106,27 @@ abstract class TestCase extends Base
             $table->unsignedBigInteger('tag_id');
             $table->morphs('taggable');
         });
+
+        DB::schema()->create('projects', function (Blueprint $table) {
+            $table->id();
+        });
+
+        DB::schema()->create('work_streams', function (Blueprint $table) {
+            $table->id();
+        });
+
+        DB::schema()->create('tasks', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('work_stream_id');
+        });
+
+        DB::schema()->create('employees', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('work_stream_id');
+        });
     }
 
     protected function seed(): void
@@ -158,6 +183,25 @@ abstract class TestCase extends Base
             ['tag_id' => 91, 'taggable_type' => Post::class, 'taggable_id' => 21],
             ['tag_id' => 92, 'taggable_type' => Comment::class, 'taggable_id' => 32]
         ]);
+
+        Project::create(['id' => 101]);
+        Project::create(['id' => 102]);
+        Project::create(['id' => 103]);
+        Project::create(['id' => 104]);
+
+        WorkStream::create(['id' => 111]);
+        WorkStream::create(['id' => 112]);
+        WorkStream::create(['id' => 113]);
+
+        Task::create(['id' => 121, 'project_id' => 101, 'team_id' => 51, 'work_stream_id' => 111]);
+        Task::create(['id' => 122, 'project_id' => 102, 'team_id' => 51, 'work_stream_id' => 111]);
+        Task::create(['id' => 123, 'project_id' => 103, 'team_id' => 52, 'work_stream_id' => 111]);
+        Task::create(['id' => 124, 'project_id' => 104, 'team_id' => 51, 'work_stream_id' => 113]);
+
+        Employee::create(['id' => 131, 'team_id' => 51, 'work_stream_id' => 111]);
+        Employee::create(['id' => 132, 'team_id' => 51, 'work_stream_id' => 111]);
+        Employee::create(['id' => 133, 'team_id' => 52, 'work_stream_id' => 111]);
+        Employee::create(['id' => 134, 'team_id' => 51, 'work_stream_id' => 114]);
 
         Model::reguard();
     }

@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\CursorPaginator;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\JoinsThroughParents;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\SupportsCompositeKeys;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
@@ -20,7 +21,9 @@ use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermedi
 class HasManyDeep extends HasManyThrough
 {
     use HasEagerLimit;
+    use JoinsThroughParents;
     use RetrievesIntermediateTables;
+    use SupportsCompositeKeys;
 
     /**
      * The "through" parent model instances.
@@ -59,9 +62,13 @@ class HasManyDeep extends HasManyThrough
         $this->foreignKeys = $foreignKeys;
         $this->localKeys = $localKeys;
 
-        $firstKey = is_array($foreignKeys[0]) ? $foreignKeys[0][1] : $foreignKeys[0];
+        $firstKey = is_array($foreignKeys[0])
+            ? $foreignKeys[0][1]
+            : ($this->hasLeadingCompositeKey() ? $foreignKeys[0]->columns[0] : $foreignKeys[0]);
 
-        parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKeys[0], $localKeys[1]);
+        $localKey = $this->hasLeadingCompositeKey() ? $localKeys[0]->columns[0] : $localKeys[0];
+
+        parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKey, $localKeys[1]);
     }
 
     /**
@@ -80,6 +87,8 @@ class HasManyDeep extends HasManyThrough
                     '=',
                     $this->farParent->getMorphClass()
                 );
+            } elseif ($this->hasLeadingCompositeKey()) {
+                $this->addConstraintsWithCompositeKey();
             }
         }
     }
@@ -112,57 +121,6 @@ class HasManyDeep extends HasManyThrough
     }
 
     /**
-     * Join a through parent table.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $throughParent
-     * @param \Illuminate\Database\Eloquent\Model $predecessor
-     * @param array|string $foreignKey
-     * @param array|string $localKey
-     * @param string $prefix
-     * @return void
-     */
-    protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
-    {
-        if (is_array($localKey)) {
-            $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
-
-            $localKey = $localKey[1];
-        }
-
-        $first = $throughParent->qualifyColumn($localKey);
-
-        if (is_array($foreignKey)) {
-            $query->where($predecessor->qualifyColumn($foreignKey[0]), '=', $throughParent->getMorphClass());
-
-            $foreignKey = $foreignKey[1];
-        }
-
-        $second = $predecessor->qualifyColumn($prefix.$foreignKey);
-
-        $query->join($throughParent->getTable(), $first, '=', $second);
-
-        if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-            $column= $throughParent->getQualifiedDeletedAtColumn();
-
-            $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
-                $query->whereNull($column);
-            });
-        }
-    }
-
-    /**
-     * Determine whether a "through" parent instance of the relation uses SoftDeletes.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $instance
-     * @return bool
-     */
-    public function throughParentInstanceSoftDeletes(Model $instance)
-    {
-        return in_array(SoftDeletes::class, class_uses_recursive($instance));
-    }
-
-    /**
      * Set the constraints for an eager load of the relation.
      *
      * @param array $models
@@ -170,19 +128,36 @@ class HasManyDeep extends HasManyThrough
      */
     public function addEagerConstraints(array $models)
     {
-        parent::addEagerConstraints($models);
+        if ($this->hasLeadingCompositeKey()) {
+            $this->addEagerConstraintsWithCompositeKey($models);
+        } else {
+            parent::addEagerConstraints($models);
 
-        if (is_array($this->foreignKeys[0])) {
-            $this->query->where(
-                $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
-                '=',
-                $this->farParent->getMorphClass()
-            );
+            if (is_array($this->foreignKeys[0])) {
+                $this->query->where(
+                    $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
+                    '=',
+                    $this->farParent->getMorphClass()
+                );
+            }
         }
     }
 
-            $this->query->where($column, '=', $this->farParent->getMorphClass());
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param array $models
+     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param string $relation
+     * @return array
+     */
+    public function match(array $models, Collection $results, $relation)
+    {
+        if ($this->hasLeadingCompositeKey()) {
+            return $this->matchWithCompositeKey($models, $results, $relation);
         }
+
+        return parent::match($models, $results, $relation);
     }
 
     /**
@@ -211,9 +186,10 @@ class HasManyDeep extends HasManyThrough
      */
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $columns = $this->shouldSelect($columns);
-
-        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
+        $columns = array_filter(
+            $this->shouldSelect($columns),
+            fn ($column) => !str_contains($column, ' as laravel_through_key')
+        );
 
         $this->query->addSelect($columns);
 
@@ -233,9 +209,10 @@ class HasManyDeep extends HasManyThrough
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $columns = $this->shouldSelect($columns);
-
-        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
+        $columns = array_filter(
+            $this->shouldSelect($columns),
+            fn ($column) => !str_contains($column, ' as laravel_through_key')
+        );
 
         $this->query->addSelect($columns);
 
@@ -255,9 +232,10 @@ class HasManyDeep extends HasManyThrough
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
-        $columns = $this->shouldSelect($columns);
-
-        $columns = array_diff($columns, [$this->getQualifiedFirstKeyName().' as laravel_through_key']);
+        $columns = array_filter(
+            $this->shouldSelect($columns),
+            fn ($column) => !str_contains($column, ' as laravel_through_key')
+        );
 
         $this->query->addSelect($columns);
 
@@ -274,7 +252,16 @@ class HasManyDeep extends HasManyThrough
      */
     protected function shouldSelect(array $columns = ['*'])
     {
-        return array_merge(parent::shouldSelect($columns), $this->intermediateColumns());
+        $columns = parent::shouldSelect($columns);
+
+        if ($this->hasLeadingCompositeKey()) {
+            $columns = array_merge(
+                $columns,
+                $this->shouldSelectWithCompositeKey()
+            );
+        }
+
+        return array_merge($columns, $this->intermediateColumns());
     }
 
     /**
@@ -331,6 +318,8 @@ EOT
             $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
 
             $query->where($column, '=', $this->farParent->getMorphClass());
+        } elseif ($this->hasLeadingCompositeKey()) {
+            $this->getRelationExistenceQueryWithCompositeKey($query);
         }
 
         return $query;

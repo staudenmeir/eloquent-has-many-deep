@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use RuntimeException;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 
@@ -90,9 +91,20 @@ trait ConcatenatesRelationships
      */
     protected function hasOneOrManyDeepFromBelongsTo(BelongsTo $relation, array $through, array $foreignKeys, array $localKeys)
     {
-        $foreignKeys[] = $relation->getOwnerKeyName();
+        if (is_array($relation->getOwnerKeyName())) {
+            // https://github.com/topclaudy/compoships
+            $foreignKeys[] = new CompositeKey(
+                ...(array) $relation->getOwnerKeyName()
+            );
 
-        $localKeys[] = $relation->getForeignKeyName();
+            $localKeys[] = new CompositeKey(
+                ... (array) $relation->getForeignKeyName()
+            );
+        } else {
+            $foreignKeys[] = $relation->getOwnerKeyName();
+
+            $localKeys[] = $relation->getForeignKeyName();
+        }
 
         return [$through, $foreignKeys, $localKeys];
     }
@@ -130,9 +142,20 @@ trait ConcatenatesRelationships
      */
     protected function hasOneOrManyDeepFromHasOneOrMany(HasOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
     {
-        $foreignKeys[] = $relation->getForeignKeyName();
+        if (is_array($relation->getForeignKeyName())) {
+            // https://github.com/topclaudy/compoships
+            $foreignKeys[] = new CompositeKey(
+                ...(array) $relation->getForeignKeyName()
+            );
 
-        $localKeys[] = $relation->getLocalKeyName();
+            $localKeys[] = new CompositeKey(
+                ... (array) $relation->getLocalKeyName()
+            );
+        } else {
+            $foreignKeys[] = $relation->getForeignKeyName();
+
+            $localKeys[] = $relation->getLocalKeyName();
+        }
 
         return [$through, $foreignKeys, $localKeys];
     }

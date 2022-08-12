@@ -4,7 +4,9 @@ namespace Tests;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use Tests\Models\Country;
+use Tests\Models\Employee;
 use Tests\Models\Post;
+use Tests\Models\Project;
 use Tests\Models\Tag;
 use Tests\Models\User;
 
@@ -117,6 +119,20 @@ class ConcatenationTest extends TestCase
         $comments = Country::find(1)->commentsFromRelationsWithTrashedIntermediateDeepModel;
 
         $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
+    }
+
+    public function testLeadingCompositeKey()
+    {
+        $projects = Employee::find(131)->projectsFromRelations;
+
+        $this->assertEquals([101, 102], $projects->pluck('id')->all());
+    }
+
+    public function testIntermediateCompositeKey()
+    {
+        $employees = Project::find(101)->employeesFromRelations;
+
+        $this->assertEquals([131, 132], $employees->pluck('id')->all());
     }
 
     public function testHasOneDeep()
