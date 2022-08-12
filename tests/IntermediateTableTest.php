@@ -65,7 +65,7 @@ class IntermediateTableTest extends TestCase
 
     public function testCursorPaginator()
     {
-        if (!class_exists('Illuminate\Pagination\CursorPaginator')) {
+        if (!class_exists('Illuminate\Pagination\CursorPaginator')) { // TODO[L10]
             $this->markTestSkipped();
         }
 
