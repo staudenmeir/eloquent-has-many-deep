@@ -81,11 +81,7 @@ trait HasRelationships
         return array_map(function ($class) {
             $segments = preg_split('/\s+(as|from)\s+/i', $class, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-            $instance = str_contains($segments[0], '\\')
-                ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
-                    ? $this->newRelatedThroughInstance($segments[0])
-                    : new $segments[0]())
-                : (new Pivot())->setTable($segments[0]);
+            $instance = $this->newRelatedDeepThroughInstance($segments[0]);
 
             if (isset($segments[1])) {
                 $instance->setTable(
@@ -97,6 +93,21 @@ trait HasRelationships
 
             return $instance;
         }, $through);
+    }
+
+    /**
+     * Create a new model instance for a related "deep through" model.
+     *
+     * @param  string  $class
+     * @return mixed
+     */
+    protected function newRelatedDeepThroughInstance($class)
+    {
+        return str_contains($class, '\\')
+            ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
+                ? $this->newRelatedThroughInstance($class)
+                : new $class)
+            : (new Pivot)->setTable($class);
     }
 
     /**
