@@ -33,28 +33,104 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 
 ## Usage
 
-- [HasMany](#hasmany)
-- [ManyToMany](#manytomany)
-- [MorphMany](#morphmany)
-- [MorphToMany](#morphtomany)
-- [MorphedByMany](#morphedbymany)
-- [BelongsTo](#belongsto)
-- [Existing Relationships](#existing-relationships)
-- [HasOneDeep](#hasonedeep)
+The package offers two ways of defining deep relationships:  
+You can concatenate [existing relationships](#concatenating-existing-relationships) or specify the intermediate models,
+foreign and local keys [manually](#defining-relationships-manually).
+
+- [Concatenating Existing Relationships](#concatenating-existing-relationships)
+    - [Constraints](#constraints)
+- [Defining Relationships Manually](#defining-relationships-manually)
+    - [HasMany](#hasmany)
+    - [ManyToMany](#manytomany)
+    - [MorphMany](#morphmany)
+    - [MorphToMany](#morphtomany)
+    - [MorphedByMany](#morphedbymany)
+    - [BelongsTo](#belongsto)
+    - [HasOneDeep](#hasonedeep)
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [Intermediate and Pivot Constraints](#intermediate-and-pivot-constraints)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
 - [Reversing Relationships](#reversing-relationships)
 
-The package offers two ways of defining deep relationships:  
-You can specify the intermediate models, foreign and local keys manually or
-concatenate [existing relationships](#existing-relationships).
+### Concatenating Existing Relationships
 
-### HasMany
+Consider this [example](https://laravel.com/docs/eloquent-relationships#has-many-through) from the Laravel documentation
+with an additional level:  
+`Country` → has many → `User` → has many → `Post` → has many → `Comment`
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#has-many-through) with an
-additional level:  
+You can define a `HasManyDeep` relationship by concatenating existing relationships:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
+    }
+
+    public function posts()
+    {
+        return $this->hasManyThrough(Post::class, User::class);
+    }
+}
+
+class Post extends Model
+{
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+}
+```
+
+Define a `HasOneDeep` relationship with `hasOneDeepFromRelations()` if you only want to retrieve a single related
+instance.
+
+#### Constraints
+
+By default, constraints from the concatenated relationships are not transferred to the new deep relationship.
+Use `hasManyDeepFromRelationsWithConstraints()` with the relationships as callable arrays to apply these constraints:
+
+```php
+class Country extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function comments()
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'posts'], [new Post(), 'comments']);
+    }
+
+    public function posts()
+    {
+        return $this->hasManyThrough(Post::class, User::class)->where('posts.published', true);
+    }
+}
+
+class Post extends Model
+{
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->withTrashed();
+    }
+}
+```
+
+Make sure to qualify the constraints' column names if they appear in multiple tables:  
+`->where('posts.published', true)` instead of `->where('published', true)`
+
+### Defining Relationships Manually
+
+If you don't have all the necessary existing relationships to concatenate them, you can also define a deep relationship
+manually by specifying the intermediate models, foreign and local keys.
+
+#### HasMany
+
+Consider this [example](https://laravel.com/docs/eloquent-relationships#has-many-through) from the Laravel documentation
+with an additional level:  
 `Country` → has many → `User` → has many → `Post` → has many → `Comment`
 
 ```php
@@ -114,14 +190,14 @@ class Country extends Model
 }
 ```
 
-### ManyToMany
+#### ManyToMany
 
 You can include `ManyToMany` relationships in the intermediate path.
 
-#### ManyToMany → HasMany
+##### ManyToMany → HasMany
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an
-additional `HasMany` level:  
+Consider this [example](https://laravel.com/docs/eloquent-relationships#many-to-many) from the Laravel documentation
+with an additional `HasMany` level:  
 `User` → many to many → `Role` → has many → `Permission`
 
 Add the pivot table to the intermediate models:
@@ -165,10 +241,10 @@ class User extends Model
 }
 ```
 
-#### ManyToMany → ManyToMany
+##### ManyToMany → ManyToMany
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many) with an
-additional `ManyToMany` level:  
+Consider this [example](https://laravel.com/docs/eloquent-relationships#many-to-many) from the Laravel documentation
+with an additional `ManyToMany` level:  
 `User` → many to many → `Role` → many to many → `Permission`
 
 Add the pivot table to the intermediate models:
@@ -185,12 +261,12 @@ class User extends Model
 }
 ```
 
-### MorphMany
+#### MorphMany
 
 You can include `MorphMany` relationships in the intermediate path.
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) with an
-additional level:  
+Consider this [example](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) from the Laravel
+documentation with an additional level:  
 `User` → has many → `Post` → morph many → `Comment`
 
 Specify the polymorphic foreign keys as an array, starting with the `*_type` column:
@@ -211,12 +287,12 @@ class User extends Model
 }
 ```
 
-### MorphToMany
+#### MorphToMany
 
 You can include `MorphToMany` relationships in the intermediate path.
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations)
-with an additional level:    
+Consider this [example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) from the
+Laravel documentation with an additional level:    
 `User` → has many → `Post` → morph to many → `Tag`
 
 Add the pivot table to the intermediate models and specify the polymorphic foreign keys as an array, starting with
@@ -241,12 +317,12 @@ class User extends Model
 
 Remember to swap the foreign and local key on the "right" side of the pivot table:
 
-### MorphedByMany
+#### MorphedByMany
 
 You can include `MorphedByMany` relationships in the intermediate path.
 
-Consider the [documentation example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations)
-with an additional level:  
+Consider this [example](https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations) from the
+Laravel documentation with an additional level:  
 `Tag` → morphed by many → `Post` → has many → `Comment`
 
 Add the pivot table to the intermediate models and specify the polymorphic local keys as an array, starting with
@@ -269,7 +345,7 @@ class Tag extends Model
 }
 ```
 
-### BelongsTo
+#### BelongsTo
 
 You can include `BelongsTo` relationships in the intermediate path:  
 `Tag` → morphed by many → `Post` → belongs to → `User`
@@ -293,71 +369,7 @@ class Tag extends Model
 }
 ```
 
-### Existing Relationships
-
-You can also define a `HasManyDeep` relationship by concatenating existing relationships:
-
-```php
-class Country extends Model
-{
-    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
-    public function comments()
-    {
-        return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
-    }
-
-    public function posts()
-    {
-        return $this->hasManyThrough(Post::class, User::class);
-    }
-}
-
-class Post extends Model
-{
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-}
-```
-
-Use `hasOneDeepFromRelations()` to define a `HasOneDeep` relationship.
-
-#### <a name="existing-relationships-constraints">Constraints</a>
-
-By default, constraints from the concatenated relationships are not transferred to the new deep relationship.
-Use `hasManyDeepFromRelationsWithConstraints()` with the relationships as callable arrays to apply these constraints:
-
-```php
-class Country extends Model
-{
-    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
-
-    public function comments()
-    {
-        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'posts'], [new Post(), 'comments']);
-    }
-
-    public function posts()
-    {
-        return $this->hasManyThrough(Post::class, User::class)->where('posts.published', true);
-    }
-}
-
-class Post extends Model
-{
-    public function comments()
-    {
-        return $this->hasMany(Comment::class)->withTrashed();
-    }
-}
-```
-
-Make sure to qualify the constraints' column names if they appear in multiple tables:  
-`->where('posts.published', true)` instead of `->where('published', true)`
-
-### HasOneDeep
+#### HasOneDeep
 
 Define a `HasOneDeep` relationship if you only want to retrieve a single related instance:
 
@@ -579,8 +591,8 @@ class User extends Model
 
 ### Reversing Relationships
 
-You can define `HasManyDeep`/`HasOneDeep` by reversing existing deep relationships using `hasManyDeepFromReverse()`
-/`hasOneDeepFromReverse()`:
+You can define a `HasManyDeep`/`HasOneDeep` relationship by reversing an existing deep relationship
+using `hasManyDeepFromReverse()`/`hasOneDeepFromReverse()`:
 
 ```php
 class Country extends Model
