@@ -23,7 +23,7 @@ trait JoinsThroughParents
      */
     protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
     {
-        $joins = $this->getThroughParentsJoin($query, $throughParent, $predecessor, $foreignKey, $localKey);
+        $joins = $this->throughParentJoins($query, $throughParent, $predecessor, $foreignKey, $localKey);
 
         foreach ($joins as $i => [$first, $second]) {
             $joins[$i] = [
@@ -60,7 +60,7 @@ trait JoinsThroughParents
      * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|array|string $localKey
      * @return array
      */
-    protected function getThroughParentsJoin(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey): array
+    protected function throughParentJoins(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey): array
     {
         $joins = [];
 

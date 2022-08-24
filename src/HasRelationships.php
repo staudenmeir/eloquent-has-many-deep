@@ -98,10 +98,10 @@ trait HasRelationships
     /**
      * Create a new model instance for a related "deep through" model.
      *
-     * @param  string  $class
-     * @return mixed
+     * @param string $class
+     * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function newRelatedDeepThroughInstance($class)
+    protected function newRelatedDeepThroughInstance(string $class): Model
     {
         return str_contains($class, '\\')
             ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
