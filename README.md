@@ -208,7 +208,7 @@ Consider this [example](https://laravel.com/docs/eloquent-relationships#many-to-
 with an additional `HasMany` level:  
 `User` → many to many → `Role` → has many → `Permission`
 
-Add the pivot table to the intermediate models:
+Add the pivot tables to the intermediate models:
 
 ```php
 class User extends Model
@@ -398,7 +398,7 @@ class Country extends Model
 
 If multiple columns need to match between two tables, you can define a composite key with the `CompositeKey` class.
 
-Consider this [example](https://github.com/topclaudy/compoships) from the `compoships` documentation with an additional
+Consider this [example](https://github.com/topclaudy/compoships#example) from the `compoships` documentation with an additional
 level:  
 `User` → has many (matching `team_id` & `category_id`) → `Task` → belongs to → `Project`
 
