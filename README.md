@@ -39,6 +39,7 @@ foreign and local keys [manually](#defining-relationships-manually).
 
 - [Concatenating Existing Relationships](#concatenating-existing-relationships)
     - [Constraints](#constraints)
+    - [Third-Party Packages](#third-party-packages)
 - [Defining Relationships Manually](#defining-relationships-manually)
     - [HasMany](#hasmany)
     - [ManyToMany](#manytomany)
@@ -47,6 +48,7 @@ foreign and local keys [manually](#defining-relationships-manually).
     - [MorphedByMany](#morphedbymany)
     - [BelongsTo](#belongsto)
     - [HasOneDeep](#hasonedeep)
+    - [Composite Keys](#composite-keys)
 - [Intermediate and Pivot Data](#intermediate-and-pivot-data)
 - [Intermediate and Pivot Constraints](#intermediate-and-pivot-constraints)
 - [Table Aliases](#table-aliases)
@@ -121,6 +123,12 @@ class Post extends Model
 
 Make sure to qualify the constraints' column names if they appear in multiple tables:  
 `->where('posts.published', true)` instead of `->where('published', true)`
+
+#### Third-Party Packages
+
+Besides native Laravel relationships, you can also concatenate relationships from these third-party packages:
+
+- https://github.com/topclaudy/compoships: `BelongsTo`, `HasMany`, `HasOne`
 
 ### Defining Relationships Manually
 
@@ -382,6 +390,33 @@ class Country extends Model
     {
         return $this->hasOneDeep(Comment::class, [User::class, Post::class])
             ->latest('comments.created_at');
+    }
+}
+```
+
+#### Composite Keys
+
+If multiple columns need to match between two tables, you can define a composite key with the `CompositeKey` class.
+
+Consider this [example](https://github.com/topclaudy/compoships) from the `compoships` documentation with an additional
+level:  
+`User` → has many (matching `team_id` & `category_id`) → `Task` → belongs to → `Project`
+
+```php
+use Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey;
+
+class User extends Model
+{
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
+    public function projects()
+    {
+        return $this->hasManyDeep(
+            Project::class,
+            [Task::class],
+            [new CompositeKey('team_id', 'category_id'), 'id'],
+            [new CompositeKey('team_id', 'category_id'), 'project_id']
+        );
     }
 }
 ```
