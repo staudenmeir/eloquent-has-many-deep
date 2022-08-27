@@ -106,8 +106,8 @@ trait HasRelationships
         return str_contains($class, '\\')
             ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
                 ? $this->newRelatedThroughInstance($class)
-                : new $class)
-            : (new Pivot)->setTable($class);
+                : new $class())
+            : (new Pivot())->setTable($class);
     }
 
     /**

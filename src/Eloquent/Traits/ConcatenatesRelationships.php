@@ -98,7 +98,7 @@ trait ConcatenatesRelationships
             );
 
             $localKeys[] = new CompositeKey(
-                ... (array) $relation->getForeignKeyName()
+                ...(array) $relation->getForeignKeyName()
             );
         } else {
             $foreignKeys[] = $relation->getOwnerKeyName();
@@ -149,7 +149,7 @@ trait ConcatenatesRelationships
             );
 
             $localKeys[] = new CompositeKey(
-                ... (array) $relation->getLocalKeyName()
+                ...(array) $relation->getLocalKeyName()
             );
         } else {
             $foreignKeys[] = $relation->getForeignKeyName();
