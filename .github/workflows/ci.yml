@@ -40,7 +40,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: bcmath, ctype, json, mbstring, openssl, pdo, pdo_${{ matrix.database }}, tokenizer, xml
           coverage: ${{ matrix.coverage }}
-      - run: composer update --no-interaction --no-progress --no-suggest --prefer-dist --prefer-${{ matrix.release }}
+      - run: composer update --no-interaction --no-progress --prefer-dist --prefer-${{ matrix.release }}
       - run: cp tests/config/database.ci.php tests/config/database.php
       - run: |
           PHPUNIT_FLAGS=$([ "${{ matrix.coverage }}" == "xdebug" ] && echo "--coverage-clover=coverage.xml" || echo "")
