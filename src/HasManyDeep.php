@@ -10,17 +10,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Pagination\CursorPaginator;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsConcatenable;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\JoinsThroughParents;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\SupportsCompositeKeys;
+use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
  * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
  */
-class HasManyDeep extends HasManyThrough
+class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
     use HasEagerLimit;
+    use IsConcatenable;
     use JoinsThroughParents;
     use RetrievesIntermediateTables;
     use SupportsCompositeKeys;

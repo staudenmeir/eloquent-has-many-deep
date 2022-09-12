@@ -10,7 +10,8 @@
     ],
     "require": {
         "php": "^8.0.2",
-        "illuminate/database": "^9.0"
+        "illuminate/database": "^9.0",
+        "staudenmeir/eloquent-has-many-deep-contracts": "^1.0"
     },
     "require-dev": {
         "awobaz/compoships": "^2.1",
