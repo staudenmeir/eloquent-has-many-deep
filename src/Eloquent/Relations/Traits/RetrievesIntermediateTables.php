@@ -40,10 +40,16 @@ trait RetrievesIntermediateTables
      * @param array $columns
      * @param string $class
      * @param string|null $accessor
+     * @param callable|null $postProcessor
      * @return $this
      */
-    public function withPivot($table, array $columns = ['*'], $class = Pivot::class, $accessor = null)
-    {
+    public function withPivot(
+        $table,
+        array $columns = ['*'],
+        $class = Pivot::class,
+        $accessor = null,
+        callable $postProcessor = null
+    ) {
         if ($columns === ['*']) {
             $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);
         }
@@ -54,7 +60,7 @@ trait RetrievesIntermediateTables
             $columns = array_merge($columns, $this->intermediateTables[$accessor]['columns']);
         }
 
-        $this->intermediateTables[$accessor] = compact('table', 'columns', 'class');
+        $this->intermediateTables[$accessor] = compact('table', 'columns', 'class', 'postProcessor');
 
         return $this;
     }
@@ -119,6 +125,10 @@ trait RetrievesIntermediateTables
     protected function intermediateRelation(Model $model, array $intermediateTable, $prefix)
     {
         $attributes = $this->intermediateAttributes($model, $prefix);
+
+        if ($intermediateTable['postProcessor']) {
+            $attributes = $intermediateTable['postProcessor']($model, $attributes);
+        }
 
         $class = $intermediateTable['class'];
 

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Tests\Models\Country;
 use Tests\Models\Post;
@@ -17,7 +18,8 @@ class IntermediateTableTest extends TestCase
             ->withIntermediate(Post::class)
             ->get();
 
-        $this->assertInstanceOf(Post::class, $post = $comments[0]->post);
+        $post = $comments[0]->post;
+        $this->assertInstanceOf(Post::class, $post);
         $this->assertEquals(['id' => 21, 'user_id' => 11, 'published' => true], $post->getAttributes());
         $this->assertEquals(['id' => 11, 'deleted_at' => null], $post->user->getAttributes());
     }
@@ -29,18 +31,31 @@ class IntermediateTableTest extends TestCase
             ->withPivot('role_user', ['user_id'])
             ->get();
 
-        $this->assertInstanceOf(Pivot::class, $pivot = $permissions[0]->role_user);
+        $pivot = $permissions[0]->role_user;
+        $this->assertInstanceOf(Pivot::class, $pivot);
         $this->assertEquals(['role_id' => 61, 'user_id' => 11], $pivot->getAttributes());
     }
 
-    public function testWithPivotClass()
+    public function testWithPivotWithClass()
     {
         $permissions = User::first()->permissions()
             ->withPivot('role_user', ['role_id'], RoleUser::class, 'pivot')
             ->get();
 
-        $this->assertInstanceOf(RoleUser::class, $pivot = $permissions[0]->pivot);
+        $pivot = $permissions[0]->pivot;
+        $this->assertInstanceOf(RoleUser::class, $pivot);
         $this->assertEquals(['role_id' => 61], $pivot->getAttributes());
+    }
+
+    public function testWithPivotWithPostProcessor()
+    {
+        $permissions = User::first()->permissions()
+            ->withPivot('role_user', ['role_id'], postProcessor: function (Model $model, array $attributes) {
+                return $attributes += ['foo' => 'bar'];
+            })->get();
+
+        $pivot = $permissions[0]->role_user;
+        $this->assertEquals(['role_id' => 61, 'foo' => 'bar'], $pivot->getAttributes());
     }
 
     public function testPaginate()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Concatenation;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use Tests\Models\Country;
@@ -9,6 +9,7 @@ use Tests\Models\Post;
 use Tests\Models\Project;
 use Tests\Models\Tag;
 use Tests\Models\User;
+use Tests\TestCase;
 
 class ConcatenationTest extends TestCase
 {

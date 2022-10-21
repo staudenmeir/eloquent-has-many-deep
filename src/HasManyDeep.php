@@ -2,6 +2,7 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
+use Closure;
 use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +15,7 @@ use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsConcatenable;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\JoinsThroughParents;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\SupportsCompositeKeys;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsCustomizable;
 use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
@@ -24,6 +26,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
     use HasEagerLimit;
     use IsConcatenable;
+    use IsCustomizable;
     use JoinsThroughParents;
     use RetrievesIntermediateTables;
     use SupportsCompositeKeys;
@@ -75,16 +78,38 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     }
 
     /**
+     * Get the results of the relationship.
+     *
+     * @return mixed
+     */
+    public function getResults()
+    {
+        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
+            return $this->get();
+        }
+
+        return parent::getResults();
+    }
+
+    /**
      * Set the base constraints on the relation query.
      *
      * @return void
      */
     public function addConstraints()
     {
-        parent::addConstraints();
+        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
+            $this->performJoin();
+        } else {
+            parent::addConstraints();
+        }
 
         if (static::$constraints) {
-            if (is_array($this->foreignKeys[0])) {
+            if ($this->firstKey instanceof Closure) {
+                ($this->firstKey)($this->query);
+            } elseif ($this->localKey instanceof Closure) {
+                ($this->localKey)($this->query);
+            } elseif (is_array($this->foreignKeys[0])) {
                 $this->query->where(
                     $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
                     '=',
@@ -131,6 +156,11 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      */
     public function addEagerConstraints(array $models)
     {
+        if ($this->customEagerConstraintsCallback) {
+            ($this->customEagerConstraintsCallback)($this->query, $models);
+            return;
+        }
+
         if ($this->hasLeadingCompositeKey()) {
             $this->addEagerConstraintsWithCompositeKey($models);
         } else {
@@ -156,6 +186,14 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      */
     public function match(array $models, Collection $results, $relation)
     {
+        if ($this->customEagerMatchingCallbacks) {
+            foreach ($this->customEagerMatchingCallbacks as $callback) {
+                $models = $callback($models, $results, $relation);
+            }
+
+            return $models;
+        }
+
         if ($this->hasLeadingCompositeKey()) {
             return $this->matchWithCompositeKey($models, $results, $relation);
         }
@@ -175,6 +213,10 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 
         $this->hydrateIntermediateRelations($models->all());
 
+        foreach ($this->postGetCallbacks as $postGetCallback) {
+            $postGetCallback($models);
+        }
+
         return $models;
     }
 
@@ -191,7 +233,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     {
         $columns = array_filter(
             $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, ' as laravel_through_key')
+            fn ($column) => !str_contains($column, 'laravel_through_key')
         );
 
         $this->query->addSelect($columns);
@@ -214,7 +256,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     {
         $columns = array_filter(
             $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, ' as laravel_through_key')
+            fn ($column) => !str_contains($column, 'laravel_through_key')
         );
 
         $this->query->addSelect($columns);
@@ -237,7 +279,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     {
         $columns = array_filter(
             $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, ' as laravel_through_key')
+            fn ($column) => !str_contains($column, 'laravel_through_key')
         );
 
         $this->query->addSelect($columns);
@@ -255,7 +297,17 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      */
     protected function shouldSelect(array $columns = ['*'])
     {
-        $columns = parent::shouldSelect($columns);
+        if ($columns == ['*']) {
+            $columns = [$this->related->getTable().'.*'];
+        }
+
+        $alias = 'laravel_through_key';
+
+        if ($this->customThroughKeyCallback) {
+            $columns[] = ($this->customThroughKeyCallback)($alias);
+        } else {
+            $columns[] = $this->getQualifiedFirstKeyName() . " as $alias";
+        }
 
         if ($this->hasLeadingCompositeKey()) {
             $columns = array_merge(
@@ -313,6 +365,16 @@ EOT
 
                 break;
             }
+        }
+
+        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
+            $this->performJoin($query);
+
+            $closureKey = $this->firstKey instanceof Closure ? $this->firstKey : $this->localKey;
+
+            $closureKey($query, $parentQuery);
+
+            return $query->select($columns);
         }
 
         $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);

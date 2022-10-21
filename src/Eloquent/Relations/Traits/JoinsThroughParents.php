@@ -2,6 +2,7 @@
 
 namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,23 +24,32 @@ trait JoinsThroughParents
      */
     protected function joinThroughParent(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey, $prefix)
     {
-        $joins = $this->throughParentJoins($query, $throughParent, $predecessor, $foreignKey, $localKey);
+        $table = $throughParent->getTable();
 
-        foreach ($joins as $i => [$first, $second]) {
-            $joins[$i] = [
-                $throughParent->qualifyColumn($first),
-                $predecessor->qualifyColumn($prefix.$second),
-            ];
-        }
+        if ($foreignKey instanceof Closure) {
+            $query->join(
+                $table,
+                fn (JoinClause $join) => $foreignKey($query, $join)
+            );
+        } else {
+            $joins = $this->throughParentJoins($query, $throughParent, $predecessor, $foreignKey, $localKey);
 
-        $query->join(
-            $throughParent->getTable(),
-            function (JoinClause $join) use ($joins) {
-                foreach ($joins as [$first, $second]) {
-                    $join->on($first, '=', $second);
-                }
+            foreach ($joins as $i => [$first, $second]) {
+                $joins[$i] = [
+                    $throughParent->qualifyColumn($first),
+                    $predecessor->qualifyColumn($prefix.$second),
+                ];
             }
-        );
+
+            $query->join(
+                $table,
+                function (JoinClause $join) use ($joins) {
+                    foreach ($joins as [$first, $second]) {
+                        $join->on($first, '=', $second);
+                    }
+                }
+            );
+        }
 
         if ($this->throughParentInstanceSoftDeletes($throughParent)) {
             $column= $throughParent->getQualifiedDeletedAtColumn();

@@ -26,7 +26,27 @@ trait ConcatenatesRelationships
      */
     public function hasManyDeepFromRelations(...$relations)
     {
-        return $this->hasManyDeep(...$this->hasOneOrManyDeepFromRelations($relations));
+        [
+            $related,
+            $through,
+            $foreignKeys,
+            $localKeys,
+            $postGetCallbacks,
+            $customThroughKeyCallback,
+            $customEagerConstraintsCallback,
+            $customEagerMatchingCallback
+        ] =
+            $this->hasOneOrManyDeepFromRelations($relations);
+
+        $relation = $this->hasManyDeep($related, $through, $foreignKeys, $localKeys);
+
+        return $this->customizeHasOneOrManyDeepRelationship(
+            $relation,
+            $postGetCallbacks,
+            $customThroughKeyCallback,
+            $customEagerConstraintsCallback,
+            $customEagerMatchingCallback
+        );
     }
 
     /**
@@ -37,7 +57,26 @@ trait ConcatenatesRelationships
      */
     public function hasOneDeepFromRelations(...$relations)
     {
-        return $this->hasOneDeep(...$this->hasOneOrManyDeepFromRelations($relations));
+        [
+            $related,
+            $through,
+            $foreignKeys,
+            $localKeys,
+            $postGetCallbacks,
+            $customThroughKeyCallback,
+            $customEagerConstraintsCallback,
+            $customEagerMatchingCallback
+        ] = $this->hasOneOrManyDeepFromRelations($relations);
+
+        $relation = $this->hasOneDeep($related, $through, $foreignKeys, $localKeys);
+
+        return $this->customizeHasOneOrManyDeepRelationship(
+            $relation,
+            $postGetCallbacks,
+            $customThroughKeyCallback,
+            $customEagerConstraintsCallback,
+            $customEagerMatchingCallback
+        );
     }
 
     /**
@@ -60,11 +99,37 @@ trait ConcatenatesRelationships
         $through = [];
         $foreignKeys = [];
         $localKeys = [];
+        $postGetCallbacks = [];
+        $customThroughKeyCallback = null;
+        $customEagerConstraintsCallback = null;
+        $customEagerMatchingCallback = null;
 
         foreach ($relations as $i => $relation) {
             if ($relation instanceof ConcatenableRelation) {
-                [$through, $foreignKeys, $localKeys] =
-                    $relation->appendToDeepRelationship($through, $foreignKeys, $localKeys, $i);
+                [$through, $foreignKeys, $localKeys] = $relation->appendToDeepRelationship(
+                    $through,
+                    $foreignKeys,
+                    $localKeys,
+                    $i
+                );
+
+                if (method_exists($relation, 'postGetCallback')) {
+                    $postGetCallbacks[] = [$relation, 'postGetCallback'];
+                }
+
+                if ($i === 0) {
+                    if (method_exists($relation, 'getThroughKeyForDeepRelationships')) {
+                        $customThroughKeyCallback = [$relation, 'getThroughKeyForDeepRelationships'];
+                    }
+
+                    if (method_exists($relation, 'addEagerConstraintsToDeepRelationship')) {
+                        $customEagerConstraintsCallback = [$relation, 'addEagerConstraintsToDeepRelationship'];
+                    }
+
+                    if (method_exists($relation, 'matchResultsForDeepRelationship')) {
+                        $customEagerMatchingCallback = [$relation, 'matchResultsForDeepRelationship'];
+                    }
+                }
             } else {
                 $method = $this->hasOneOrManyDeepRelationMethod($relation);
 
@@ -82,7 +147,16 @@ trait ConcatenatesRelationships
             }
         }
 
-        return [$related, $through, $foreignKeys, $localKeys];
+        return [
+            $related,
+            $through,
+            $foreignKeys,
+            $localKeys,
+            $postGetCallbacks,
+            $customThroughKeyCallback,
+            $customEagerConstraintsCallback,
+            $customEagerMatchingCallback
+        ];
     }
 
     /**
@@ -94,16 +168,20 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromBelongsTo(BelongsTo $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromBelongsTo(
+        BelongsTo $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         if (is_array($relation->getOwnerKeyName())) {
             // https://github.com/topclaudy/compoships
             $foreignKeys[] = new CompositeKey(
-                ...(array) $relation->getOwnerKeyName()
+                ...(array)$relation->getOwnerKeyName()
             );
 
             $localKeys[] = new CompositeKey(
-                ...(array) $relation->getForeignKeyName()
+                ...(array)$relation->getForeignKeyName()
             );
         } else {
             $foreignKeys[] = $relation->getOwnerKeyName();
@@ -123,8 +201,12 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromBelongsToMany(BelongsToMany $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromBelongsToMany(
+        BelongsToMany $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         $through[] = $relation->getTable();
 
         $foreignKeys[] = $relation->getForeignPivotKeyName();
@@ -145,16 +227,20 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromHasOneOrMany(HasOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromHasOneOrMany(
+        HasOneOrMany $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         if (is_array($relation->getForeignKeyName())) {
             // https://github.com/topclaudy/compoships
             $foreignKeys[] = new CompositeKey(
-                ...(array) $relation->getForeignKeyName()
+                ...(array)$relation->getForeignKeyName()
             );
 
             $localKeys[] = new CompositeKey(
-                ...(array) $relation->getLocalKeyName()
+                ...(array)$relation->getLocalKeyName()
             );
         } else {
             $foreignKeys[] = $relation->getForeignKeyName();
@@ -174,8 +260,12 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromHasManyThrough(HasManyThrough $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromHasManyThrough(
+        HasManyThrough $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         $through[] = get_class($relation->getParent());
 
         $foreignKeys[] = $relation->getFirstKeyName();
@@ -196,8 +286,12 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromMorphOneOrMany(MorphOneOrMany $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromMorphOneOrMany(
+        MorphOneOrMany $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getForeignKeyName()];
 
         $localKeys[] = $relation->getLocalKeyName();
@@ -214,8 +308,12 @@ trait ConcatenatesRelationships
      * @param array $localKeys
      * @return array
      */
-    protected function hasOneOrManyDeepFromMorphToMany(MorphToMany $relation, array $through, array $foreignKeys, array $localKeys)
-    {
+    protected function hasOneOrManyDeepFromMorphToMany(
+        MorphToMany $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
         $through[] = $relation->getTable();
 
         if ($relation->getInverse()) {
@@ -254,7 +352,7 @@ trait ConcatenatesRelationships
 
         foreach ($classes as $class) {
             if ($relation instanceof $class) {
-                return 'hasOneOrManyDeepFrom'.class_basename($class);
+                return 'hasOneOrManyDeepFrom' . class_basename($class);
             }
         }
 
@@ -272,6 +370,10 @@ trait ConcatenatesRelationships
     {
         $through = get_class($relation->getRelated());
 
+        if ($relation instanceof ConcatenableRelation && method_exists($relation, 'getTableForDeepRelationship')) {
+            return $through . ' from ' . $relation->getTableForDeepRelationship();
+        }
+
         if ((new $through())->getTable() !== $relation->getRelated()->getTable()) {
             $through .= ' from ' . $relation->getRelated()->getTable();
         }
@@ -282,11 +384,45 @@ trait ConcatenatesRelationships
             $segments = explode(' as ', $table);
 
             if (isset($segments[1])) {
-                $through .= ' as '.$segments[1];
+                $through .= ' as ' . $segments[1];
             }
         }
 
         return $through;
+    }
+
+    /**
+     * Customize a has-one-deep or has-many-deep relationship.
+     *
+     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep $relation
+     * @param callable[] $postGetCallbacks
+     * @param callable|null $customThroughKeyCallback
+     * @param callable|null $customEagerConstraintsCallback
+     * @param callable|null $customEagerMatchingCallback
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep|\Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     */
+    protected function customizeHasOneOrManyDeepRelationship(
+        HasManyDeep $relation,
+        array $postGetCallbacks,
+        ?callable $customThroughKeyCallback,
+        ?callable $customEagerConstraintsCallback,
+        ?callable $customEagerMatchingCallback
+    ): HasManyDeep|HasOneDeep {
+        $relation->withPostGetCallbacks($postGetCallbacks);
+
+        if ($customThroughKeyCallback) {
+            $relation->withCustomThroughKeyCallback($customThroughKeyCallback);
+        }
+
+        if ($customEagerConstraintsCallback) {
+            $relation->withCustomEagerConstraintsCallback($customEagerConstraintsCallback);
+        }
+
+        if ($customEagerMatchingCallback) {
+            $relation->withCustomEagerMatchingCallback($customEagerMatchingCallback);
+        }
+
+        return $relation;
     }
 
     /**
