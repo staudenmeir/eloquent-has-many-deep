@@ -17,7 +17,8 @@
         "awobaz/compoships": "^2.1",
         "illuminate/pagination": "^9.0",
         "phpunit/phpunit": "^9.5",
-        "staudenmeir/eloquent-eager-limit": "^1.7"
+        "staudenmeir/eloquent-eager-limit": "^1.7",
+        "nesbot/carbon": "^2.62.1"
     },
     "autoload": {
         "psr-4": {
