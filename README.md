@@ -28,7 +28,7 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 | 5.8     | 1.8     |
 | 6.x     | 1.11    |
 | 7.x     | 1.12    |
-| 8.x     | 1.13    |
+| 8.x     | 1.14    |
 | 9.x     | 1.15    |
 
 ## Usage
