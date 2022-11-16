@@ -18,6 +18,7 @@
         "illuminate/pagination": "^9.0",
         "phpunit/phpunit": "^9.5",
         "staudenmeir/eloquent-eager-limit": "^1.7",
+        "staudenmeir/laravel-adjacency-list": "dev-master",
         "nesbot/carbon": "^2.62.1"
     },
     "autoload": {
