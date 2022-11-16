@@ -20,6 +20,10 @@ abstract class TestCase extends Base
 
         $this->database = getenv('DATABASE') ?: 'sqlite';
 
+        if ($this->database === 'mysql') {
+            $this->markTestSkipped();
+        }
+
         $config = require __DIR__.'/../../config/database.php';
 
         $db = new DB();

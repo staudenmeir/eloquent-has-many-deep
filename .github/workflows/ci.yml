@@ -13,7 +13,6 @@ jobs:
         release: [stable, lowest]
         include:
           - php: 8.2
-            database: mysql
             release: stable
             coverage: xdebug
 
