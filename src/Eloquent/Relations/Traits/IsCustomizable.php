@@ -28,9 +28,9 @@ trait IsCustomizable
     /**
      * The custom matching callbacks for the eagerly loaded results.
      *
-     * @var callable
+     * @var callable[]
      */
-    protected $customEagerMatchingCallbacks = [];
+    protected array $customEagerMatchingCallbacks = [];
 
     /**
      * Set custom callbacks to run at the end of the get() method.
