@@ -9,6 +9,7 @@
 
 This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
 It supports [many-to-many](#manytomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
+It also supports some [third-party packages](#third-party-packages).
 
 Supports Laravel 5.5.29+.
 
@@ -128,6 +129,7 @@ Make sure to qualify the constraints' column names if they appear in multiple ta
 
 Besides native Laravel relationships, you can also concatenate relationships from these third-party packages:
 
+- https://github.com/staudenmeir/laravel-adjacency-list: [Tree relationships](https://github.com/staudenmeir/laravel-adjacency-list#concatenation)
 - https://github.com/topclaudy/compoships: `BelongsTo`, `HasMany`, `HasOne`
 
 ### Defining Relationships Manually
