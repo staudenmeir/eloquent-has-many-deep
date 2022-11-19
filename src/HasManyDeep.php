@@ -4,12 +4,11 @@ namespace Staudenmeir\EloquentHasManyDeep;
 
 use Closure;
 use Exception;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Pagination\CursorPaginator;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\ExecutesQueries;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsConcatenable;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\JoinsThroughParents;
@@ -24,6 +23,7 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
  */
 class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
+    use ExecutesQueries;
     use HasEagerLimit;
     use IsConcatenable;
     use IsCustomizable;
@@ -75,20 +75,6 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         $localKey = $this->hasLeadingCompositeKey() ? $localKeys[0]->columns[0] : $localKeys[0];
 
         parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKey, $localKeys[1]);
-    }
-
-    /**
-     * Get the results of the relationship.
-     *
-     * @return mixed
-     */
-    public function getResults()
-    {
-        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
-            return $this->get();
-        }
-
-        return parent::getResults();
     }
 
     /**
@@ -202,94 +188,6 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     }
 
     /**
-     * Execute the query as a "select" statement.
-     *
-     * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function get($columns = ['*'])
-    {
-        $models = parent::get($columns);
-
-        $this->hydrateIntermediateRelations($models->all());
-
-        foreach ($this->postGetCallbacks as $postGetCallback) {
-            $postGetCallback($models);
-        }
-
-        return $models;
-    }
-
-    /**
-     * Get a paginator for the "select" statement.
-     *
-     * @param int $perPage
-     * @param array $columns
-     * @param string $pageName
-     * @param int $page
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $columns = array_filter(
-            $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, 'laravel_through_key')
-        );
-
-        $this->query->addSelect($columns);
-
-        return tap($this->query->paginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
-    }
-
-    /**
-     * Paginate the given query into a simple paginator.
-     *
-     * @param int $perPage
-     * @param array $columns
-     * @param string $pageName
-     * @param int|null $page
-     * @return \Illuminate\Contracts\Pagination\Paginator
-     */
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $columns = array_filter(
-            $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, 'laravel_through_key')
-        );
-
-        $this->query->addSelect($columns);
-
-        return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
-    }
-
-    /**
-     * Paginate the given query into a cursor paginator.
-     *
-     * @param  int|null  $perPage
-     * @param  array  $columns
-     * @param  string  $cursorName
-     * @param  string|null  $cursor
-     * @return \Illuminate\Contracts\Pagination\CursorPaginator
-     */
-    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
-    {
-        $columns = array_filter(
-            $this->shouldSelect($columns),
-            fn ($column) => !str_contains($column, 'laravel_through_key')
-        );
-
-        $this->query->addSelect($columns);
-
-        return tap($this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor), function (CursorPaginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
-    }
-
-    /**
      * Set the select clause for the relation query.
      *
      * @param array $columns
@@ -317,22 +215,6 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         }
 
         return array_merge($columns, $this->intermediateColumns());
-    }
-
-    /**
-     * Chunk the results of the query.
-     *
-     * @param int $count
-     * @param callable $callback
-     * @return bool
-     */
-    public function chunk($count, callable $callback)
-    {
-        return $this->prepareQueryBuilder()->chunk($count, function (Collection $results) use ($callback) {
-            $this->hydrateIntermediateRelations($results->all());
-
-            return $callback($results);
-        });
     }
 
     /**

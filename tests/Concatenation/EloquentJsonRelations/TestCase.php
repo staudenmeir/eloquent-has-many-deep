@@ -18,7 +18,7 @@ abstract class TestCase extends Base
     {
         parent::setUp();
 
-        $this->database = getenv('DATABASE') ?: 'mysql';
+        $this->database = getenv('DATABASE') ?: 'sqlite';
 
         if ($this->database !== 'mysql') {
             $this->markTestSkipped();
