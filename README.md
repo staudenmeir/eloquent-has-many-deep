@@ -401,8 +401,8 @@ class Country extends Model
 
 If multiple columns need to match between two tables, you can define a composite key with the `CompositeKey` class.
 
-Consider this [example](https://github.com/topclaudy/compoships#example) from the `compoships` documentation with an additional
-level:  
+Consider this [example](https://github.com/topclaudy/compoships#example) from the `compoships` documentation with an
+additional level:  
 `User` → has many (matching `team_id` & `category_id`) → `Task` → belongs to → `Project`
 
 ```php
