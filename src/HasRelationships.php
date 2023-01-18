@@ -104,9 +104,7 @@ trait HasRelationships
     protected function newRelatedDeepThroughInstance(string $class): Model
     {
         return str_contains($class, '\\')
-            ? (method_exists($this, 'newRelatedThroughInstance') // TODO[L10]
-                ? $this->newRelatedThroughInstance($class)
-                : new $class())
+            ? $this->newRelatedThroughInstance($class)
             : (new Pivot())->setTable($class);
     }
 

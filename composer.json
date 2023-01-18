@@ -9,18 +9,16 @@
         }
     ],
     "require": {
-        "php": "^8.0.2",
-        "illuminate/database": "^9.0",
-        "staudenmeir/eloquent-has-many-deep-contracts": "^1.0"
+        "php": "^8.1",
+        "illuminate/database": "^10.0",
+        "staudenmeir/eloquent-has-many-deep-contracts": "^1.1"
     },
     "require-dev": {
-        "awobaz/compoships": "^2.1",
-        "illuminate/pagination": "^9.0",
-        "phpunit/phpunit": "^9.5",
-        "staudenmeir/eloquent-eager-limit": "^1.7",
-        "staudenmeir/eloquent-json-relations": "^1.7",
-        "staudenmeir/laravel-adjacency-list": "^1.12",
-        "nesbot/carbon": "^2.62.1"
+        "illuminate/pagination": "^10.0",
+        "phpunit/phpunit": "^9.5.27",
+        "staudenmeir/eloquent-eager-limit": "^1.8",
+        "staudenmeir/eloquent-json-relations": "^1.8",
+        "staudenmeir/laravel-adjacency-list": "^1.13"
     },
     "autoload": {
         "psr-4": {
@@ -30,6 +28,11 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.18.x-dev"
         }
     },
     "minimum-stability": "dev",

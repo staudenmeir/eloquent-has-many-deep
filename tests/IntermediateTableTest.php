@@ -80,10 +80,6 @@ class IntermediateTableTest extends TestCase
 
     public function testCursorPaginator()
     {
-        if (!class_exists('Illuminate\Pagination\CursorPaginator')) { // TODO[L10]
-            $this->markTestSkipped();
-        }
-
         $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
             ->cursorPaginate();
