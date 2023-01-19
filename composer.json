@@ -30,11 +30,6 @@
             "Tests\\": "tests/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.18.x-dev"
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
