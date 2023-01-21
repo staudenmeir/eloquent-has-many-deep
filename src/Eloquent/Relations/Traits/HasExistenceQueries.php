@@ -19,27 +19,7 @@ trait HasExistenceQueries
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
-        foreach ($this->throughParents as $throughParent) {
-            if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
-                if (!in_array(HasTableAlias::class, class_uses_recursive($throughParent))) {
-                    $traitClass = HasTableAlias::class;
-                    $parentClass = get_class($throughParent);
-
-                    throw new Exception(
-                        <<<EOT
-This query requires an additional trait. Please add the $traitClass trait to $parentClass.
-See https://github.com/staudenmeir/eloquent-has-many-deep/issues/137 for details.
-EOT
-                    );
-                }
-
-                $table = $throughParent->getTable() . ' as ' . $this->getRelationCountHash();
-
-                $throughParent->setTable($table);
-
-                break;
-            }
-        }
+        $this->setRelationExistenceQueryAlias($parentQuery);
 
         if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
             $this->performJoin($query);
@@ -87,5 +67,37 @@ EOT
             '=',
             $this->getQualifiedFirstKeyName()
         );
+    }
+
+    /**
+     * Set the table alias for a relation existence query if necessary.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
+     * @return void
+     */
+    protected function setRelationExistenceQueryAlias(Builder $parentQuery): void
+    {
+        foreach ($this->throughParents as $throughParent) {
+            if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
+                if (!in_array(HasTableAlias::class, class_uses_recursive($throughParent))) {
+                    $traitClass = HasTableAlias::class;
+                    $parentClass = get_class($throughParent);
+
+                    throw new Exception(
+                        <<<EOT
+This query requires an additional trait. Please add the $traitClass trait to $parentClass.
+See https://github.com/staudenmeir/eloquent-has-many-deep/issues/137 for details.
+EOT
+                    );
+                }
+
+                $table = $throughParent->getTable() . ' as ' . $this->getRelationCountHash();
+
+                $throughParent->setTable($table);
+
+                break;
+            }
+        }
     }
 }
