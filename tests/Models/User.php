@@ -54,6 +54,11 @@ class User extends Model
 
     public function teamPosts(): HasManyDeep
     {
-        return $this->hasManyDeep(Post::class, [Team::class, static::class], ['id', null, 'user_id'], ['team_id']);
+        return $this->hasManyDeep(
+            Post::class,
+            [Team::class, static::class],
+            ['id', null, 'user_id'],
+            ['users.team_id']
+        );
     }
 }

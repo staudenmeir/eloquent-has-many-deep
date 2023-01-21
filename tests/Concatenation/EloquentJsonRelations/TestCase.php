@@ -6,6 +6,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase as Base;
+use Tests\Concatenation\EloquentJsonRelations\Models\Permission;
 use Tests\Concatenation\EloquentJsonRelations\Models\Project;
 use Tests\Concatenation\EloquentJsonRelations\Models\Role;
 use Tests\Concatenation\EloquentJsonRelations\Models\User;
@@ -56,6 +57,11 @@ abstract class TestCase extends Base
             $table->json('options');
         });
 
+        DB::schema()->create('permissions', function (Blueprint $table) {
+            $table->unsignedInteger('id');
+            $table->unsignedInteger('role_id');
+        });
+
         DB::schema()->create('projects', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->unsignedInteger('user_id');
@@ -93,6 +99,12 @@ abstract class TestCase extends Base
                 ],
             ],
         ]);
+
+        Permission::create(['id' => 81, 'role_id' => 1]);
+        Permission::create(['id' => 82, 'role_id' => 1]);
+        Permission::create(['id' => 83, 'role_id' => 2]);
+        Permission::create(['id' => 84, 'role_id' => 3]);
+        Permission::create(['id' => 85, 'role_id' => 4]);
 
         Project::create([
              'id' => 71,
