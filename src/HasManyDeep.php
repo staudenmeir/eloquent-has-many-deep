@@ -3,13 +3,13 @@
 namespace Staudenmeir\EloquentHasManyDeep;
 
 use Closure;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\ExecutesQueries;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLoading;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasExistenceQueries;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsConcatenable;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\JoinsThroughParents;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables;
@@ -25,6 +25,8 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
     use ExecutesQueries;
     use HasEagerLimit;
+    use HasEagerLoading;
+    use HasExistenceQueries;
     use IsConcatenable;
     use IsCustomizable;
     use JoinsThroughParents;
@@ -135,59 +137,6 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     }
 
     /**
-     * Set the constraints for an eager load of the relation.
-     *
-     * @param array $models
-     * @return void
-     */
-    public function addEagerConstraints(array $models)
-    {
-        if ($this->customEagerConstraintsCallback) {
-            ($this->customEagerConstraintsCallback)($this->query, $models);
-            return;
-        }
-
-        if ($this->hasLeadingCompositeKey()) {
-            $this->addEagerConstraintsWithCompositeKey($models);
-        } else {
-            parent::addEagerConstraints($models);
-
-            if (is_array($this->foreignKeys[0])) {
-                $this->query->where(
-                    $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
-                    '=',
-                    $this->farParent->getMorphClass()
-                );
-            }
-        }
-    }
-
-    /**
-     * Match the eagerly loaded results to their parents.
-     *
-     * @param array $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @param string $relation
-     * @return array
-     */
-    public function match(array $models, Collection $results, $relation)
-    {
-        if ($this->customEagerMatchingCallbacks) {
-            foreach ($this->customEagerMatchingCallbacks as $callback) {
-                $models = $callback($models, $results, $relation);
-            }
-
-            return $models;
-        }
-
-        if ($this->hasLeadingCompositeKey()) {
-            return $this->matchWithCompositeKey($models, $results, $relation);
-        }
-
-        return parent::match($models, $results, $relation);
-    }
-
-    /**
      * Set the select clause for the relation query.
      *
      * @param array $columns
@@ -215,86 +164,6 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         }
 
         return array_merge($columns, $this->intermediateColumns());
-    }
-
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
-     * @param array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
-    {
-        foreach ($this->throughParents as $throughParent) {
-            if ($throughParent->getTable() === $parentQuery->getQuery()->from) {
-                if (!in_array(HasTableAlias::class, class_uses_recursive($throughParent))) {
-                    $traitClass = HasTableAlias::class;
-                    $parentClass = get_class($throughParent);
-
-                    throw new Exception(
-                        <<<EOT
-This query requires an additional trait. Please add the $traitClass trait to $parentClass.
-See https://github.com/staudenmeir/eloquent-has-many-deep/issues/137 for details.
-EOT
-                    );
-                }
-
-                $table = $throughParent->getTable() . ' as ' . $this->getRelationCountHash();
-
-                $throughParent->setTable($table);
-
-                break;
-            }
-        }
-
-        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
-            $this->performJoin($query);
-
-            $closureKey = $this->firstKey instanceof Closure ? $this->firstKey : $this->localKey;
-
-            $closureKey($query, $parentQuery);
-
-            return $query->select($columns);
-        }
-
-        $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);
-
-        if (is_array($this->foreignKeys[0])) {
-            $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
-
-            $query->where($column, '=', $this->farParent->getMorphClass());
-        } elseif ($this->hasLeadingCompositeKey()) {
-            $this->getRelationExistenceQueryWithCompositeKey($query);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Add the constraints for a relationship query on the same table.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
-     * @param array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*'])
-    {
-        $hash = $this->getRelationCountHash();
-
-        $query->from($query->getModel()->getTable().' as '.$hash);
-
-        $this->performJoin($query);
-
-        $query->getModel()->setTable($hash);
-
-        return $query->select($columns)->whereColumn(
-            $parentQuery->getQuery()->from.'.'.$this->localKey,
-            '=',
-            $this->getQualifiedFirstKeyName()
-        );
     }
 
     /**
