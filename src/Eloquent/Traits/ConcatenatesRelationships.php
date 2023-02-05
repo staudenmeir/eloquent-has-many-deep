@@ -4,6 +4,7 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Traits;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\ThirdParty\LaravelHasManyMerged\HasManyMerged;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
@@ -99,6 +100,11 @@ trait ConcatenatesRelationships
         $customEagerMatchingCallback = null;
 
         foreach ($relations as $i => $relation) {
+            // https://github.com/korridor/laravel-has-many-merged
+            if (is_a($relation, 'Korridor\LaravelHasManyMerged\HasManyMerged', true)) {
+                $relation = HasManyMerged::fromBaseRelation($relation);
+            }
+
             if ($relation instanceof ConcatenableRelation) {
                 [$through, $foreignKeys, $localKeys] = $relation->appendToDeepRelationship(
                     $through,

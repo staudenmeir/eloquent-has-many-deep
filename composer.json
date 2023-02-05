@@ -20,7 +20,8 @@
         "staudenmeir/eloquent-eager-limit": "^1.7",
         "staudenmeir/eloquent-json-relations": "^1.7",
         "staudenmeir/laravel-adjacency-list": "^1.12",
-        "nesbot/carbon": "^2.62.1"
+        "nesbot/carbon": "^2.62.1",
+        "korridor/laravel-has-many-merged": "^0.0.3"
     },
     "autoload": {
         "psr-4": {

@@ -129,6 +129,7 @@ Make sure to qualify the constraints' column names if they appear in multiple ta
 
 Besides native Laravel relationships, you can also concatenate relationships from these third-party packages:
 
+- https://github.com/korridor/laravel-has-many-merged: `HasManyMerged`
 - https://github.com/staudenmeir/eloquent-json-relations: `BelongsToJson`, `HasManyJson`, `HasManyThroughJson`
 - https://github.com/staudenmeir/laravel-adjacency-list: [Tree relationships](https://github.com/staudenmeir/laravel-adjacency-list#concatenation)
 - https://github.com/topclaudy/compoships: `BelongsTo`, `HasMany`, `HasOne`
