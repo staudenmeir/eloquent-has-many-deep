@@ -2,6 +2,7 @@
 
 namespace Tests\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
@@ -127,22 +128,22 @@ class Country extends Model
         return $this->hasManyThrough(Post::class, User::class);
     }
 
-    public function postsWithConstraints()
+    public function postsWithConstraints(): HasManyThrough
     {
         return $this->posts()->where('posts.published', true);
     }
 
-    public function postsWithTrashedParents()
+    public function postsWithTrashedParents(): HasManyThrough
     {
         return $this->posts()->withTrashedParents();
     }
 
-    public function roles()
+    public function roles(): HasManyDeep
     {
         return $this->hasManyDeep(Role::class, [User::class, 'role_user']);
     }
 
-    public function usersWithTrashed()
+    public function usersWithTrashed(): HasMany
     {
         return $this->hasMany(User::class)->withTrashed();
     }
