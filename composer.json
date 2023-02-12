@@ -16,7 +16,7 @@
     "require-dev": {
         "awobaz/compoships": "^2.2",
         "illuminate/pagination": "^10.0",
-        "phpunit/phpunit": "^9.5.27",
+        "phpunit/phpunit": "^10.0",
         "staudenmeir/eloquent-eager-limit": "^1.8",
         "staudenmeir/eloquent-json-relations": "^1.8",
         "staudenmeir/laravel-adjacency-list": "^1.13"
