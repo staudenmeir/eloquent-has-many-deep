@@ -25,13 +25,13 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 
 | Laravel | Package |
 |:--------|:--------|
-| 5.5–5.7 | 1.7     |
-| 5.8     | 1.8     |
-| 6.x     | 1.11    |
-| 7.x     | 1.12    |
-| 8.x     | 1.14    |
-| 9.x     | 1.17    |
 | 10.x    | 1.18    |
+| 9.x     | 1.17    |
+| 8.x     | 1.14    |
+| 7.x     | 1.12    |
+| 6.x     | 1.11    |
+| 5.8     | 1.8     |
+| 5.5–5.7 | 1.7     |
 
 ## Usage
 
