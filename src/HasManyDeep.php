@@ -151,7 +151,13 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         $alias = 'laravel_through_key';
 
         if ($this->customThroughKeyCallback) {
-            $columns[] = ($this->customThroughKeyCallback)($alias);
+            $throughKey = ($this->customThroughKeyCallback)($alias);
+
+            if (is_array($throughKey)) {
+                $columns = array_merge($columns, $throughKey);
+            } else {
+                $columns[] = $throughKey;
+            }
         } else {
             $columns[] = $this->getQualifiedFirstKeyName() . " as $alias";
         }
