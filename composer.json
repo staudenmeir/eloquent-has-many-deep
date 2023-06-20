@@ -18,8 +18,8 @@
         "illuminate/pagination": "^9.0",
         "phpunit/phpunit": "^9.5",
         "staudenmeir/eloquent-eager-limit": "^1.7",
-        "staudenmeir/eloquent-json-relations": "^1.7",
-        "staudenmeir/laravel-adjacency-list": "^1.12",
+        "staudenmeir/eloquent-json-relations": "^1.7.2",
+        "staudenmeir/laravel-adjacency-list": "^1.12.5",
         "nesbot/carbon": "^2.62.1",
         "korridor/laravel-has-many-merged": "^0.0.3"
     },

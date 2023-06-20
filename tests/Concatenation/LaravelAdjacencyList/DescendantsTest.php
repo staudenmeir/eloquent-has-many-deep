@@ -47,6 +47,16 @@ class DescendantsTest extends TestCase
         $this->assertEquals([100, 110], $users[9]->descendantPostsAndSelf->pluck('id')->all());
     }
 
+    public function testEagerLoadingWithHasOneDeep()
+    {
+        $users = User::with('descendantPost')->get();
+
+        $this->assertEquals(20, $users[0]->descendantPost->id);
+        $this->assertEquals(50, $users[1]->descendantPost->id);
+        $this->assertNull($users[8]->descendantPost);
+        $this->assertEquals(100, $users[9]->descendantPost->id);
+    }
+
     public function testLazyEagerLoading()
     {
         $users = User::all()->load('descendantPosts');
