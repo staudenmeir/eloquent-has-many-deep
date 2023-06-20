@@ -50,6 +50,18 @@ class AncestorsTest extends TestCase
         $this->assertEquals([100, 110], $users[10]->ancestorAndSelfPosts->pluck('id')->all());
     }
 
+    public function testEagerLoadingWithHasOneDeep()
+    {
+        $users = User::with([
+            'ancestorPost' => fn (HasManyDeep $query) => $query->orderBy('id'),
+        ])->get();
+
+        $this->assertNull($users[0]->ancestorPost);
+        $this->assertEquals(10, $users[1]->ancestorPost->id);
+        $this->assertEquals(10, $users[7]->ancestorPost->id);
+        $this->assertNull($users[10]->ancestorPost);
+    }
+
     public function testLazyEagerLoading()
     {
         $users = User::all()->load([
