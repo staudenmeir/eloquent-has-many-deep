@@ -46,6 +46,14 @@ class HasOneDeep extends HasManyDeep
      */
     public function match(array $models, Collection $results, $relation)
     {
+        if ($this->customEagerMatchingCallbacks) {
+            foreach ($this->customEagerMatchingCallbacks as $callback) {
+                $models = $callback($models, $results, $relation, 'one');
+            }
+
+            return $models;
+        }
+
         $dictionary = $this->buildDictionary($results);
 
         foreach ($models as $model) {
