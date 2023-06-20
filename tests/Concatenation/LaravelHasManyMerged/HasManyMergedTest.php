@@ -5,7 +5,7 @@ namespace Tests\Concatenation\LaravelHasManyMerged;
 use Tests\Concatenation\LaravelHasManyMerged\Models\Country;
 use Tests\Concatenation\LaravelHasManyMerged\Models\User;
 
-class LaravelHasManyMergedTest extends TestCase
+class HasManyMergedTest extends TestCase
 {
     public function testLazyLoadingWithLeadingKey()
     {
