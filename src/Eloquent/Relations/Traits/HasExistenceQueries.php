@@ -72,7 +72,6 @@ trait HasExistenceQueries
     /**
      * Set the table alias for a relation existence query if necessary.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \Illuminate\Database\Eloquent\Builder $parentQuery
      * @return void
      */
