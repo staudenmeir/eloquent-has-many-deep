@@ -37,7 +37,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
         } else {
             $foreignKeys[] = function (Builder $query, JoinClause $join) {
                 $join->on(
-                    function (JoinClause $join) use ($query) {
+                    function (JoinClause $join) {
                         foreach ($this->foreignKeys as $foreignKey) {
                             $join->orOn($foreignKey, '=', $this->getQualifiedParentKeyName());
                         }

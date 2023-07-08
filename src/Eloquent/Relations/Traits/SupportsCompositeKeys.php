@@ -55,7 +55,7 @@ trait SupportsCompositeKeys
         )->values()->unique(null, true)->all();
 
         $this->query->where(
-            function (Builder $query) use ($models, $keys) {
+            function (Builder $query) use ($keys) {
                 foreach ($keys as $key) {
                     $query->orWhere(
                         function (Builder $query) use ($key) {
