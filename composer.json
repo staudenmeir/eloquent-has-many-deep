@@ -20,7 +20,8 @@
         "staudenmeir/eloquent-eager-limit": "^1.8",
         "staudenmeir/eloquent-json-relations": "^1.8.2",
         "staudenmeir/laravel-adjacency-list": "^1.13.7",
-        "korridor/laravel-has-many-merged": "^1.0"
+        "korridor/laravel-has-many-merged": "^1.0",
+        "phpstan/phpstan": "^1.10"
     },
     "autoload": {
         "psr-4": {
