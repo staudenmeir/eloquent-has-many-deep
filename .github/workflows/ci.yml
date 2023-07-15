@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   tests:
@@ -8,9 +8,9 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.2, 8.1]
-        database: [mysql, sqlite]
-        release: [stable, lowest]
+        php: [ 8.2, 8.1 ]
+        database: [ mysql, sqlite ]
+        release: [ stable, lowest ]
         include:
           - php: 8.2
             release: stable
