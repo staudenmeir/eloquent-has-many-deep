@@ -2,7 +2,6 @@
 
 namespace Tests\Concatenation\LaravelHasManyMerged\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Korridor\LaravelHasManyMerged\HasManyMerged;
 use Korridor\LaravelHasManyMerged\HasManyMergedRelation;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;

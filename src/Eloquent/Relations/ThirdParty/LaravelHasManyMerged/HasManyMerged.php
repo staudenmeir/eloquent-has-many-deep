@@ -139,11 +139,11 @@ class HasManyMerged extends Base implements ConcatenableRelation
      * Create a new instance of the relation from a base relation instance.
      *
      * @param \Korridor\LaravelHasManyMerged\HasManyMerged $relation
-     * @return static
+     * @return self
      */
-    public static function fromBaseRelation(Base $relation): static
+    public static function fromBaseRelation(Base $relation): self
     {
-        return new static(
+        return new self(
             $relation->getQuery(),
             $relation->getParent(),
             $relation->getQualifiedForeignKeyNames(),

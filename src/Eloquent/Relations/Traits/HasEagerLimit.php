@@ -4,6 +4,7 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use RuntimeException;
+use Staudenmeir\EloquentEagerLimit\Grammars\XGrammar;
 
 trait HasEagerLimit
 {
@@ -37,13 +38,17 @@ trait HasEagerLimit
 
             $column = $this->getQualifiedFirstKeyName();
 
+            /** @var XGrammar $grammar TODO */
             $grammar = $this->query->getQuery()->getGrammar();
 
             if ($grammar instanceof MySqlGrammar && $grammar->useLegacyGroupLimit($this->query->getQuery())) {
                 $column = 'laravel_through_key';
             }
 
-            $this->query->groupLimit($value, $column);
+            /** @var \Staudenmeir\EloquentEagerLimit\Builder $query TODO */
+            $query = $this->query;
+
+            $query->groupLimit($value, $column);
         }
 
         return $this;

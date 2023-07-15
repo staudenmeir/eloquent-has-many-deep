@@ -2,7 +2,6 @@
 
 namespace Tests\Concatenation\LaravelAdjacencyList\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
@@ -21,7 +20,7 @@ class User extends Model
     {
         return $this->hasOneDeepFromRelations(
             $this->ancestors(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -29,7 +28,7 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->ancestors(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -37,7 +36,7 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->ancestorsAndSelf(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -45,7 +44,7 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->bloodline(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -53,7 +52,7 @@ class User extends Model
     {
         return $this->hasOneDeepFromRelations(
             $this->descendants(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -61,7 +60,7 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->descendants(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 
@@ -69,7 +68,7 @@ class User extends Model
     {
         return $this->hasManyDeepFromRelations(
             $this->descendantsAndSelf(),
-            (new static())->posts()
+            (new self())->posts()
         );
     }
 

@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Concatenation\EloquentJsonRelations\Models;
+namespace Tests\Concatenation\LaravelAdjacencyList\Models;
 
 use Illuminate\Database\Eloquent\Model as Base;
-use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
  * @method static static create(array $attributes = [])
@@ -14,7 +13,5 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  */
 abstract class Model extends Base
 {
-    use HasJsonRelationships;
-
-    public $timestamps = false;
+    //
 }
