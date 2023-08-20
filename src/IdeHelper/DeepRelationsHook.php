@@ -41,31 +41,36 @@ class DeepRelationsHook implements ModelHookInterface
                 continue;
             }
 
-            $isHasOneDeep = $relation instanceof HasOneDeep;
+            $this->addRelation($command, $method, $relation);
+        }
+    }
 
-            $type = $isHasOneDeep
-                ? '\\' . $relation->getRelated()::class
-                : '\\' . Collection::class . '|\\' . $relation->getRelated()::class . '[]';
+    protected function addRelation(ModelsCommand $command, ReflectionMethod $method, HasManyDeep $relation): void
+    {
+        $isHasOneDeep = $relation instanceof HasOneDeep;
 
+        $type = $isHasOneDeep
+            ? '\\' . $relation->getRelated()::class
+            : '\\' . Collection::class . '|\\' . $relation->getRelated()::class . '[]';
+
+        $command->setProperty(
+            $method->getName(),
+            $type,
+            true,
+            false,
+            '',
+            $isHasOneDeep
+        );
+
+        if (!$isHasOneDeep) {
             $command->setProperty(
-                $method->getName(),
-                $type,
+                Str::snake($method->getName()) . '_count',
+                'int',
                 true,
                 false,
-                '',
-                $isHasOneDeep
+                null,
+                true
             );
-
-            if (!$isHasOneDeep) {
-                $command->setProperty(
-                    Str::snake($method->getName()) . '_count',
-                    'int',
-                    true,
-                    false,
-                    null,
-                    true
-                );
-            }
         }
     }
 }
