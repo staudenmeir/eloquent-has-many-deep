@@ -21,7 +21,9 @@
         "staudenmeir/eloquent-json-relations": "^1.8.2",
         "staudenmeir/laravel-adjacency-list": "^1.13.7",
         "korridor/laravel-has-many-merged": "^1.0",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "barryvdh/laravel-ide-helper": "^2.13",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
