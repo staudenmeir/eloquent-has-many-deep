@@ -4,7 +4,6 @@ namespace Staudenmeir\EloquentHasManyDeep\IdeHelper;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -13,6 +12,7 @@ use ReflectionMethod;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+use Throwable;
 
 class DeepRelationsHook implements ModelHookInterface
 {
@@ -33,7 +33,7 @@ class DeepRelationsHook implements ModelHookInterface
 
             try {
                 $relation = $method->invoke($model);
-            } catch (Exception) {
+            } catch (Throwable) {
                 continue;
             }
 
