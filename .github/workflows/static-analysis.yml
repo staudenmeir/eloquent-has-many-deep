@@ -11,9 +11,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/composer/files
-          key: php-8.2-composer-${{ hashFiles('**/composer.json') }}
+          key: php-8.3-composer-${{ hashFiles('**/composer.json') }}
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
       - run: composer update --no-interaction --no-progress --prefer-dist
       - run: vendor/bin/phpstan analyse --error-format=github

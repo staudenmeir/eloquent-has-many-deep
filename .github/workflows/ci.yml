@@ -12,7 +12,7 @@ jobs:
         database: [ mysql, sqlite ]
         release: [ stable, lowest ]
         include:
-          - php: 8.2
+          - php: 8.3
             release: stable
             coverage: xdebug
 
