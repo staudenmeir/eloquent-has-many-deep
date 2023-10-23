@@ -23,11 +23,19 @@
         "korridor/laravel-has-many-merged": "^1.0",
         "phpstan/phpstan": "^1.10",
         "barryvdh/laravel-ide-helper": "^2.13",
-        "mockery/mockery": "^1.6"
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^8.13"
     },
     "autoload": {
         "psr-4": {
             "Staudenmeir\\EloquentHasManyDeep\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Staudenmeir\\EloquentHasManyDeep\\Providers\\EloquentHasManyDeepServiceProvider"
+            ]
         }
     },
     "autoload-dev": {

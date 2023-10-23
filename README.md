@@ -661,11 +661,76 @@ class Comment extends Model
 
 ### IDE Helper
 
-If you are using [barryvdh/laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper), this package provides
-a [model hook](https://github.com/barryvdh/laravel-ide-helper#model-hooks) that will correctly add relations when
-generating the type hints. To get the correct type hints, in
-the [ide-helper.php](https://github.com/barryvdh/laravel-ide-helper/blob/master/config/ide-helper.php) config file,
-add `\Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook::class` to the `model_hooks` array.
+If you are using [barryvdh/laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper), this package provides a model hook that will correctly add relations when generating the type hints. 
+The model hook is **enabled by default** using [Package Discovery](https://laravel.com/docs/10.x/packages#package-discovery).
+
+To enable it manually, add [model hook](https://github.com/barryvdh/laravel-ide-helper#model-hooks) to the model_hooks array.
+
+```php
+    // File: config/ide-helper.php
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models hooks
+    |--------------------------------------------------------------------------
+    |
+    | Define which hook classes you want to run for models to add custom information
+    |
+    | Hooks should implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface.
+    |
+    */
+
+    'model_hooks' => [
+        \Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook::class,
+    ],
+```
+
+To disable the model hook you have 3 options:
+
+ - [Disable using .env](#disable-using-env)
+ - [Disable using config](#disable-using-config)
+ - [Disable by option out of Package Discovery](#disable-by-opting-out-of-package-discovery)
+
+#### Disable using .env
+Update your `.env` file to include:
+
+```dotenv
+ELOQUENT_HAS_MANY_DEEP_IDE_HELPER_ENABLED=false
+```
+
+#### Disable using config
+Publish the config and disable the setting directly:
+
+```
+php artisan vendor:publish --tag=eloquent-has-many-deep
+```
+
+```php
+    // File: config/eloquent-has-many-deep.php
+    
+    /*
+    |--------------------------------------------------------------------------
+    | IDE Helper
+    |--------------------------------------------------------------------------
+    |
+    | Automatically register the model hook to receive correct type hints
+    |
+    */
+    'ide_helper_enabled' => false,
+```
+
+#### Disable by opting out of Package Discovery
+Update your `composer.json` with the following:
+
+```json
+"extra": {
+    "laravel": {
+        "dont-discover": [
+            "staudenmeir/eloquent-has-many-deep"
+        ]
+    }
+},
+```
 
 ## Contributing
 
