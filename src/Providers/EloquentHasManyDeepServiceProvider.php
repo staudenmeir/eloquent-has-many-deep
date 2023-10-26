@@ -21,14 +21,6 @@ class EloquentHasManyDeepServiceProvider extends ServiceProvider
 
     protected function registerIDEHelperHook(): void
     {
-        if (! $this->app->runningInConsole()) {
-            return;
-        }
-
-        if ($this->app->isProduction()) {
-            return;
-        }
-
         /** @var Config $config */
         $config = $this->app->get('config');
 
