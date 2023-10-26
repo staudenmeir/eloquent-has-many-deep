@@ -2,11 +2,13 @@
 
 namespace Staudenmeir\EloquentHasManyDeep\Providers;
 
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 
-class EloquentHasManyDeepServiceProvider extends ServiceProvider
+class EloquentHasManyDeepServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     public function boot(): void
     {
@@ -19,16 +21,19 @@ class EloquentHasManyDeepServiceProvider extends ServiceProvider
         $this->registerIDEHelperHook();
     }
 
+    public function provides(): array
+    {
+        return [
+            ModelsCommand::class,
+        ];
+    }
+
     protected function registerIDEHelperHook(): void
     {
         /** @var Config $config */
         $config = $this->app->get('config');
 
         if (! $config->get('eloquent-has-many-deep.ide_helper_enabled')) {
-            return;
-        }
-
-        if (! $config->has('ide-helper.model_hooks')) {
             return;
         }
 

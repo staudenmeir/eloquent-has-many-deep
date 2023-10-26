@@ -20,8 +20,11 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
         ];
     }
 
-    public function testRegistrationOfModelHook(): void
+    public function testAutoRegistrationOfModelHook(): void
     {
+        $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
+        $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
+
         /** @var Config $config */
         $config = $this->app->get('config');
 
@@ -29,5 +32,28 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
             DeepRelationsHook::class,
             $config->get('ide-helper.model_hooks'),
         );
+    }
+
+    /**
+     * @test
+     * @define-env usesIdeHelperDisabledInConfig
+     */
+    public function testDisabledRegistrationOfModelHookFromConfig(): void
+    {
+        $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
+        $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
+
+        /** @var Config $config */
+        $config = $this->app->get('config');
+
+        static::assertNotContains(
+            DeepRelationsHook::class,
+            $config->get('ide-helper.model_hooks'),
+        );
+    }
+
+    protected function usesIdeHelperDisabledInConfig($app): void
+    {
+        $app['config']->set('eloquent-has-many-deep.ide_helper_enabled', false);
     }
 }
