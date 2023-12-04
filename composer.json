@@ -19,6 +19,7 @@
         "illuminate/pagination": "^10.0",
         "korridor/laravel-has-many-merged": "^1.0",
         "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^8.13",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.1",
         "staudenmeir/eloquent-eager-limit": "^1.8",
@@ -33,6 +34,13 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Staudenmeir\\EloquentHasManyDeep\\Providers\\EloquentHasManyDeepServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
