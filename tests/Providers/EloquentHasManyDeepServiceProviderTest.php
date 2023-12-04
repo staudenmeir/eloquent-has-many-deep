@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Providers;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use Illuminate\Contracts\Config\Repository as Config;
 use Orchestra\Testbench\TestCase;
 use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 use Staudenmeir\EloquentHasManyDeep\Providers\EloquentHasManyDeepServiceProvider;
@@ -25,10 +24,10 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
         $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
         $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
 
-        /** @var Config $config */
+        /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $this->app->get('config');
 
-        static::assertContains(
+        $this->assertContains(
             DeepRelationsHook::class,
             $config->get('ide-helper.model_hooks'),
         );
@@ -43,10 +42,10 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
         $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
         $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
 
-        /** @var Config $config */
+        /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $this->app->get('config');
 
-        static::assertNotContains(
+        $this->assertNotContains(
             DeepRelationsHook::class,
             $config->get('ide-helper.model_hooks'),
         );

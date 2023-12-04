@@ -662,7 +662,7 @@ class Comment extends Model
 ### IDE Helper
 
 If you are using [barryvdh/laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper), this package provides a model hook that will correctly add relations when generating the type hints. 
-The model hook is **enabled by default** using [Package Discovery](https://laravel.com/docs/10.x/packages#package-discovery).
+The model hook is **enabled by default** using [Package Discovery](https://laravel.com/docs/packages#package-discovery).
 
 To enable it manually, add [model hook](https://github.com/barryvdh/laravel-ide-helper#model-hooks) to the model_hooks array.
 
