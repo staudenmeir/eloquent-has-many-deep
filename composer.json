@@ -42,7 +42,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Staudenmeir\\EloquentHasManyDeep\\EloquentHasManyDeepServiceProvider"
+                "Staudenmeir\\EloquentHasManyDeep\\IdeHelperServiceProvider"
             ]
         }
     },

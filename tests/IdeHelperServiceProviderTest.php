@@ -4,25 +4,18 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider as BarryvdhIdeHelperServiceProvider;
+use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase;
+use Staudenmeir\EloquentHasManyDeep\IdeHelperServiceProvider;
 use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
-use Staudenmeir\EloquentHasManyDeep\EloquentHasManyDeepServiceProvider;
 
-class EloquentHasManyDeepServiceProviderTest extends TestCase
+class IdeHelperServiceProviderTest extends TestCase
 {
-    protected function getPackageProviders($app): array
-    {
-        return [
-            IdeHelperServiceProvider::class,
-            EloquentHasManyDeepServiceProvider::class,
-        ];
-    }
-
     public function testAutoRegistrationOfModelHook(): void
     {
+        $this->app->loadDeferredProvider(BarryvdhIdeHelperServiceProvider::class);
         $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
-        $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
 
         /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $this->app->get('config');
@@ -34,13 +27,12 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
     }
 
     /**
-     * @test
      * @define-env usesIdeHelperDisabledInConfig
      */
     public function testDisabledRegistrationOfModelHookFromConfig(): void
     {
+        $this->app->loadDeferredProvider(BarryvdhIdeHelperServiceProvider::class);
         $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
-        $this->app->loadDeferredProvider(EloquentHasManyDeepServiceProvider::class);
 
         /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $this->app->get('config');
@@ -51,8 +43,16 @@ class EloquentHasManyDeepServiceProviderTest extends TestCase
         );
     }
 
-    protected function usesIdeHelperDisabledInConfig($app): void
+    protected function usesIdeHelperDisabledInConfig(Application $app): void
     {
         $app['config']->set('eloquent-has-many-deep.ide_helper_enabled', false);
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            BarryvdhIdeHelperServiceProvider::class,
+            IdeHelperServiceProvider::class,
+        ];
     }
 }

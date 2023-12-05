@@ -7,7 +7,7 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 
-class EloquentHasManyDeepServiceProvider extends ServiceProvider implements DeferrableProvider
+class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     public function boot(): void
     {
@@ -37,9 +37,13 @@ class EloquentHasManyDeepServiceProvider extends ServiceProvider implements Defe
             return;
         }
 
-        $config->set('ide-helper.model_hooks', array_merge([
-            DeepRelationsHook::class,
-        ], $config->get('ide-helper.model_hooks', [])));
+        $config->set(
+            'ide-helper.model_hooks',
+            array_merge(
+                [DeepRelationsHook::class],
+                $config->get('ide-helper.model_hooks', [])
+            )
+        );
     }
 
     protected function publishConfig(): void
