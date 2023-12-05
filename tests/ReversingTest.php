@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Facades\Schema;
 use Tests\Models\Comment;
 use Tests\Models\Permission;
 
@@ -38,7 +38,7 @@ class ReversingTest extends TestCase
 
     public function testCustomThroughTable()
     {
-        DB::schema()->rename('users', 'my_users');
+        Schema::rename('users', 'my_users');
 
         $country = Comment::find(31)->countryWithCustomThroughTable;
 

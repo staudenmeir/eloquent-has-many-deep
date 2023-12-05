@@ -3,10 +3,11 @@
 namespace Tests;
 
 use Carbon\Carbon;
-use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use PHPUnit\Framework\TestCase as Base;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Orchestra\Testbench\TestCase as Base;
 use Tests\Models\Club;
 use Tests\Models\Comment;
 use Tests\Models\Country;
@@ -24,112 +25,116 @@ use Tests\Models\WorkStream;
 
 abstract class TestCase extends Base
 {
+    protected string $database;
+
     protected function setUp(): void
     {
+        $this->database = getenv('DATABASE') ?: 'sqlite';
+
         parent::setUp();
 
-        $config = require __DIR__.'/config/database.php';
+        $this->migrateDatabase();
 
-        $db = new DB();
-        $db->addConnection($config[getenv('DATABASE') ?: 'sqlite']);
-        $db->setAsGlobal();
-        $db->bootEloquent();
-
-        $this->migrate();
-
-        $this->seed();
+        $this->seedDatabase();
     }
 
-    protected function migrate(): void
+    protected function tearDown(): void
     {
-        DB::schema()->dropAllTables();
+        DB::connection()->disconnect();
 
-        DB::schema()->create('countries', function (Blueprint $table) {
+        parent::tearDown();
+    }
+
+    protected function migrateDatabase(): void
+    {
+        Schema::dropAllTables();
+
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
         });
 
-        DB::schema()->create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('team_id');
             $table->softDeletes();
         });
 
-        DB::schema()->create('posts', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->boolean('published');
         });
 
-        DB::schema()->create('comments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->softDeletes();
         });
 
-        DB::schema()->create('clubs', function (Blueprint $table) {
+        Schema::create('clubs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
         });
 
-        DB::schema()->create('teams', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('club_id');
         });
 
-        DB::schema()->create('roles', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
         });
 
-        DB::schema()->create('permissions', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('role_id');
         });
 
-        DB::schema()->create('role_user', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('user_id');
         });
 
-        DB::schema()->create('likes', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->morphs('likeable');
             $table->unsignedBigInteger('user_id');
         });
 
-        DB::schema()->create('tags', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
         });
 
-        DB::schema()->create('taggables', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->unsignedBigInteger('tag_id');
             $table->morphs('taggable');
         });
 
-        DB::schema()->create('projects', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
         });
 
-        DB::schema()->create('work_streams', function (Blueprint $table) {
+        Schema::create('work_streams', function (Blueprint $table) {
             $table->id();
         });
 
-        DB::schema()->create('tasks', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('team_id');
             $table->unsignedBigInteger('work_stream_id');
         });
 
-        DB::schema()->create('employees', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('team_id');
             $table->unsignedBigInteger('work_stream_id');
         });
     }
 
-    protected function seed(): void
+    protected function seedDatabase(): void
     {
         Model::unguard();
 
@@ -204,5 +209,14 @@ abstract class TestCase extends Base
         Employee::create(['id' => 134, 'team_id' => 51, 'work_stream_id' => 114]);
 
         Model::reguard();
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        $config = require __DIR__.'/config/database.php';
+
+        $app['config']->set('database.default', 'testing');
+
+        $app['config']->set('database.connections.testing', $config[$this->database]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tests\Concatenation\EloquentJsonRelations\BelongsToJson;
 
-use Illuminate\Database\Capsule\Manager as DB;
 use Tests\Concatenation\EloquentJsonRelations\Models\User;
 use Tests\Concatenation\EloquentJsonRelations\TestCase;
 
@@ -12,7 +11,7 @@ class FirstPositionTest extends TestCase
     {
         parent::setUp();
 
-        if (DB::connection()->getDriverName() === 'sqlite') {
+        if ($this->database === 'sqlite') {
             $this->markTestSkipped();
         }
     }

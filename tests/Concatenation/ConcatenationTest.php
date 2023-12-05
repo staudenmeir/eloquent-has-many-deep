@@ -2,7 +2,7 @@
 
 namespace Tests\Concatenation;
 
-use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Facades\Schema;
 use Tests\Models\Country;
 use Tests\Models\Employee;
 use Tests\Models\Post;
@@ -71,7 +71,7 @@ class ConcatenationTest extends TestCase
 
     public function testWithCustomRelatedTable()
     {
-        DB::schema()->rename('comments', 'my_comments');
+        Schema::rename('comments', 'my_comments');
 
         $comments = Country::find(1)->commentsFromRelationsWithCustomRelatedTable;
 
@@ -80,7 +80,7 @@ class ConcatenationTest extends TestCase
 
     public function testWithCustomThroughTable()
     {
-        DB::schema()->rename('users', 'my_users');
+        Schema::rename('users', 'my_users');
 
         $comments = Country::find(1)->commentsFromRelationsWithCustomThroughTable;
 

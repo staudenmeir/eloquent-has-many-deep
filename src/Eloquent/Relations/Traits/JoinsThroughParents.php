@@ -52,7 +52,7 @@ trait JoinsThroughParents
         }
 
         if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-            $column= $throughParent->getQualifiedDeletedAtColumn();
+            $column = $throughParent->getQualifiedDeletedAtColumn();
 
             $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
                 $query->whereNull($column);

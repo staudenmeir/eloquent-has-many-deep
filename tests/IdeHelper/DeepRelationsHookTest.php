@@ -13,6 +13,7 @@ use Tests\IdeHelper\Models\User;
 class DeepRelationsHookTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
+
     protected function setUp(): void
     {
         parent::setUp();

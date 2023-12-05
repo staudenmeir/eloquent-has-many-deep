@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Providers;
+namespace Tests;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Orchestra\Testbench\TestCase;
 use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
-use Staudenmeir\EloquentHasManyDeep\Providers\EloquentHasManyDeepServiceProvider;
+use Staudenmeir\EloquentHasManyDeep\EloquentHasManyDeepServiceProvider;
 
 class EloquentHasManyDeepServiceProviderTest extends TestCase
 {

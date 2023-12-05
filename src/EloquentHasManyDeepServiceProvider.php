@@ -1,6 +1,6 @@
 <?php
 
-namespace Staudenmeir\EloquentHasManyDeep\Providers;
+namespace Staudenmeir\EloquentHasManyDeep;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
@@ -45,14 +45,14 @@ class EloquentHasManyDeepServiceProvider extends ServiceProvider implements Defe
     protected function publishConfig(): void
     {
         $this->publishes([
-            __DIR__ . '/../../config/eloquent-has-many-deep.php' => config_path('eloquent-has-many-deep.php'),
+            __DIR__ . '/../config/eloquent-has-many-deep.php' => config_path('eloquent-has-many-deep.php'),
         ], 'eloquent-has-many-deep');
     }
 
     protected function registerConfig(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/eloquent-has-many-deep.php',
+            __DIR__ . '/../config/eloquent-has-many-deep.php',
             'eloquent-has-many-deep',
         );
     }
