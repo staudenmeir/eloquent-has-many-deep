@@ -22,7 +22,7 @@ class DeepRelationsHook implements ModelHookInterface
         $traits = class_uses_recursive($model);
 
         if (!in_array(HasRelationships::class, $traits)) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         $methods = (new ReflectionClass($model))->getMethods(ReflectionMethod::IS_PUBLIC);
@@ -36,7 +36,7 @@ class DeepRelationsHook implements ModelHookInterface
             try {
                 $relationship = $method->invoke($model);
             } catch (Throwable) {
-                continue;
+                continue; // @codeCoverageIgnore
             }
 
             if ($relationship instanceof HasManyDeep) {
