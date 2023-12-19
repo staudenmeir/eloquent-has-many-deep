@@ -6,6 +6,7 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
@@ -27,31 +28,30 @@ class DeepRelationsHook implements ModelHookInterface
         $methods = (new ReflectionClass($model))->getMethods(ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
-            if ($method->isStatic() || $method->getNumberOfParameters() > 0) {
+            if ($method->isAbstract() || $method->isStatic() || !$method->isPublic()
+                || $method->getNumberOfParameters() > 0 || $method->getDeclaringClass()->getName() === Model::class) {
                 continue;
             }
 
             try {
-                $relation = $method->invoke($model);
+                $relationship = $method->invoke($model);
             } catch (Throwable) {
                 continue;
             }
 
-            if (!$relation instanceof HasManyDeep) {
-                continue;
+            if ($relationship instanceof HasManyDeep) {
+                $this->addRelationship($command, $method, $relationship);
             }
-
-            $this->addRelation($command, $method, $relation);
         }
     }
 
-    protected function addRelation(ModelsCommand $command, ReflectionMethod $method, HasManyDeep $relation): void
+    protected function addRelationship(ModelsCommand $command, ReflectionMethod $method, Relation $relationship): void
     {
-        $isHasOneDeep = $relation instanceof HasOneDeep;
+        $manyRelation = !$relationship instanceof HasOneDeep;
 
-        $type = $isHasOneDeep
-            ? '\\' . $relation->getRelated()::class
-            : '\\' . Collection::class . '|\\' . $relation->getRelated()::class . '[]';
+        $type = $manyRelation
+            ? '\\' . Collection::class . '|\\' . $relationship->getRelated()::class . '[]'
+            : '\\' . $relationship->getRelated()::class;
 
         $command->setProperty(
             $method->getName(),
@@ -59,10 +59,10 @@ class DeepRelationsHook implements ModelHookInterface
             true,
             false,
             '',
-            $isHasOneDeep
+            !$manyRelation
         );
 
-        if (!$isHasOneDeep) {
+        if ($manyRelation) {
             $command->setProperty(
                 Str::snake($method->getName()) . '_count',
                 'int',
