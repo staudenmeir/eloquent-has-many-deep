@@ -35,7 +35,7 @@ class DeepRelationsHook implements ModelHookInterface
 
             try {
                 $relationship = $method->invoke($model);
-            } catch (Throwable) {
+            } catch (Throwable) { // @codeCoverageIgnore
                 continue; // @codeCoverageIgnore
             }
 
