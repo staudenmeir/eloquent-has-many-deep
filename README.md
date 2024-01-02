@@ -400,6 +400,27 @@ class Country extends Model
 }
 ```
 
+#### Getting Unique Models
+Sometimes you have relationship which has duplicate models in the result. In simple case you call `unique` on final Collection and that's all.
+
+But if you need unique records on DB level (for example for pagination) you can use this approach:
+
+```php
+// HasManyDeep relation Warehouse -> WarehousePosition -> Product
+$warehouse->products()
+    // GROUP BY target table primary key
+    ->groupBy("products.id")
+
+    // get underlying Builder without laravel_through_key in SELECT
+    ->getQuery()
+
+    // SELECT columns only from target table
+    ->select('products.*')
+    ->get();
+```
+
+Instead of `groupBy` you can call `distinct`. That should works too.
+
 #### Composite Keys
 
 If multiple columns need to match between two tables, you can define a composite key with the `CompositeKey` class.
