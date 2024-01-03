@@ -55,6 +55,7 @@ foreign and local keys [manually](#defining-relationships-manually).
 - [Intermediate and Pivot Constraints](#intermediate-and-pivot-constraints)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
+- [Getting Unique Results](#getting-unique-results)
 - [Reversing Relationships](#reversing-relationships)
 - [IDE Helper](#ide-helper)
 
@@ -400,27 +401,6 @@ class Country extends Model
 }
 ```
 
-#### Getting Unique Models
-Sometimes you have relationship which has duplicate models in the result. In simple case you call `unique` on final Collection and that's all.
-
-But if you need unique records on DB level (for example for pagination) you can use this approach:
-
-```php
-// HasManyDeep relation Warehouse -> WarehousePosition -> Product
-$warehouse->products()
-    // GROUP BY target table primary key
-    ->groupBy("products.id")
-
-    // get underlying Builder without laravel_through_key in SELECT
-    ->getQuery()
-
-    // SELECT columns only from target table
-    ->select('products.*')
-    ->get();
-```
-
-Instead of `groupBy` you can call `distinct`. That should works too.
-
 #### Composite Keys
 
 If multiple columns need to match between two tables, you can define a composite key with the `CompositeKey` class.
@@ -651,6 +631,31 @@ class User extends Model
 }
 ```
 
+### Getting Unique Results
+
+Deep relationships with many-to-many segments can contain duplicate models in their results. If you want to get unique
+results, you can remove duplicates from the result collection:
+
+```php
+$uniqueComments = Country::find($id)->comments->unique();
+```
+
+If you need to remove duplicates in the query (e.g. for pagination), try adding `distinct()`:
+
+```php
+$uniqueComments = Country::find($id)->comments()->distinct()->get();
+```
+
+`distinct()` doesn't work for all cases. If it doesn't work for you, use `groupBy()` instead:
+
+```php
+$uniqueComments = Country::find($id)->comments()
+    ->getQuery()             // Get the underlying query builder
+    ->select('comments.*')   // Select only columns from the related table
+    ->groupBy('comments.id') // Group by the related table's primary key 
+    ->get();
+```
+
 ### Reversing Relationships
 
 You can define a `HasManyDeep`/`HasOneDeep` relationship by reversing an existing deep relationship
@@ -713,6 +718,7 @@ To disable the model hook you have 3 options:
  - [Disable by option out of Package Discovery](#disable-by-opting-out-of-package-discovery)
 
 #### Disable using .env
+
 Update your `.env` file to include:
 
 ```dotenv
@@ -720,6 +726,7 @@ ELOQUENT_HAS_MANY_DEEP_IDE_HELPER_ENABLED=false
 ```
 
 #### Disable using config
+
 Publish the config and disable the setting directly:
 
 ```
@@ -741,6 +748,7 @@ php artisan vendor:publish --tag=eloquent-has-many-deep
 ```
 
 #### Disable by opting out of Package Discovery
+
 Update your `composer.json` with the following:
 
 ```json
