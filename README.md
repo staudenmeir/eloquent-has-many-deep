@@ -637,7 +637,7 @@ Deep relationships with many-to-many segments can contain duplicate models in th
 results, you can remove duplicates from the result collection:
 
 ```php
-$uniqueComments = Country::find($id)->comments->unique();
+$uniqueComments = Country::find($id)->comments()->get()->unique();
 ```
 
 If you need to remove duplicates in the query (e.g. for pagination), try adding `distinct()`:
