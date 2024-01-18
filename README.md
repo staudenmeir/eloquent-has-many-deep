@@ -11,7 +11,7 @@ This extended version of `HasManyThrough` allows relationships with unlimited in
 It supports [many-to-many](#manytomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
 It also supports some [third-party packages](#third-party-packages).
 
-Supports Laravel 5.5.29+.
+Supports Laravel 5.5+.
 
 ## Installation
 
