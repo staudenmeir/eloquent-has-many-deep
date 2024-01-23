@@ -134,7 +134,7 @@ Besides native Laravel relationships, you can also concatenate relationships fro
 
 - https://github.com/korridor/laravel-has-many-merged: `HasManyMerged`
 - https://github.com/staudenmeir/eloquent-json-relations: `BelongsToJson`, `HasManyJson`, `HasManyThroughJson`
-- https://github.com/staudenmeir/laravel-adjacency-list: [Tree relationships](https://github.com/staudenmeir/laravel-adjacency-list#relationship-concatenation)
+- https://github.com/staudenmeir/laravel-adjacency-list: [Tree relationships](https://github.com/staudenmeir/laravel-adjacency-list#deep-relationship-concatenation)
 - https://github.com/topclaudy/compoships: `BelongsTo`, `HasMany`, `HasOne`
 
 ### Defining Relationships Manually
