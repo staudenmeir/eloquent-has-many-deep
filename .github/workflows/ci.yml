@@ -36,8 +36,8 @@ jobs:
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run -e DB_CONNECTION=${{ matrix.database }} \
             --rm php${{ matrix.php }}${{ env.XDEBUG }} vendor/bin/phpunit ${{ env.COVERAGE }}
         env:
-          XDEBUG: ${{ matrix.coverage && '-xdebug' || '' }}
           COVERAGE: ${{ matrix.coverage && '--coverage-clover=coverage.xml' || '' }}
+          XDEBUG: ${{ matrix.coverage && '-xdebug' || '' }}
       - name: Upload code coverage
         uses: codecov/codecov-action@v3
         env:
