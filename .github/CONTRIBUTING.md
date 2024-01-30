@@ -23,5 +23,6 @@ We accept contributions via Pull Requests on [GitHub](https://github.com/stauden
 ## Running Tests
 
 ```
-vendor/bin/phpunit
+docker compose run --rm php8.3 composer install
+docker compose run --rm php8.3 vendor/bin/phpunit
 ```

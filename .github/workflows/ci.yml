@@ -14,40 +14,32 @@ jobs:
         include:
           - php: 8.3
             release: stable
-            coverage: xdebug
-
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+            coverage: true
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - uses: actions/cache@v3
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/files
-          key: php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: bcmath, ctype, json, mbstring, openssl, pdo, pdo_${{ matrix.database }}, tokenizer, xml
-          coverage: ${{ matrix.coverage }}
-      - run: composer update --no-interaction --no-progress --prefer-dist --prefer-${{ matrix.release }}
-      - run: cp tests/config/database.ci.php tests/config/database.php
-      - run: |
-          PHPUNIT_FLAGS=$([ "${{ matrix.coverage }}" == "xdebug" ] && echo "--coverage-clover=coverage.xml" || echo "")
-          vendor/bin/phpunit $PHPUNIT_FLAGS
+          key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+      - name: Start database container
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --wait ${{ matrix.database }}
+        if: matrix.database != 'sqlite'
+      - name: Install dependencies
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
+            composer update --no-interaction --no-progress --prefer-dist --prefer-${{ matrix.release }}
+      - name: Run tests
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml run -e DB_CONNECTION=${{ matrix.database }} \
+            --rm php${{ matrix.php }}${{ env.XDEBUG }} vendor/bin/phpunit ${{ env.COVERAGE }}
         env:
-          DATABASE: ${{ matrix.database }}
-          MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
-      - uses: codecov/codecov-action@v3
+          XDEBUG: ${{ matrix.coverage && '-xdebug' || '' }}
+          COVERAGE: ${{ matrix.coverage && '--coverage-clover=coverage.xml' || '' }}
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: matrix.coverage == 'xdebug' && env.CODECOV_TOKEN
+        if: matrix.coverage && env.CODECOV_TOKEN

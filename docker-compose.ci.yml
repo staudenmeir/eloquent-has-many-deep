@@ -8,7 +8,7 @@ services:
       - test
     volumes:
       - .:/var/www/html:delegated
-      - .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ~/.cache/composer/files:/root/.composer/cache/files
   php8.2:
     image: ghcr.io/staudenmeir/php:8.2
     working_dir: /var/www/html
@@ -16,7 +16,7 @@ services:
       - test
     volumes:
       - .:/var/www/html:delegated
-      - .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ~/.cache/composer/files:/root/.composer/cache/files
   php8.3:
     image: ghcr.io/staudenmeir/php:8.3
     working_dir: /var/www/html
@@ -24,20 +24,13 @@ services:
       - test
     volumes:
       - .:/var/www/html:delegated
-      - .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-  mysql:
-    image: 'mysql:latest'
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: test
-    healthcheck:
-      test: mysqladmin ping --silent
-      interval: 5s
-      timeout: 3s
-      retries: 10
+      - ~/.cache/composer/files:/root/.composer/cache/files
+  php8.3-xdebug:
+    image: ghcr.io/staudenmeir/php:8.3
+    working_dir: /var/www/html
     networks:
       - test
-
-networks:
-  test:
-    driver: bridge
+    volumes:
+      - .:/var/www/html:delegated
+      - .docker/xdebug.ci.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ~/.cache/composer/files:/root/.composer/cache/files

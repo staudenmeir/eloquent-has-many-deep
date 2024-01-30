@@ -6,14 +6,24 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php: [ 8.3 ]
+        release: [ stable ]
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/files
-          key: php-8.3-composer-${{ hashFiles('**/composer.json') }}
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-      - run: composer update --no-interaction --no-progress --prefer-dist
-      - run: vendor/bin/phpstan analyse --error-format=github
+          key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+      - name: Install dependencies
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
+            composer update --no-interaction --no-progress --prefer-dist --prefer-${{ matrix.release }}
+      - name: Analyse code
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
+            vendor/bin/phpstan analyse --error-format=github --memory-limit=-1
