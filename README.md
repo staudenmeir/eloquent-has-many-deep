@@ -579,7 +579,7 @@ class RoleUser extends Pivot
 }
 ```
 
-Use `setAlias()` to specify a table alias when concatenating existing relationships (Laravel 6+):
+Use `setAlias()` to specify a table alias when concatenating existing relationships:
 
 ```php
 class Post extends Model
