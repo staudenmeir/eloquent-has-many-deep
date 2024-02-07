@@ -96,4 +96,11 @@ class IntermediateTableTest extends TestCase
                 $this->assertTrue($results[0]->relationLoaded('post'));
             });
     }
+
+    public function testGetIntermediateTables()
+    {
+        $comments = Country::find(1)->comments();
+
+        $this->assertEquals([], $comments->getIntermediateTables());
+    }
 }

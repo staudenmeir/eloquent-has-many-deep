@@ -178,4 +178,14 @@ trait RetrievesIntermediateTables
     {
         return '__'.$accessor.'__';
     }
+
+    /**
+     * Get the intermediate tables.
+     *
+     * @return array
+     */
+    public function getIntermediateTables(): array
+    {
+        return $this->intermediateTables;
+    }
 }
