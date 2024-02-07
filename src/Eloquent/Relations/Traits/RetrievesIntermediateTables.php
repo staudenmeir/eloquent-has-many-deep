@@ -100,7 +100,7 @@ trait RetrievesIntermediateTables
         foreach ($intermediateTables as $accessor => $intermediateTable) {
             $prefix = $this->prefix($accessor);
 
-            if (Str::contains($accessor, '.')) {
+            if (str_contains($accessor, '.')) {
                 [$path, $key] = preg_split('/\.(?=[^.]*$)/', $accessor);
             } else {
                 [$path, $key] = [null, $accessor];
