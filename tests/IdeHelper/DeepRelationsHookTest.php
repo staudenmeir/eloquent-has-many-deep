@@ -21,7 +21,7 @@ class DeepRelationsHookTest extends TestCase
         $config = require __DIR__.'/../config/database.php';
 
         $db = new DB();
-        $db->addConnection($config[getenv('DATABASE') ?: 'sqlite']);
+        $db->addConnection($config[getenv('DB_CONNECTION') ?: 'sqlite']);
         $db->setAsGlobal();
         $db->bootEloquent();
     }

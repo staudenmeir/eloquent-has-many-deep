@@ -18,7 +18,7 @@ abstract class TestCase extends Base
 
     protected function setUp(): void
     {
-        $this->database = getenv('DATABASE') ?: 'sqlite';
+        $this->database = getenv('DB_CONNECTION') ?: 'sqlite';
 
         parent::setUp();
 
