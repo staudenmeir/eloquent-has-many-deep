@@ -26,7 +26,7 @@ services:
       - .:/var/www/html:delegated
       - .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   mysql:
-    image: 'mysql:latest'
+    image: 'mysql:5.7'
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: test
