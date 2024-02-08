@@ -86,7 +86,7 @@ trait RetrievesIntermediateTables
     }
 
     /**
-     * Hydrate the intermediate table relationship on the models.
+     * Hydrate the intermediate table relationships on the models.
      *
      * @param array $models
      * @return void
