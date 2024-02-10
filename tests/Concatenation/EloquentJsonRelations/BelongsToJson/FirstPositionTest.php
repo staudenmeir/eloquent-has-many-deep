@@ -11,7 +11,7 @@ class FirstPositionTest extends TestCase
     {
         parent::setUp();
 
-        if ($this->database === 'sqlite') {
+        if ($this->connection === 'sqlite') {
             $this->markTestSkipped();
         }
     }

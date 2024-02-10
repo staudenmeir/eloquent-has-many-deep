@@ -12,22 +12,22 @@ use Tests\Concatenation\LaravelAdjacencyList\Models\User;
 
 abstract class TestCase extends Base
 {
-    protected string $database;
+    protected string $connection;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->database = getenv('DB_CONNECTION') ?: 'sqlite';
+        $this->connection = getenv('DB_CONNECTION') ?: 'sqlite';
 
-        if ($this->database === 'mysql') {
+        if ($this->connection === 'mysql') {
             $this->markTestSkipped();
         }
 
         $config = require __DIR__.'/../../config/database.php';
 
         $db = new DB();
-        $db->addConnection($config[$this->database]);
+        $db->addConnection($config[$this->connection]);
         $db->setAsGlobal();
         $db->bootEloquent();
 
