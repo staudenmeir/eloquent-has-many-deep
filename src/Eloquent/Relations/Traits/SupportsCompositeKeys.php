@@ -5,6 +5,7 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as BaseCollection;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey;
 
 trait SupportsCompositeKeys
@@ -45,7 +46,7 @@ trait SupportsCompositeKeys
      */
     protected function addEagerConstraintsWithCompositeKey(array $models): void
     {
-        $keys = collect($models)->map(
+        $keys = (new BaseCollection($models))->map(
             function (Model $model) {
                 return array_map(
                     fn (string $column) => $model[$column],
