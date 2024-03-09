@@ -124,8 +124,6 @@ class ConcatenationTest extends TestCase
 
     public function testLeadingCompositeKey()
     {
-        $this->markTestSkipped(); // TODO[L11]
-
         $projects = Employee::find(131)->projectsFromRelations;
 
         $this->assertEquals([101, 102], $projects->pluck('id')->all());
@@ -133,8 +131,6 @@ class ConcatenationTest extends TestCase
 
     public function testIntermediateCompositeKey()
     {
-        $this->markTestSkipped(); // TODO[L11]
-
         $employees = Project::find(101)->employeesFromRelations;
 
         $this->assertEquals([131, 132], $employees->pluck('id')->all());
