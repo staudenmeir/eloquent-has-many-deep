@@ -39,7 +39,7 @@ jobs:
           COVERAGE: ${{ matrix.coverage && '--coverage-clover=coverage.xml' || '' }}
           XDEBUG: ${{ matrix.coverage && '-xdebug' || '' }}
       - name: Upload code coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: matrix.coverage && env.CODECOV_TOKEN
