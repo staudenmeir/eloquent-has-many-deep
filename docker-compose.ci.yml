@@ -1,14 +1,6 @@
 version: '3.8'
 
 services:
-  php8.1:
-    image: ghcr.io/staudenmeir/php:8.1
-    working_dir: /var/www/html
-    networks:
-      - test
-    volumes:
-      - .:/var/www/html:delegated
-      - ~/.cache/composer/files:/root/.composer/cache/files
   php8.2:
     image: ghcr.io/staudenmeir/php:8.2
     working_dir: /var/www/html

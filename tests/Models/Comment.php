@@ -4,14 +4,12 @@ namespace Tests\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Staudenmeir\EloquentEagerLimit\HasEagerLimit;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 class Comment extends Model
 {
-    use HasEagerLimit;
     use HasTableAlias;
     use SoftDeletes;
 

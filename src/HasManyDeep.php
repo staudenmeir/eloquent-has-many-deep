@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\ExecutesQueries;
-use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLimit;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLoading;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasExistenceQueries;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsConcatenable;
@@ -24,7 +23,6 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
     use ExecutesQueries;
-    use HasEagerLimit;
     use HasEagerLoading;
     use HasExistenceQueries;
     use IsConcatenable;
