@@ -21,7 +21,7 @@
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^9.0",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^11.0",
         "staudenmeir/eloquent-json-relations": "^1.11",
         "staudenmeir/laravel-adjacency-list": "^1.21"
     },
