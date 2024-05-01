@@ -547,7 +547,7 @@ class Post extends Model
 
     public function commentReplies()
     {
-        return $this->hasManyDeep(Comment::class, ['App\Comment as alias'], [null, 'parent_id']);
+        return $this->hasManyDeep(Comment::class, [Comment::class . ' as alias'], [null, 'parent_id']);
     }
 }
 ```
@@ -570,7 +570,7 @@ class User extends Model
 
     public function permissions()
     {
-        return $this->hasManyDeep(Permission::class, ['App\RoleUser as alias', Role::class]);
+        return $this->hasManyDeep(Permission::class, [RoleUser::class . ' as alias', Role::class]);
     }
 }
 
