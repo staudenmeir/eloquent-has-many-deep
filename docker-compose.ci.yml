@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   php8.2:
     image: ghcr.io/staudenmeir/php:8.2
