@@ -147,7 +147,7 @@ trait ConcatenatesNativeRelationships
         array $foreignKeys,
         array $localKeys
     ) {
-        $foreignKeys[] = [$relation->getQualifiedMorphType(), $relation->getForeignKeyName()];
+        $foreignKeys[] = [$relation->getMorphType(), $relation->getForeignKeyName()];
 
         $localKeys[] = $relation->getLocalKeyName();
 
