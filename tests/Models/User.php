@@ -5,12 +5,18 @@ namespace Tests\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class User extends Model
 {
     use SoftDeletes;
+
+    public function comment(): HasOneThrough
+    {
+        return $this->hasOneThrough(Comment::class, Post::class);
+    }
 
     public function comments(): HasManyThrough
     {

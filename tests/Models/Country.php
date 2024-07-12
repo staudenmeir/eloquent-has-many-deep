@@ -59,7 +59,7 @@ class Country extends Model
     public function commentsFromRelationsWithTrashedIntermediateRelatedModel(): HasManyDeep
     {
         return $this->hasManyDeepFromRelationsWithConstraints(
-            [[$this, 'usersWithTrashed'], [new User(), 'comments']]
+            [[$this, 'usersWithTrashed'], [new User(), 'comment']]
         );
     }
 
