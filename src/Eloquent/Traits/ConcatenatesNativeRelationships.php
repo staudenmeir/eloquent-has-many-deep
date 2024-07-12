@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -133,6 +134,32 @@ trait ConcatenatesNativeRelationships
     }
 
     /**
+     * Prepare a has-one-deep or has-many-deep relationship from an existing has-one-through relationship.
+     *
+     * @param \Illuminate\Database\Eloquent\Relations\HasOneThrough $relation
+     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param array $foreignKeys
+     * @param array $localKeys
+     * @return array
+     */
+    protected function hasOneOrManyDeepFromHasOneThrough(
+        HasOneThrough $relation,
+        array $through,
+        array $foreignKeys,
+        array $localKeys
+    ) {
+        $through[] = get_class($relation->getParent());
+
+        $foreignKeys[] = $relation->getFirstKeyName();
+        $foreignKeys[] = $relation->getForeignKeyName();
+
+        $localKeys[] = $relation->getLocalKeyName();
+        $localKeys[] = $relation->getSecondLocalKeyName();
+
+        return [$through, $foreignKeys, $localKeys];
+    }
+
+    /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-one or morph-many relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\MorphOneOrMany $relation
@@ -198,7 +225,8 @@ trait ConcatenatesNativeRelationships
     {
         $classes = [
             BelongsTo::class,
-            HasManyThrough::class,
+            HasManyThrough::class, // TODO[L12]
+            HasOneThrough::class,
             MorphOneOrMany::class,
             HasOneOrMany::class,
             MorphToMany::class,
