@@ -73,7 +73,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
     }
