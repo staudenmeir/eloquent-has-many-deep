@@ -106,7 +106,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeepFromRelationsWithConstraints([$this, 'posts'], [new Post(), 'comments']);
     }
@@ -156,7 +156,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
     }
@@ -174,7 +174,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Comment::class,
@@ -201,7 +201,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class], [null, 'custom_user_id']);
     }
@@ -225,7 +225,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function permissions()
+    public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Permission::class, ['role_user', Role::class]);
     }
@@ -239,7 +239,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function permissions()
+    public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Permission::class,
@@ -272,7 +272,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function permissions()
+    public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Permission::class, ['role_user', Role::class, 'permission_role']);
     }
@@ -294,7 +294,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function postComments()
+    public function postComments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Comment::class,
@@ -321,7 +321,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function postTags()
+    public function postTags(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Tag::class,
@@ -351,7 +351,7 @@ class Tag extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function postComments()
+    public function postComments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Comment::class,
@@ -375,7 +375,7 @@ class Tag extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function postAuthors()
+    public function postAuthors(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             User::class,
@@ -396,7 +396,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function latestComment()
+    public function latestComment(): \Staudenmeir\EloquentHasManyDeep\HasOneDeep
     {
         return $this->hasOneDeep(Comment::class, [User::class, Post::class])
             ->latest('comments.created_at');
@@ -419,7 +419,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function projects()
+    public function projects(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(
             Project::class,
@@ -436,7 +436,7 @@ class User extends Model
 Use `withIntermediate()` to retrieve attributes from intermediate tables:
 
 ```php
-public function comments()
+public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Comment::class, [User::class, Post::class])
         ->withIntermediate(Post::class);
@@ -453,7 +453,7 @@ columns.
 You can specify the selected columns as the second argument:
 
 ```php
-public function comments()
+public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Comment::class, [User::class, Post::class])
         ->withIntermediate(Post::class, ['id', 'title']);
@@ -463,7 +463,7 @@ public function comments()
 As the third argument, you can specify a custom accessor:
 
 ```php
-public function comments()
+public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Comment::class, [User::class, Post::class])
         ->withIntermediate(Post::class, ['id', 'title'], 'accessor');
@@ -477,7 +477,7 @@ foreach ($country->comments as $comment) {
 If you retrieve data from multiple tables, you can use nested accessors:
 
 ```php
-public function comments()
+public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Comment::class, [User::class, Post::class])
         ->withIntermediate(Post::class)
@@ -493,7 +493,7 @@ foreach ($country->comments as $comment) {
 Use `withPivot()` for the pivot tables of `BelongsToMany` and `MorphToMany`/`MorphedByMany` relationships:
 
 ```php
-public function permissions()
+public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Permission::class, ['role_user', Role::class])
         ->withPivot('role_user', ['expires_at']);
@@ -507,7 +507,7 @@ foreach ($user->permissions as $permission) {
 You can specify a custom pivot model as the third argument and a custom accessor as the fourth:
 
 ```php
-public function permissions()
+public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
 {
     return $this->hasManyDeep(Permission::class, ['role_user', Role::class])
         ->withPivot('role_user', ['expires_at'], RoleUser::class, 'pivot');
@@ -527,7 +527,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
     }
@@ -545,7 +545,7 @@ class Post extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function commentReplies()
+    public function commentReplies(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [Comment::class . ' as alias'], [null, 'parent_id']);
     }
@@ -568,7 +568,7 @@ class User extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function permissions()
+    public function permissions(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Permission::class, [RoleUser::class . ' as alias', Role::class]);
     }
@@ -587,7 +587,7 @@ class Post extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function commentReplies()
+    public function commentReplies(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
             $this->comments(),
@@ -621,7 +621,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class])
             ->withTrashed('users.deleted_at');
@@ -669,7 +669,7 @@ class Country extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function comments()
+    public function comments(): \Staudenmeir\EloquentHasManyDeep\HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [User::class, Post::class]);
     }
@@ -679,7 +679,7 @@ class Comment extends Model
 {
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-    public function country()
+    public function country(): \Staudenmeir\EloquentHasManyDeep\HasOneDeep
     {
         return $this->hasOneDeepFromReverse(
             (new Country())->comments()
