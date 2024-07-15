@@ -2,10 +2,10 @@
 
 [![CI](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml/badge.svg)](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml)
 [![Code Coverage](https://codecov.io/gh/staudenmeir/eloquent-has-many-deep/graph/badge.svg?token=H59fIf4mG6)](https://codecov.io/gh/staudenmeir/eloquent-has-many-deep)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/v/stable)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep)
 [![Total Downloads](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/downloads)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep/stats)
-[![License](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/license)](https://github.com/staudenmeir/eloquent-has-many-deep/blob/master/LICENSE)
+[![License](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/license)](https://github.com/staudenmeir/eloquent-has-many-deep/blob/main/LICENSE)
 
 This extended version of `HasManyThrough` allows relationships with unlimited intermediate models.  
 It supports [many-to-many](#manytomany) and [polymorphic](#morphmany) relationships and all their possible combinations.
