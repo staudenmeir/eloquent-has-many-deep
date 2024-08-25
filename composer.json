@@ -18,6 +18,7 @@
         "barryvdh/laravel-ide-helper": "^3.0",
         "illuminate/pagination": "^11.0",
         "korridor/laravel-has-many-merged": "^1.1",
+        "larastan/larastan": "^2.9",
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^9.0",
         "phpstan/phpstan": "^1.10",
