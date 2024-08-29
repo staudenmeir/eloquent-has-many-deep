@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
- * @extends \Illuminate\Database\Eloquent\Relations\HasOneThrough<TRelatedModel>
+ *
+ * @extends \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel>
  */
 class HasOneDeep extends HasManyDeep
 {

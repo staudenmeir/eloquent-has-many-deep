@@ -18,6 +18,7 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ *
  * @extends \Illuminate\Database\Eloquent\Relations\HasManyThrough<TRelatedModel>
  */
 class HasManyDeep extends HasManyThrough implements ConcatenableRelation

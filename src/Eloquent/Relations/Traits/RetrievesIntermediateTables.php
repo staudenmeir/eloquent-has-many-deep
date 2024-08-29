@@ -51,7 +51,10 @@ trait RetrievesIntermediateTables
         ?callable $postProcessor = null
     ) {
         if ($columns === ['*']) {
-            $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);
+            /** @var \Illuminate\Database\Connection $connection */
+            $connection = $this->query->getConnection();
+
+            $columns = $connection->getSchemaBuilder()->getColumnListing($table);
         }
 
         $accessor = $accessor ?: $table;

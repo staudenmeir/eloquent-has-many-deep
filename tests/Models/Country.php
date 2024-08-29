@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 
+/**
+ * @property-read \Tests\Models\Comment|null $comment
+ * @property-read \Tests\Models\Comment|null $commentFromRelations
+ * @property-read \Tests\Models\Comment|null $commentFromRelationsWithConstraints
+ */
 class Country extends Model
 {
     public function comment(): HasOneDeep

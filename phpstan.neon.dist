@@ -1,9 +1,12 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
+    - ./vendor/phpstan/phpstan-mockery/extension.neon
 parameters:
-    level: 1
+    level: 2
     paths:
         - src
         - tests
     ignoreErrors:
+        - '#Call to an undefined method .+::getQualifiedDeletedAtColumn\(\)#'
+        - '#Call to an undefined method .+::withTrashed\(\)#'
         - '#Unsafe usage of new static\(\).#'

@@ -10,6 +10,10 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
+/**
+ * @property-read \Tests\Concatenation\LaravelAdjacencyList\Models\Post $ancestorPost
+ * @property-read \Tests\Concatenation\LaravelAdjacencyList\Models\Post $descendantPost
+ */
 class User extends Model
 {
     use HasRelationships;

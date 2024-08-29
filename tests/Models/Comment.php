@@ -8,6 +8,12 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
+/**
+ * @property-read \Tests\Models\Country|null $country
+ * @property-read \Tests\Models\Country|null $countryWithCustomThroughTable
+ * @property-read \Tests\Models\Post|null $post
+ * @property-read \Tests\Models\Post|null $rootPost
+ */
 class Comment extends Model
 {
     use HasTableAlias;

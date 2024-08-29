@@ -6,6 +6,9 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Staudenmeir\EloquentJsonRelations\JsonKey;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Relations\Pivot $pivot
+ */
 class Project extends Model
 {
     use HasRelationships;
