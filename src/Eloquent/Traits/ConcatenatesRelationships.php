@@ -300,23 +300,29 @@ trait ConcatenatesRelationships
         foreach ($removedScopes as $scope) {
             if ($scope === SoftDeletingScope::class) {
                 if ($isLastRelation) {
+                    /** @phpstan-ignore method.notFound */
                     $deepRelation->withTrashed();
                 } else {
+                    /** @phpstan-ignore method.notFound */
                     $deletedAtColumn = $relation->getRelated()->getQualifiedDeletedAtColumn();
 
+                    /** @phpstan-ignore method.notFound */
                     $deepRelation->withTrashed($deletedAtColumn);
                 }
             }
 
             if ($scope === 'SoftDeletableHasManyThrough') {
+                /** @phpstan-ignore method.notFound */
                 $deletedAtColumn = $relation->getParent()->getQualifiedDeletedAtColumn();
 
+                /** @phpstan-ignore method.notFound */
                 $deepRelation->withTrashed($deletedAtColumn);
             }
 
             if (str_starts_with($scope, HasManyDeep::class . ':')) {
                 $deletedAtColumn = explode(':', $scope)[1];
 
+                /** @phpstan-ignore method.notFound */
                 $deepRelation->withTrashed($deletedAtColumn);
             }
         }

@@ -180,6 +180,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     public function withTrashed(...$columns)
     {
         if (empty($columns)) {
+            /** @phpstan-ignore method.notFound */
             $this->query->withTrashed();
 
             return $this;

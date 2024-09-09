@@ -7,6 +7,4 @@ parameters:
         - src
         - tests
     ignoreErrors:
-        - '#Call to an undefined method .+::getQualifiedDeletedAtColumn\(\)#'
-        - '#Call to an undefined method .+::withTrashed\(\)#'
         - '#Unsafe usage of new static\(\).#'
