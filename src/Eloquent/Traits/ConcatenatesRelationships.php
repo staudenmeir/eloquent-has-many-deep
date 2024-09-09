@@ -35,13 +35,15 @@ trait ConcatenatesRelationships
 
         $relation = $this->hasManyDeep($related, $through, $foreignKeys, $localKeys);
 
-        return $this->customizeHasOneOrManyDeepRelationship(
+        $this->customizeHasOneOrManyDeepRelationship(
             $relation,
             $postGetCallbacks,
             $customThroughKeyCallback,
             $customEagerConstraintsCallback,
             $customEagerMatchingCallback
         );
+
+        return $relation;
     }
 
     /**
@@ -65,13 +67,15 @@ trait ConcatenatesRelationships
 
         $relation = $this->hasOneDeep($related, $through, $foreignKeys, $localKeys);
 
-        return $this->customizeHasOneOrManyDeepRelationship(
+        $this->customizeHasOneOrManyDeepRelationship(
             $relation,
             $postGetCallbacks,
             $customThroughKeyCallback,
             $customEagerConstraintsCallback,
             $customEagerMatchingCallback
         );
+
+        return $relation;
     }
 
     /**
@@ -235,7 +239,9 @@ trait ConcatenatesRelationships
     {
         $hasManyDeep = $this->hasManyDeepFromRelations(...$relations);
 
-        return $this->addConstraintsToHasOneOrManyDeepRelationship($hasManyDeep, $relations);
+        $this->addConstraintsToHasOneOrManyDeepRelationship($hasManyDeep, $relations);
+
+        return $hasManyDeep;
     }
 
     /**
@@ -248,7 +254,9 @@ trait ConcatenatesRelationships
     {
         $hasOneDeep = $this->hasOneDeepFromRelations(...$relations);
 
-        return $this->addConstraintsToHasOneOrManyDeepRelationship($hasOneDeep, $relations);
+        $this->addConstraintsToHasOneOrManyDeepRelationship($hasOneDeep, $relations);
+
+        return $hasOneDeep;
     }
 
     /**
