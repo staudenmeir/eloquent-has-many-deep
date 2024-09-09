@@ -1,6 +1,8 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
     - ./vendor/phpstan/phpstan-mockery/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
     level: 5
     paths:
@@ -9,3 +11,4 @@ parameters:
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
+        - '#Parameter \#\d+ \$relations of method Illuminate\\Database\\Eloquent\\Collection<[^>]+\>::load\(\) expects#'
