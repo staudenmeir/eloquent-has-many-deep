@@ -11,6 +11,9 @@ class Country extends Model
 {
     use HasRelationships;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelHasManyMerged\Models\Attachment, $this>
+     */
     public function attachments(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -20,11 +23,17 @@ class Country extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelHasManyMerged\Models\Message, $this>
+     */
     public function messages(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->users(), (new User())->messages());
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Tests\Concatenation\LaravelHasManyMerged\Models\User>
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

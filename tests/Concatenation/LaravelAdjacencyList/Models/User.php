@@ -9,6 +9,7 @@ use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\HasManyOfDescendants;
 
 /**
  * @property-read \Tests\Concatenation\LaravelAdjacencyList\Models\Post $ancestorPost
@@ -21,6 +22,9 @@ class User extends Model
     use HasTableAlias;
     use SoftDeletes;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function ancestorPost(): HasOneDeep
     {
         return $this->hasOneDeepFromRelations(
@@ -29,6 +33,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function ancestorPosts(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -37,6 +44,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function ancestorAndSelfPosts(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -45,6 +55,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function bloodlinePosts(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -53,6 +66,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function descendantPost(): HasOneDeep
     {
         return $this->hasOneDeepFromRelations(
@@ -61,6 +77,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function descendantPosts(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -69,6 +88,9 @@ class User extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelAdjacencyList\Models\Post, $this>
+     */
     public function descendantPostsAndSelf(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations(
@@ -77,7 +99,10 @@ class User extends Model
         );
     }
 
-    public function posts()
+    /**
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\HasManyOfDescendants<\Tests\Concatenation\LaravelAdjacencyList\Models\Post>
+     */
+    public function posts(): HasManyOfDescendants
     {
         return $this->hasManyOfDescendants(Post::class);
     }

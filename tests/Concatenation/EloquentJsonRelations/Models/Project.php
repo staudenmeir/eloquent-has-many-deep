@@ -13,6 +13,9 @@ class Project extends Model
 {
     use HasRelationships;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\EloquentJsonRelations\Models\Role, $this>
+     */
     public function roles(): HasManyDeep
     {
         return $this->hasManyThroughJson(
@@ -25,6 +28,9 @@ class Project extends Model
         );
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\EloquentJsonRelations\Models\Role, $this>
+     */
     public function roles2(): HasManyDeep
     {
         return $this->hasManyThroughJson(

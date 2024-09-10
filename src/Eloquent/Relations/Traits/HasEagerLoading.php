@@ -6,12 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 trait HasEagerLoading
 {
-    /**
-     * Set the constraints for an eager load of the relation.
-     *
-     * @param array $models
-     * @return void
-     */
+    /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
         if ($this->customEagerConstraintsCallback) {
@@ -34,14 +29,7 @@ trait HasEagerLoading
         }
     }
 
-    /**
-     * Match the eagerly loaded results to their parents.
-     *
-     * @param array $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @param string $relation
-     * @return array
-     */
+    /** @inheritDoc */
     public function match(array $models, Collection $results, $relation)
     {
         if ($this->customEagerMatchingCallbacks) {

@@ -13,11 +13,17 @@ class User extends Model
     use HasManyMergedRelation;
     use HasRelationships;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\LaravelHasManyMerged\Models\Attachment, $this>
+     */
     public function attachments(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->messages(), (new Message())->attachments());
     }
 
+    /**
+     * @return \Korridor\LaravelHasManyMerged\HasManyMerged<\Tests\Concatenation\LaravelHasManyMerged\Models\Message>
+     */
     public function messages(): HasManyMerged
     {
         return $this->hasManyMerged(Message::class, ['sender_id', 'recipient_id']);

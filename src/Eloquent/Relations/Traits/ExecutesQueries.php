@@ -26,8 +26,8 @@ trait ExecutesQueries
     /**
      * Execute the query as a "select" statement.
      *
-     * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param string|list<string> $columns
+     * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>
      */
     public function get($columns = ['*'])
     {
@@ -46,10 +46,10 @@ trait ExecutesQueries
      * Get a paginator for the "select" statement.
      *
      * @param int $perPage
-     * @param array $columns
+     * @param list<string> $columns
      * @param string $pageName
      * @param int $page
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>
      */
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
@@ -69,10 +69,10 @@ trait ExecutesQueries
      * Paginate the given query into a simple paginator.
      *
      * @param int $perPage
-     * @param array $columns
+     * @param list<string> $columns
      * @param string $pageName
      * @param int|null $page
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
@@ -92,10 +92,10 @@ trait ExecutesQueries
      * Paginate the given query into a cursor paginator.
      *
      * @param  int|null  $perPage
-     * @param  array  $columns
+     * @param  list<string>  $columns
      * @param  string  $cursorName
      * @param  string|null  $cursor
-     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {

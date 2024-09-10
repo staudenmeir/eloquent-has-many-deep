@@ -45,6 +45,9 @@ class DeepRelationsHook implements ModelHookInterface
         }
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relationship
+     */
     protected function addRelationship(ModelsCommand $command, ReflectionMethod $method, Relation $relationship): void
     {
         $manyRelation = !$relationship instanceof HasOneDeep;

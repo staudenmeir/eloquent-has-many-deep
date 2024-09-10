@@ -14,11 +14,13 @@ trait JoinsThroughParents
     /**
      * Join a through parent table.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
-     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|array|string $foreignKey
-     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|array|string $localKey
+     * @param array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     * @param array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
      * @param string $prefix
      * @return void
      */
@@ -64,12 +66,14 @@ trait JoinsThroughParents
     /**
      * Get the joins for a through parent table.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
-     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|array|string $foreignKey
-     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|array|string $localKey
-     * @return array
+     * @param array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     * @param array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
+     * @return list<array{0: string, 1: string}>
      */
     protected function throughParentJoins(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey): array
     {

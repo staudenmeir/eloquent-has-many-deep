@@ -8,28 +8,28 @@ use Tests\Concatenation\LaravelAdjacencyList\Models\User;
 
 class AncestorsTest extends TestCase
 {
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $posts = User::find(8)->ancestorPosts()->orderBy('id')->get();
 
         $this->assertEquals([10, 20, 50], $posts->pluck('id')->all());
     }
 
-    public function testLazyLoadingAndSelf()
+    public function testLazyLoadingAndSelf(): void
     {
         $posts = User::find(8)->ancestorAndSelfPosts()->orderBy('id')->get();
 
         $this->assertEquals([10, 20, 50, 80], $posts->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithoutParentKey()
+    public function testLazyLoadingWithoutParentKey(): void
     {
         $posts = (new User())->ancestorPosts()->get();
 
         $this->assertEmpty($posts);
     }
 
-    public function testEagerLoading()
+    public function testEagerLoading(): void
     {
         $users = User::with([
             'ancestorPosts' => fn (HasManyDeep $query) => $query->orderBy('id'),
@@ -41,7 +41,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([], $users[10]->ancestorPosts->pluck('id')->all());
     }
 
-    public function testEagerLoadingAndSelf()
+    public function testEagerLoadingAndSelf(): void
     {
         $users = User::with('ancestorAndSelfPosts')->get();
 
@@ -51,7 +51,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([100, 110], $users[10]->ancestorAndSelfPosts->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithHasOneDeep()
+    public function testEagerLoadingWithHasOneDeep(): void
     {
         $users = User::with([
             'ancestorPost' => fn (HasManyDeep $query) => $query->orderBy('id'),
@@ -63,7 +63,7 @@ class AncestorsTest extends TestCase
         $this->assertNull($users[10]->ancestorPost);
     }
 
-    public function testLazyEagerLoading()
+    public function testLazyEagerLoading(): void
     {
         $users = User::all()->load([
             'ancestorPosts' => fn (Relation $query) => $query->getQuery()->orderBy('id'),
@@ -75,7 +75,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([], $users[10]->ancestorPosts->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingAndSelf()
+    public function testLazyEagerLoadingAndSelf(): void
     {
         $users = User::all()->load('ancestorAndSelfPosts');
 
@@ -85,7 +85,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([100, 110], $users[10]->ancestorAndSelfPosts->pluck('id')->all());
     }
 
-    public function testExistenceQuery()
+    public function testExistenceQuery(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();
@@ -96,7 +96,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([5, 6, 7, 8, 9], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryAndSelf()
+    public function testExistenceQueryAndSelf(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();
@@ -107,7 +107,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([5, 6, 7, 8, 9], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryForSelfRelation()
+    public function testExistenceQueryForSelfRelation(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();
@@ -118,7 +118,7 @@ class AncestorsTest extends TestCase
         $this->assertEquals([5, 6, 7, 8, 9], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryForSelfRelationAndSelf()
+    public function testExistenceQueryForSelfRelationAndSelf(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();

@@ -11,15 +11,15 @@ trait RetrievesIntermediateTables
     /**
      * The intermediate tables to retrieve.
      *
-     * @var array
+     * @var array<string, array{table: string, columns: list<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: list<string>}>
      */
     protected $intermediateTables = [];
 
     /**
      * Set the columns on an intermediate table to retrieve.
      *
-     * @param string $class
-     * @param array $columns
+     * @param class-string<\Illuminate\Database\Eloquent\Model> $class
+     * @param list<string> $columns
      * @param string|null $accessor
      * @return $this
      */
@@ -37,8 +37,8 @@ trait RetrievesIntermediateTables
      * Set the columns on a pivot table to retrieve.
      *
      * @param string $table
-     * @param array $columns
-     * @param string $class
+     * @param list<string> $columns
+     * @param class-string<\Illuminate\Database\Eloquent\Model> $class
      * @param string|null $accessor
      * @param callable|null $postProcessor
      * @return $this
@@ -71,7 +71,7 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate columns for the relation.
      *
-     * @return array
+     * @return list<string>
      */
     protected function intermediateColumns()
     {
@@ -91,7 +91,7 @@ trait RetrievesIntermediateTables
     /**
      * Hydrate the intermediate table relationships on the models.
      *
-     * @param array $models
+     * @param list<\Illuminate\Database\Eloquent\Model> $models
      * @return void
      */
     protected function hydrateIntermediateRelations(array $models)
@@ -121,7 +121,7 @@ trait RetrievesIntermediateTables
      * Get the intermediate relationship from the query.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
-     * @param array $intermediateTable
+     * @param array{table: string, columns: list<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: list<string>} $intermediateTable
      * @param string $prefix
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -154,7 +154,7 @@ trait RetrievesIntermediateTables
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @param string $prefix
-     * @return array
+     * @return array<string, mixed>
      */
     protected function intermediateAttributes(Model $model, $prefix)
     {
@@ -185,7 +185,7 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate tables.
      *
-     * @return array
+     * @return array<string, array{table: string, columns: list<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: list<string>}>
      */
     public function getIntermediateTables(): array
     {

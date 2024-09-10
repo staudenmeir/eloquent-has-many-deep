@@ -11,11 +11,17 @@ class User extends Model
 {
     use HasRelationships;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\IdeHelper\Models\Comment, $this>
+     */
     public function comment(): HasOneDeep
     {
         return $this->hasOneDeep(Comment::class, [Post::class]);
     }
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\IdeHelper\Models\Comment, $this>
+     */
     public function comments(): HasManyDeep
     {
         return $this->hasManyDeep(Comment::class, [Post::class]);

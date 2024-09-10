@@ -26,7 +26,7 @@ class DeepRelationsHookTest extends TestCase
         $db->bootEloquent();
     }
 
-    public function testRun()
+    public function testRun(): void
     {
         $command = Mockery::mock(ModelsCommand::class);
         $command->shouldReceive('setProperty')->once()->with(

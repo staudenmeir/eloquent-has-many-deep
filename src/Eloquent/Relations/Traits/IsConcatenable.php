@@ -10,10 +10,12 @@ trait IsConcatenable
      * Append the relation's through parents, foreign and local keys to a deep relationship.
      *
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
+     * @param list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
      * @param int $position
-     * @return array
+     * @return array{0: list<string>,
+     *     1: list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *     2: list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     public function appendToDeepRelationship(array $through, array $foreignKeys, array $localKeys, int $position): array
     {

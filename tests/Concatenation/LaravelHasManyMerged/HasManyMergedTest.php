@@ -7,28 +7,28 @@ use Tests\Concatenation\LaravelHasManyMerged\Models\User;
 
 class HasManyMergedTest extends TestCase
 {
-    public function testLazyLoadingWithLeadingKey()
+    public function testLazyLoadingWithLeadingKey(): void
     {
         $messages = User::find(11)->attachments;
 
         $this->assertEquals([31, 33], $messages->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithIntermediateKey()
+    public function testLazyLoadingWithIntermediateKey(): void
     {
         $attachments = Country::find(1)->attachments;
 
         $this->assertEquals([31, 31, 32, 33], $attachments->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithTrailingKey()
+    public function testLazyLoadingWithTrailingKey(): void
     {
         $messages = Country::find(1)->messages;
 
         $this->assertEquals([21, 21, 22, 23], $messages->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithLeadingKey()
+    public function testEagerLoadingWithLeadingKey(): void
     {
         $users = User::with('attachments')->get();
 
@@ -37,7 +37,7 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $users[4]->attachments->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithIntermediateKey()
+    public function testEagerLoadingWithIntermediateKey(): void
     {
         $countries = Country::with('attachments')->get();
 
@@ -46,7 +46,7 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $countries[3]->attachments->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithTrailingKey()
+    public function testEagerLoadingWithTrailingKey(): void
     {
         $countries = Country::with('messages')->get();
 
@@ -55,7 +55,7 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $countries[3]->messages->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingWithLeadingKey()
+    public function testLazyEagerLoadingWithLeadingKey(): void
     {
         $users = User::all()->load('attachments');
 
@@ -64,7 +64,7 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $users[4]->attachments->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingWithIntermediateKey()
+    public function testLazyEagerLoadingWithIntermediateKey(): void
     {
         $countries = Country::all()->load('attachments');
 
@@ -73,7 +73,7 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $countries[3]->attachments->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingWithTrailingKey()
+    public function testLazyEagerLoadingWithTrailingKey(): void
     {
         $countries = Country::all()->load('messages');
 
@@ -82,28 +82,28 @@ class HasManyMergedTest extends TestCase
         $this->assertEquals([], $countries[3]->messages->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithLeadingKey()
+    public function testExistenceQueryWithLeadingKey(): void
     {
         $users = User::has('attachments')->get();
 
         $this->assertEquals([11, 12, 13], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithIntermediateKey()
+    public function testExistenceQueryWithIntermediateKey(): void
     {
         $countries = Country::has('attachments')->get();
 
         $this->assertEquals([1, 2], $countries->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithTrailingKey()
+    public function testExistenceQueryWithTrailingKey(): void
     {
         $messages = Country::has('messages')->get();
 
         $this->assertEquals([1, 2, 3], $messages->pluck('id')->all());
     }
 
-    public function testPaginateWithLeadingKey()
+    public function testPaginateWithLeadingKey(): void
     {
         $users = User::find(11)->attachments()->paginate();
 
@@ -111,7 +111,7 @@ class HasManyMergedTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key_1', $users[0]);
     }
 
-    public function testSimplePaginateWithLeadingKey()
+    public function testSimplePaginateWithLeadingKey(): void
     {
         $attachments = User::find(11)->attachments()->simplePaginate();
 
@@ -119,7 +119,7 @@ class HasManyMergedTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key_1', $attachments[0]);
     }
 
-    public function testCursorPaginateWithLeadingKey()
+    public function testCursorPaginateWithLeadingKey(): void
     {
         $attachments = User::find(11)->attachments()->cursorPaginate();
 

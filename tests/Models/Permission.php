@@ -13,6 +13,9 @@ class Permission extends Model
 {
     use HasRelationships;
 
+    /**
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Country, $this>
+     */
     public function countries(): HasManyDeep
     {
         return $this->hasManyDeepFromReverse(

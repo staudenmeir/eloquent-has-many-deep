@@ -18,11 +18,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing belongs-to relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\BelongsTo $relation
+     * @param \Illuminate\Database\Eloquent\Relations\BelongsTo<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromBelongsTo(
         BelongsTo $relation,
@@ -51,11 +53,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing belongs-to-many relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\BelongsToMany $relation
+     * @param \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromBelongsToMany(
         BelongsToMany $relation,
@@ -77,11 +81,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-one or has-many relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\HasOneOrMany $relation
+     * @param \Illuminate\Database\Eloquent\Relations\HasOneOrMany<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromHasOneOrMany(
         HasOneOrMany $relation,
@@ -110,11 +116,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-many-through relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\HasManyThrough $relation
+     * @param \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromHasManyThrough(
         HasManyThrough $relation,
@@ -136,11 +144,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-one-through relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\HasOneThrough $relation
+     * @param \Illuminate\Database\Eloquent\Relations\HasOneThrough<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromHasOneThrough(
         HasOneThrough $relation,
@@ -162,11 +172,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-one or morph-many relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\MorphOneOrMany $relation
+     * @param \Illuminate\Database\Eloquent\Relations\MorphOneOrMany<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromMorphOneOrMany(
         MorphOneOrMany $relation,
@@ -184,11 +196,13 @@ trait ConcatenatesNativeRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-to-many relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\MorphToMany $relation
+     * @param \Illuminate\Database\Eloquent\Relations\MorphToMany<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: list<string>,
+     *     1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *     2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromMorphToMany(
         MorphToMany $relation,
@@ -218,7 +232,7 @@ trait ConcatenatesNativeRelationships
     /**
      * Get the relationship method name.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relation
      * @return string
      */
     protected function hasOneOrManyDeepRelationMethod(Relation $relation)

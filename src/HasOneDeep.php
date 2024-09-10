@@ -8,30 +8,21 @@ use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
- * @extends \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel>
+ * @extends \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>
  */
 class HasOneDeep extends HasManyDeep
 {
     use SupportsDefaultModels;
 
-    /**
-     * Get the results of the relationship.
-     *
-     * @return mixed
-     */
+    /** @inheritDoc */
     public function getResults()
     {
         return $this->first() ?: $this->getDefaultFor(end($this->throughParents));
     }
 
-    /**
-     * Initialize the relation on a set of models.
-     *
-     * @param array $models
-     * @param string $relation
-     * @return array
-     */
+    /** @inheritDoc */
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
@@ -41,14 +32,7 @@ class HasOneDeep extends HasManyDeep
         return $models;
     }
 
-    /**
-     * Match the eagerly loaded results to their parents.
-     *
-     * @param array $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @param string $relation
-     * @return array
-     */
+    /** @inheritDoc */
     public function match(array $models, Collection $results, $relation)
     {
         if ($this->customEagerMatchingCallbacks) {

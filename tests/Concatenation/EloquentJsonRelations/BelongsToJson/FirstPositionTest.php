@@ -16,14 +16,14 @@ class FirstPositionTest extends TestCase
         }
     }
 
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $permissions = User::find(21)->permissions;
 
         $this->assertEquals([81, 82, 83], $permissions->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithObjects()
+    public function testLazyLoadingWithObjects(): void
     {
         $permissions = User::find(21)->permissions2;
 

@@ -10,6 +10,10 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
  * @copyright Based on package by Constantin Graf (korridor): https://github.com/korridor/laravel-has-many-merged
+ *
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ *
+ * @extends \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel>
  */
 class HasManyMerged extends Base implements ConcatenableRelation
 {
@@ -17,10 +21,14 @@ class HasManyMerged extends Base implements ConcatenableRelation
      * Append the relation's through parents, foreign and local keys to a deep relationship.
      *
      * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param array $foreignKeys
-     * @param array $localKeys
+     * @param list<array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string,
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
      * @param int $position
-     * @return array
+     * @return array{0: list<string>,
+     *     1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *     2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     public function appendToDeepRelationship(array $through, array $foreignKeys, array $localKeys, int $position): array
     {
@@ -55,7 +63,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
      * Get the custom through key for an eager load of the relation.
      *
      * @param string $alias
-     * @return array
+     * @return list<string>
      */
     public function getThroughKeyForDeepRelationships(string $alias): array
     {
@@ -71,8 +79,8 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Set the constraints for an eager load of the deep relation.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $models
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param list<\Illuminate\Database\Eloquent\Model> $models
      * @return void
      */
     public function addEagerConstraintsToDeepRelationship(Builder $query, array $models): void
@@ -85,10 +93,10 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Match the eagerly loaded results for a deep relationship to their parents.
      *
-     * @param array $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param list<\Illuminate\Database\Eloquent\Model> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> $results
      * @param string $relation
-     * @return array
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     public function matchResultsForDeepRelationship(array $models, Collection $results, string $relation): array
     {
@@ -109,8 +117,8 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Build the model dictionary for a deep relation.
      *
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @return array
+     * @param \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> $results
+     * @return array<int|string, list<\Illuminate\Database\Eloquent\Model>>
      */
     protected function buildDictionaryForDeepRelationship(Collection $results): array
     {
@@ -124,6 +132,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
         foreach ($results as $result) {
             foreach ($foreignKeyNames as $foreignKeyName) {
                 $foreignKeyValue = $result->{$foreignKeyName};
+
                 if (!isset($dictionary[$foreignKeyValue])) {
                     $dictionary[$foreignKeyValue] = [];
                 }
@@ -138,7 +147,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Create a new instance of the relation from a base relation instance.
      *
-     * @param \Korridor\LaravelHasManyMerged\HasManyMerged $relation
+     * @param \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel> $relation
      * @return static
      */
     public static function fromBaseRelation(Base $relation): static

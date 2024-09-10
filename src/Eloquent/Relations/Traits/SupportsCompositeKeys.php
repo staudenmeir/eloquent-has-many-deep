@@ -41,7 +41,7 @@ trait SupportsCompositeKeys
     /**
      * Set the constraints for an eager load of the relation for a leading composite key.
      *
-     * @param array $models
+     * @param list<\Illuminate\Database\Eloquent\Model> $models
      * @return void
      */
     protected function addEagerConstraintsWithCompositeKey(array $models): void
@@ -77,10 +77,10 @@ trait SupportsCompositeKeys
     /**
      * Match the eagerly loaded results to their parents for a leading composite key.
      *
-     * @param array $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param list<\Illuminate\Database\Eloquent\Model> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> $results
      * @param string $relation
-     * @return array
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     protected function matchWithCompositeKey(array $models, Collection $results, string $relation): array
     {
@@ -111,8 +111,8 @@ trait SupportsCompositeKeys
     /**
      * Build model dictionary keyed by the relation's composite foreign key.
      *
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @return array
+     * @param \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> $results
+     * @return array<string, list<\Illuminate\Database\Eloquent\Model>>
      */
     protected function buildDictionaryWithCompositeKey(Collection $results): array
     {
@@ -138,7 +138,7 @@ trait SupportsCompositeKeys
     /**
      * Get the columns to select for a leading composite key.
      *
-     * @return array
+     * @return list<string>
      */
     protected function shouldSelectWithCompositeKey(): array
     {
@@ -154,7 +154,7 @@ trait SupportsCompositeKeys
     /**
      * Add the constraints for a relationship query for a leading composite key.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @return void
      */
     public function getRelationExistenceQueryWithCompositeKey(Builder $query): void

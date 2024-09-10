@@ -5,6 +5,7 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Laravel\Prompts\Themes\Default\TableRenderer;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ConcatenatesRelationships;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ReversesRelationships;
 
@@ -16,39 +17,51 @@ trait HasRelationships
     /**
      * Define a has-many-deep relationship.
      *
-     * @param string $related
-     * @param array $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
+     * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param class-string<TRelatedModel> $related TODO
+     * @param list<string> $through
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, $this>
      */
     public function hasManyDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
     {
-        return $this->newHasManyDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
+        return $this->newHasManyDeep(
+            ...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys)
+        );
     }
 
     /**
      * Define a has-one-deep relationship.
      *
-     * @param string $related
-     * @param array $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param class-string<TRelatedModel> $related TODO
+     * @param list<string> $through
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, $this>
      */
     public function hasOneDeep($related, array $through, array $foreignKeys = [], array $localKeys = [])
     {
-        return $this->newHasOneDeep(...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys));
+        return $this->newHasOneDeep(
+            ...$this->hasOneOrManyDeep($related, $through, $foreignKeys, $localKeys)
+        );
     }
 
     /**
      * Prepare a has-one-deep or has-many-deep relationship.
      *
      * @param string $related
-     * @param array $through
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return array
+     * @param list<string> $through
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return array{0: \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>,
+     *     1: $this,
+     *     2: list<\Illuminate\Database\Eloquent\Model>,
+     *     3: list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *     4: list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeep($related, array $through, array $foreignKeys, array $localKeys)
     {
@@ -73,8 +86,8 @@ trait HasRelationships
     /**
      * Prepare the through parents for a has-one-deep or has-many-deep relationship.
      *
-     * @param array $through
-     * @return array
+     * @param list<string> $through
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     protected function hasOneOrManyDeepThroughParents(array $through)
     {
@@ -113,8 +126,8 @@ trait HasRelationships
      *
      * @param \Illuminate\Database\Eloquent\Model $related
      * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
-     * @param array $foreignKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     protected function hasOneOrManyDeepForeignKeys(Model $related, array $throughParents, array $foreignKeys)
     {
@@ -137,8 +150,8 @@ trait HasRelationships
      *
      * @param \Illuminate\Database\Eloquent\Model $related
      * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
-     * @param array $localKeys
-     * @return array
+     * @param list<array{0: string, 1: string}|callable|null|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     protected function hasOneOrManyDeepLocalKeys(Model $related, array $throughParents, array $localKeys)
     {
@@ -159,12 +172,15 @@ trait HasRelationships
     /**
      * Instantiate a new HasManyDeep relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $farParent
+     * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+     * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
+     * @param TDeclaringModel $farParent
      * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>
      */
     protected function newHasManyDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
     {
@@ -174,12 +190,15 @@ trait HasRelationships
     /**
      * Instantiate a new HasOneDeep relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $farParent
+     * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+     * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
+     * @param TDeclaringModel $farParent
      * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
-     * @param array $foreignKeys
-     * @param array $localKeys
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
      */
     protected function newHasOneDeep(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
     {
