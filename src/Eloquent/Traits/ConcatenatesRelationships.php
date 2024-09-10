@@ -82,7 +82,7 @@ trait ConcatenatesRelationships
      * Prepare a has-one-deep or has-many-deep relationship from existing relationships.
      *
      * @param list<callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model>> $relations
-     * @return array{0: string,
+     * @return array{0: class-string<\Illuminate\Database\Eloquent\Model>,
      *     1: list<string>,
      *     2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
      *     3: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
