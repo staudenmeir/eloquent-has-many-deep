@@ -81,7 +81,7 @@ trait ConcatenatesRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from existing relationships.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation[]|callable[] $relations
+     * @param list<callable|\Illuminate\Database\Eloquent\Relations\Relation> $relations
      * @return array
      */
     protected function hasOneOrManyDeepFromRelations(array $relations)
@@ -199,7 +199,7 @@ trait ConcatenatesRelationships
      * Customize a has-one-deep or has-many-deep relationship.
      *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep $relation
-     * @param callable[] $postGetCallbacks
+     * @param list<callable> $postGetCallbacks
      * @param callable|null $customThroughKeyCallback
      * @param callable|null $customEagerConstraintsCallback
      * @param callable|null $customEagerMatchingCallback
@@ -263,7 +263,7 @@ trait ConcatenatesRelationships
      * Add the constraints from existing relationships to a has-one-deep or has-many-deep relationship.
      *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep $deepRelation
-     * @param callable[] $relations
+     * @param list<callable> $relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep|\Staudenmeir\EloquentHasManyDeep\HasOneDeep
      */
     protected function addConstraintsToHasOneOrManyDeepRelationship(

@@ -112,7 +112,7 @@ trait HasRelationships
      * Prepare the foreign keys for a has-one-deep or has-many-deep relationship.
      *
      * @param \Illuminate\Database\Eloquent\Model $related
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param array $foreignKeys
      * @return array
      */
@@ -136,7 +136,7 @@ trait HasRelationships
      * Prepare the local keys for a has-one-deep or has-many-deep relationship.
      *
      * @param \Illuminate\Database\Eloquent\Model $related
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param array $localKeys
      * @return array
      */
@@ -161,7 +161,7 @@ trait HasRelationships
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \Illuminate\Database\Eloquent\Model $farParent
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param array $foreignKeys
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep
@@ -176,7 +176,7 @@ trait HasRelationships
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \Illuminate\Database\Eloquent\Model $farParent
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param array $foreignKeys
      * @param array $localKeys
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep

@@ -7,7 +7,7 @@ trait IsCustomizable
     /**
      * The custom callbacks to run at the end of the get() method.
      *
-     * @var callable[]
+     * @var list<callable>
      */
     protected array $postGetCallbacks = [];
 
@@ -28,14 +28,14 @@ trait IsCustomizable
     /**
      * The custom matching callbacks for the eagerly loaded results.
      *
-     * @var callable[]
+     * @var list<callable>
      */
     protected array $customEagerMatchingCallbacks = [];
 
     /**
      * Set custom callbacks to run at the end of the get() method.
      *
-     * @param callable[] $callbacks
+     * @param list<callable> $callbacks
      * @return $this
      */
     public function withPostGetCallbacks(array $callbacks): static

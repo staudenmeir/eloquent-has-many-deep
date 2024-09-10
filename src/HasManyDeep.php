@@ -35,7 +35,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * The "through" parent model instances.
      *
-     * @var \Illuminate\Database\Eloquent\Model[]
+     * @var list<\Illuminate\Database\Eloquent\Model>
      */
     protected $throughParents;
 
@@ -58,7 +58,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \Illuminate\Database\Eloquent\Model $farParent
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param array $foreignKeys
      * @param array $localKeys
      * @return void
@@ -210,7 +210,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the "through" parent model instances.
      *
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     public function getThroughParents()
     {

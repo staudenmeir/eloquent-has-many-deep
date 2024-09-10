@@ -19,7 +19,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing belongs-to relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\BelongsTo $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -52,7 +52,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing belongs-to-many relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\BelongsToMany $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -78,7 +78,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-one or has-many relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\HasOneOrMany $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -111,7 +111,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-many-through relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\HasManyThrough $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -137,7 +137,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing has-one-through relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\HasOneThrough $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -163,7 +163,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-one or morph-many relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\MorphOneOrMany $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array
@@ -185,7 +185,7 @@ trait ConcatenatesNativeRelationships
      * Prepare a has-one-deep or has-many-deep relationship from an existing morph-to-many relationship.
      *
      * @param \Illuminate\Database\Eloquent\Relations\MorphToMany $relation
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @return array

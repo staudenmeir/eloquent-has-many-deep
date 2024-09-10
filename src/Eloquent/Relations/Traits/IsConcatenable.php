@@ -9,7 +9,7 @@ trait IsConcatenable
     /**
      * Append the relation's through parents, foreign and local keys to a deep relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $through
+     * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param array $foreignKeys
      * @param array $localKeys
      * @param int $position
