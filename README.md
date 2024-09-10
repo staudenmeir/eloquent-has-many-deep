@@ -1,6 +1,6 @@
 # Eloquent HasManyDeep
 
-[![CI](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml/badge.svg)](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml)
+[![CI](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml/badge.svg)](https://github.com/staudenmeir/eloquent-has-many-deep/actions/workflows/ci.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/staudenmeir/eloquent-has-many-deep/graph/badge.svg?token=H59fIf4mG6)](https://codecov.io/gh/staudenmeir/eloquent-has-many-deep)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/staudenmeir/eloquent-has-many-deep/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/staudenmeir/eloquent-has-many-deep/v/stable)](https://packagist.org/packages/staudenmeir/eloquent-has-many-deep)
