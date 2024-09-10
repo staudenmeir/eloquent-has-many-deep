@@ -3,7 +3,6 @@
 /tests                  export-ignore
 .gitattributes          export-ignore
 .gitignore              export-ignore
-.scrutinizer.yml        export-ignore
 docker-compose.ci.yml   export-ignore
 docker-compose.yml      export-ignore
 phpstan.neon.dist       export-ignore
