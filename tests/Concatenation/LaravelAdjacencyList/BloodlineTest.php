@@ -2,6 +2,7 @@
 
 namespace Tests\Concatenation\LaravelAdjacencyList;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Tests\Concatenation\LaravelAdjacencyList\Models\User;
 
@@ -35,7 +36,7 @@ class BloodlineTest extends TestCase
     public function testLazyEagerLoading()
     {
         $users = User::all()->load([
-            'bloodlinePosts' => fn (HasManyDeep $query) => $query->orderBy('id'),
+            'bloodlinePosts' => fn (Relation $query) => $query->getQuery()->orderBy('id'),
         ]);
 
         $this->assertEquals([10, 20, 30, 40, 50, 60, 70, 80], $users[0]->bloodlinePosts->pluck('id')->all());

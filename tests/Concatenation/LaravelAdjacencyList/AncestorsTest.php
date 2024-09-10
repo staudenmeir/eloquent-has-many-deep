@@ -2,6 +2,7 @@
 
 namespace Tests\Concatenation\LaravelAdjacencyList;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Tests\Concatenation\LaravelAdjacencyList\Models\User;
 
@@ -65,7 +66,7 @@ class AncestorsTest extends TestCase
     public function testLazyEagerLoading()
     {
         $users = User::all()->load([
-            'ancestorPosts' => fn (HasManyDeep $query) => $query->orderBy('id'),
+            'ancestorPosts' => fn (Relation $query) => $query->getQuery()->orderBy('id'),
         ]);
 
         $this->assertEquals([], $users[0]->ancestorPosts->pluck('id')->all());
