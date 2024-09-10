@@ -1,11 +1,14 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
     - ./vendor/phpstan/phpstan-mockery/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
-    level: 4
+    level: 5
     paths:
         - src
         - tests
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
+        - '#Parameter \#\d+ \$relations of method Illuminate\\Database\\Eloquent\\Collection<[^>]+\>::load\(\) expects#'
