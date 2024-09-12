@@ -11,4 +11,3 @@ parameters:
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-        - '#Parameter \#\d+ \$relations of method Illuminate\\Database\\Eloquent\\Collection<[^>]+\>::load\(\) expects#'
