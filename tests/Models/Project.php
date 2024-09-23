@@ -11,9 +11,6 @@ class Project extends Model
 {
     use HasRelationships;
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Employee, $this>
-     */
     public function employees(): HasManyDeep
     {
         return $this->hasManyDeep(
@@ -24,17 +21,11 @@ class Project extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Employee, $this>
-     */
     public function employeesFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->tasks(), (new Task())->employee());
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Tests\Models\Task>
-     */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);

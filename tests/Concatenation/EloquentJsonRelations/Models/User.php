@@ -14,17 +14,11 @@ class User extends Model
         'options' => 'json',
     ];
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\EloquentJsonRelations\Models\Permission, $this>
-     */
     public function permissions(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->roles(), (new Role())->permissions());
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Concatenation\EloquentJsonRelations\Models\Permission, $this>
-     */
     public function permissions2(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->roles2(), (new Role())->permissions());

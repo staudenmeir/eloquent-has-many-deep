@@ -161,7 +161,6 @@ class HasManyDeepTest extends TestCase
 
     public function testWithTrashed(): void
     {
-        /** @var \Tests\Models\User $user */
         $user = Comment::find(33)->user()
             ->withTrashed()
             ->first();
@@ -182,7 +181,6 @@ class HasManyDeepTest extends TestCase
     {
         $country = Country::withCount('commentsWithTrashedUsers as count')->first();
 
-        // @phpstan-ignore property.notFound
         $this->assertEquals(3, $country->count);
     }
 }

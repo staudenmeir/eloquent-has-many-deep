@@ -8,20 +8,11 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
-/**
- * @property-read \Tests\Models\Country|null $country
- * @property-read \Tests\Models\Country|null $countryWithCustomThroughTable
- * @property-read \Tests\Models\Post|null $post
- * @property-read \Tests\Models\Post|null $rootPost
- */
 class Comment extends Model
 {
     use HasTableAlias;
     use SoftDeletes;
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Models\Country, $this>
-     */
     public function country(): HasOneDeep
     {
         return $this->hasOneDeepFromReverse(
@@ -29,9 +20,6 @@ class Comment extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Models\Country, $this>
-     */
     public function countryWithCustomThroughTable(): HasOneDeep
     {
         return $this->hasOneDeepFromReverse(
@@ -39,17 +27,11 @@ class Comment extends Model
         );
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Tests\Models\Comment>
-     */
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Models\Post, $this>
-     */
     public function rootPost(): HasOneDeep
     {
         return $this->hasOneDeepFromReverse(
@@ -57,9 +39,6 @@ class Comment extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Tag, $this>
-     */
     public function tags(): HasManyDeep
     {
         return $this->hasManyDeepFromReverse(
@@ -67,9 +46,6 @@ class Comment extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Tests\Models\User, $this>
-     */
     public function user(): HasOneDeep
     {
         return $this->hasOneDeep(

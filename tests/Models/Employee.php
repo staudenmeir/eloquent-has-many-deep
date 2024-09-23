@@ -13,9 +13,6 @@ class Employee extends Model
     use Compoships;
     use HasRelationships;
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Project, $this>
-     */
     public function projects(): HasManyDeep
     {
         return $this->hasManyDeep(
@@ -26,17 +23,11 @@ class Employee extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Project, $this>
-     */
     public function projectsFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->tasks(), (new Task())->project());
     }
 
-    /**
-     * @return \Awobaz\Compoships\Database\Eloquent\Relations\HasMany<\Tests\Models\Task>
-     */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class, ['team_id', 'work_stream_id'], ['team_id', 'work_stream_id']);

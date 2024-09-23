@@ -7,9 +7,6 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class Tag extends Model
 {
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Comment, $this>
-     */
     public function comments(): HasManyDeep
     {
         return $this->hasManyDeep(
@@ -20,17 +17,11 @@ class Tag extends Model
         );
     }
 
-    /**
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Tests\Models\Comment, $this>
-     */
     public function commentsFromRelations(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->posts(), (new Post())->comments());
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\Tests\Models\Post>
-     */
     public function posts(): MorphToMany
     {
         return $this->morphedByMany(Post::class, 'taggable');
