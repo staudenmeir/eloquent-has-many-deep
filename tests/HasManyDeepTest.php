@@ -11,63 +11,63 @@ use Tests\Models\UserWithAliasTrait;
 
 class HasManyDeepTest extends TestCase
 {
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $comments = Country::find(1)->comments;
 
         $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithLeadingBelongsToMany()
+    public function testLazyLoadingWithLeadingBelongsToMany(): void
     {
         $permissions = User::first()->permissions;
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithIntermediateBelongsToMany()
+    public function testLazyLoadingWithIntermediateBelongsToMany(): void
     {
         $permissions = Country::find(1)->permissions;
 
         $this->assertEquals([71], $permissions->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithTrailingBelongsToMany()
+    public function testLazyLoadingWithTrailingBelongsToMany(): void
     {
         $roles = Country::find(1)->roles;
 
         $this->assertEquals([61], $roles->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithLeadingMorphMany()
+    public function testLazyLoadingWithLeadingMorphMany(): void
     {
         $likes = Post::first()->users;
 
         $this->assertEquals([11], $likes->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithTrailingMorphMany()
+    public function testLazyLoadingWithTrailingMorphMany(): void
     {
         $likes = User::first()->likes;
 
         $this->assertEquals([81], $likes->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithMorphedByMany()
+    public function testLazyLoadingWithMorphedByMany(): void
     {
         $comments = Tag::first()->comments;
 
         $this->assertEquals([31], $comments->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithAlias()
+    public function testLazyLoadingWithAlias(): void
     {
         $comments = Post::find(24)->commentReplies;
 
         $this->assertEquals([35, 36], $comments->pluck('id')->all());
     }
 
-    public function testEagerLoading()
+    public function testEagerLoading(): void
     {
         $countries = Country::with('comments')->get();
 
@@ -75,93 +75,92 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([34, 35, 36], $countries[1]->comments->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithLeadingMorphMany()
+    public function testEagerLoadingWithLeadingMorphMany(): void
     {
         $posts = Post::with('users')->get();
 
         $this->assertEquals([11], $posts[0]->users->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithTrailingMorphMany()
+    public function testEagerLoadingWithTrailingMorphMany(): void
     {
         $users = User::with('likes')->get();
 
         $this->assertEquals([81], $users[0]->likes->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithMorphedByMany()
+    public function testEagerLoadingWithMorphedByMany(): void
     {
         $tags = Tag::with('comments')->get();
 
         $this->assertEquals([31], $tags[0]->comments->pluck('id')->all());
     }
 
-    public function testLazyEagerLoading()
+    public function testLazyEagerLoading(): void
     {
         $countries = Country::all()->load('comments');
 
         $this->assertEquals([31, 32], $countries[0]->comments->pluck('id')->all());
     }
 
-    public function testExistenceQuery()
+    public function testExistenceQuery(): void
     {
         $countries = Country::has('comments')->get();
 
         $this->assertEquals([1, 2], $countries->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithLeadingMorphMany()
+    public function testExistenceQueryWithLeadingMorphMany(): void
     {
         $posts = Post::has('users')->get();
 
         $this->assertEquals([21, 23], $posts->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithTrailingMorphMany()
+    public function testExistenceQueryWithTrailingMorphMany(): void
     {
         $users = User::has('likes')->get();
 
         $this->assertEquals([11], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithMorphedByMany()
+    public function testExistenceQueryWithMorphedByMany(): void
     {
         $tags = Tag::has('comments')->get();
 
         $this->assertEquals([91], $tags->pluck('id')->all());
     }
 
-    public function testExistenceQueryForSelfRelation()
+    public function testExistenceQueryForSelfRelation(): void
     {
         $users = User::has('players')->get();
 
         $this->assertEquals([11], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryForSelfRelationWithLeadingMorphMany()
+    public function testExistenceQueryForSelfRelationWithLeadingMorphMany(): void
     {
         $posts = Post::has('posts')->get();
 
         $this->assertEquals([21, 23], $posts->pluck('id')->all());
     }
 
-    public function testExistenceQueryForThroughSelfRelation()
+    public function testExistenceQueryForThroughSelfRelation(): void
     {
         $users = UserWithAliasTrait::withCount('teamPosts')->get();
 
         $this->assertEquals([2, 2, 1], $users->pluck('team_posts_count')->all());
     }
 
-    public function testExistenceQueryForThroughSelfRelationWithoutAliasTrait()
+    public function testExistenceQueryForThroughSelfRelationWithoutAliasTrait(): void
     {
         $this->expectExceptionMessageMatches('/' . preg_quote(User::class) . '/');
 
         User::withCount('teamPosts')->get();
     }
 
-    public function testWithTrashed()
+    public function testWithTrashed(): void
     {
-        /** @var \Tests\Models\User $user */
         $user = Comment::find(33)->user()
             ->withTrashed()
             ->first();
@@ -169,7 +168,7 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals(13, $user->id);
     }
 
-    public function testWithTrashedIntermediate()
+    public function testWithTrashedIntermediate(): void
     {
         $comments = Country::find(1)->comments()
             ->withTrashed(['users.deleted_at'])
@@ -178,11 +177,10 @@ class HasManyDeepTest extends TestCase
         $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
     }
 
-    public function testWithTrashedIntermediateAndWithCount()
+    public function testWithTrashedIntermediateAndWithCount(): void
     {
         $country = Country::withCount('commentsWithTrashedUsers as count')->first();
 
-        // @phpstan-ignore property.notFound
         $this->assertEquals(3, $country->count);
     }
 }

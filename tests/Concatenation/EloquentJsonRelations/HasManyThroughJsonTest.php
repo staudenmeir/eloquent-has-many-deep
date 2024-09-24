@@ -10,14 +10,14 @@ use Tests\Concatenation\EloquentJsonRelations\Models\Role;
 
 class HasManyThroughJsonTest extends TestCase
 {
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $projects = Role::find(2)->projects;
 
         $this->assertEquals([71, 73], $projects->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithObjects()
+    public function testLazyLoadingWithObjects(): void
     {
         $projects = Role::find(2)->projects2;
 
@@ -28,14 +28,14 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals(['role' => ['active' => false]], $pivot->getAttributes());
     }
 
-    public function testLazyLoadingWithReverseRelationship()
+    public function testLazyLoadingWithReverseRelationship(): void
     {
         $roles = Project::find(71)->roles;
 
         $this->assertEquals([1, 2], $roles->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithReverseRelationshipAndObjects()
+    public function testLazyLoadingWithReverseRelationshipAndObjects(): void
     {
         $roles = Project::find(71)->roles2;
 
@@ -46,14 +46,14 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals(['role' => ['active' => true]], $pivot->getAttributes());
     }
 
-    public function testEmptyLazyLoading()
+    public function testEmptyLazyLoading(): void
     {
         $projects = (new Role())->projects()->get();
 
         $this->assertEmpty($projects);
     }
 
-    public function testEmptyLazyLoadingWithReverseRelationship()
+    public function testEmptyLazyLoadingWithReverseRelationship(): void
     {
         DB::connection()->enableQueryLog();
 
@@ -63,7 +63,7 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEmpty(DB::connection()->getQueryLog());
     }
 
-    public function testEagerLoading()
+    public function testEagerLoading(): void
     {
         $roles = Role::with('projects')->get();
 
@@ -73,7 +73,7 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals([], $roles[3]->projects->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithObjects()
+    public function testEagerLoadingWithObjects(): void
     {
         $roles = Role::with('projects2')->get();
 
@@ -87,7 +87,7 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals(['role' => ['active' => false]], $pivot->getAttributes());
     }
 
-    public function testEagerLoadingWithReverseRelationship()
+    public function testEagerLoadingWithReverseRelationship(): void
     {
         $projects = Project::with('roles')->get();
 
@@ -96,7 +96,7 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals([2, 3], $projects[2]->roles->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithReverseRelationshipAndObjects()
+    public function testEagerLoadingWithReverseRelationshipAndObjects(): void
     {
         $projects = Project::with('roles2')->get();
 
@@ -109,28 +109,28 @@ class HasManyThroughJsonTest extends TestCase
         $this->assertEquals(['role' => ['active' => true]], $pivot->getAttributes());
     }
 
-    public function testExistenceQuery()
+    public function testExistenceQuery(): void
     {
         $roles = Role::has('projects')->get();
 
         $this->assertEquals([1, 2, 3], $roles->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithObjects()
+    public function testExistenceQueryWithObjects(): void
     {
         $roles = Role::has('projects2')->get();
 
         $this->assertEquals([1, 2, 3], $roles->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithReverseRelationship()
+    public function testExistenceQueryWithReverseRelationship(): void
     {
         $projects = Project::has('roles')->get();
 
         $this->assertEquals([71, 73], $projects->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithReverseRelationshipAndObjects()
+    public function testExistenceQueryWithReverseRelationshipAndObjects(): void
     {
         $projects = Project::has('roles2')->get();
 

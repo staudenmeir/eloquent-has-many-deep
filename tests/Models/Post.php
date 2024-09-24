@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
-/**
- * @property-read \Tests\Models\User|null $user
- */
 class Post extends Model
 {
     public function comments(): HasMany

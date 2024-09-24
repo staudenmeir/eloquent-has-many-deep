@@ -1,13 +1,9 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
-    - ./vendor/phpstan/phpstan-mockery/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
-        - tests
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'

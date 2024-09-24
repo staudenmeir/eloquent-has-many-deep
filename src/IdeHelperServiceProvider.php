@@ -21,6 +21,9 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
         $this->registerIdeHelperHook();
     }
 
+    /**
+     * @return list<class-string>
+     */
     public function provides(): array
     {
         return [

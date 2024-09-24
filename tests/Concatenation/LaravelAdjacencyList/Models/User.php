@@ -9,11 +9,8 @@ use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\HasManyOfDescendants;
 
-/**
- * @property-read \Tests\Concatenation\LaravelAdjacencyList\Models\Post $ancestorPost
- * @property-read \Tests\Concatenation\LaravelAdjacencyList\Models\Post $descendantPost
- */
 class User extends Model
 {
     use HasRelationships;
@@ -77,7 +74,7 @@ class User extends Model
         );
     }
 
-    public function posts()
+    public function posts(): HasManyOfDescendants
     {
         return $this->hasManyOfDescendants(Post::class);
     }

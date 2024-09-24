@@ -9,14 +9,7 @@ use Staudenmeir\EloquentHasManyDeep\HasTableAlias;
 
 trait HasExistenceQueries
 {
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
-     * @param array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
+    /** @inheritDoc */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
         $this->setRelationExistenceQueryAlias($parentQuery);
@@ -44,14 +37,7 @@ trait HasExistenceQueries
         return $query;
     }
 
-    /**
-     * Add the constraints for a relationship query on the same table.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
-     * @param array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
+    /** @inheritDoc */
     public function getRelationExistenceQueryForSelfRelation(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
         $hash = $this->getRelationCountHash();
@@ -72,7 +58,7 @@ trait HasExistenceQueries
     /**
      * Set the table alias for a relation existence query if necessary.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $parentQuery
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parentQuery
      * @return void
      */
     protected function setRelationExistenceQueryAlias(Builder $parentQuery): void

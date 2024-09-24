@@ -8,21 +8,21 @@ use Tests\Concatenation\LaravelAdjacencyList\Models\User;
 
 class BloodlineTest extends TestCase
 {
-    public function testLazyLoading()
+    public function testLazyLoading(): void
     {
         $posts = User::find(5)->bloodlinePosts()->orderBy('id')->get();
 
         $this->assertEquals([10, 20, 50, 80], $posts->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithoutParentKey()
+    public function testLazyLoadingWithoutParentKey(): void
     {
         $posts = (new User())->bloodlinePosts()->get();
 
         $this->assertEmpty($posts);
     }
 
-    public function testEagerLoading()
+    public function testEagerLoading(): void
     {
         $users = User::with([
             'bloodlinePosts' => fn (HasManyDeep $query) => $query->orderBy('id'),
@@ -33,7 +33,7 @@ class BloodlineTest extends TestCase
         $this->assertEquals([10, 20, 50, 80], $users[4]->bloodlinePosts->pluck('id')->all());
     }
 
-    public function testLazyEagerLoading()
+    public function testLazyEagerLoading(): void
     {
         $users = User::all()->load([
             'bloodlinePosts' => fn (Relation $query) => $query->getQuery()->orderBy('id'),
@@ -44,7 +44,7 @@ class BloodlineTest extends TestCase
         $this->assertEquals([10, 20, 50, 80], $users[4]->bloodlinePosts->pluck('id')->all());
     }
 
-    public function testExistenceQuery()
+    public function testExistenceQuery(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();
@@ -55,7 +55,7 @@ class BloodlineTest extends TestCase
         $this->assertEquals([5, 2], $users->pluck('id')->all());
     }
 
-    public function testExistenceQueryForSelfRelation()
+    public function testExistenceQueryForSelfRelation(): void
     {
         if (in_array($this->connection, ['mariadb', 'sqlsrv'])) {
             $this->markTestSkipped();

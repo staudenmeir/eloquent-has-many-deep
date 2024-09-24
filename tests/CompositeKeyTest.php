@@ -7,21 +7,21 @@ use Tests\Models\Project;
 
 class CompositeKeyTest extends TestCase
 {
-    public function testLazyLoadingWithLeadingKey()
+    public function testLazyLoadingWithLeadingKey(): void
     {
         $projects = Employee::find(131)->projects;
 
         $this->assertEquals([101, 102], $projects->pluck('id')->all());
     }
 
-    public function testLazyLoadingWithIntermediateKey()
+    public function testLazyLoadingWithIntermediateKey(): void
     {
         $employees = Project::find(101)->employees;
 
         $this->assertEquals([131, 132], $employees->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithLeadingKey()
+    public function testEagerLoadingWithLeadingKey(): void
     {
         $employees = Employee::with('projects')->get();
 
@@ -29,7 +29,7 @@ class CompositeKeyTest extends TestCase
         $this->assertEquals([103], $employees[2]->projects->pluck('id')->all());
     }
 
-    public function testEagerLoadingWithIntermediateKey()
+    public function testEagerLoadingWithIntermediateKey(): void
     {
         $projects = Project::with('employees')->get();
 
@@ -37,7 +37,7 @@ class CompositeKeyTest extends TestCase
         $this->assertEquals([133], $projects[2]->employees->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingWithLeadingKey()
+    public function testLazyEagerLoadingWithLeadingKey(): void
     {
         $employees = Employee::all()->load('projects');
 
@@ -45,7 +45,7 @@ class CompositeKeyTest extends TestCase
         $this->assertEquals([103], $employees[2]->projects->pluck('id')->all());
     }
 
-    public function testLazyEagerLoadingWithIntermediateKey()
+    public function testLazyEagerLoadingWithIntermediateKey(): void
     {
         $projects = Project::all()->load('employees');
 
@@ -53,21 +53,21 @@ class CompositeKeyTest extends TestCase
         $this->assertEquals([133], $projects[2]->employees->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithLeadingKey()
+    public function testExistenceQueryWithLeadingKey(): void
     {
         $employees = Employee::has('projects')->get();
 
         $this->assertEquals([131, 132, 133], $employees->pluck('id')->all());
     }
 
-    public function testExistenceQueryWithIntermediateKey()
+    public function testExistenceQueryWithIntermediateKey(): void
     {
         $projects = Project::has('employees')->get();
 
         $this->assertEquals([101, 102, 103], $projects->pluck('id')->all());
     }
 
-    public function testPaginateWithLeadingKey()
+    public function testPaginateWithLeadingKey(): void
     {
         $projects = Employee::find(131)->projects()->paginate();
 
@@ -75,7 +75,7 @@ class CompositeKeyTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key_1', $projects[0]);
     }
 
-    public function testSimplePaginateWithLeadingKey()
+    public function testSimplePaginateWithLeadingKey(): void
     {
         $projects = Employee::find(131)->projects()->simplePaginate();
 
@@ -83,7 +83,7 @@ class CompositeKeyTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key_1', $projects[0]);
     }
 
-    public function testCursorPaginateWithLeadingKey()
+    public function testCursorPaginateWithLeadingKey(): void
     {
         $projects = Employee::find(131)->projects()->cursorPaginate();
 

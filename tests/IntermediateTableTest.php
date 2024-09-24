@@ -11,7 +11,7 @@ use Tests\Models\User;
 
 class IntermediateTableTest extends TestCase
 {
-    public function testWithIntermediate()
+    public function testWithIntermediate(): void
     {
         $comments = Country::find(1)->comments()
             ->withIntermediate(User::class, ['id', 'deleted_at'], 'post.user')
@@ -24,7 +24,7 @@ class IntermediateTableTest extends TestCase
         $this->assertEquals(['id' => 11, 'deleted_at' => null], $post->user->getAttributes());
     }
 
-    public function testWithPivot()
+    public function testWithPivot(): void
     {
         $permissions = User::first()->permissions()
             ->withPivot('role_user', ['role_id'])
@@ -36,7 +36,7 @@ class IntermediateTableTest extends TestCase
         $this->assertEquals(['role_id' => 61, 'user_id' => 11], $pivot->getAttributes());
     }
 
-    public function testWithPivotWithClass()
+    public function testWithPivotWithClass(): void
     {
         $permissions = User::first()->permissions()
             ->withPivot('role_user', ['role_id'], RoleUser::class, 'pivot')
@@ -47,7 +47,7 @@ class IntermediateTableTest extends TestCase
         $this->assertEquals(['role_id' => 61], $pivot->getAttributes());
     }
 
-    public function testWithPivotWithPostProcessor()
+    public function testWithPivotWithPostProcessor(): void
     {
         $permissions = User::first()->permissions()
             ->withPivot('role_user', ['role_id'], postProcessor: function (Model $model, array $attributes) {
@@ -58,7 +58,7 @@ class IntermediateTableTest extends TestCase
         $this->assertEquals(['role_id' => 61, 'foo' => 'bar'], $pivot->getAttributes());
     }
 
-    public function testPaginate()
+    public function testPaginate(): void
     {
         $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
@@ -68,7 +68,7 @@ class IntermediateTableTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
-    public function testSimplePaginate()
+    public function testSimplePaginate(): void
     {
         $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
@@ -78,7 +78,7 @@ class IntermediateTableTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
-    public function testCursorPaginator()
+    public function testCursorPaginator(): void
     {
         $comments = Country::find(1)->comments()
             ->withIntermediate(Post::class)
@@ -88,7 +88,7 @@ class IntermediateTableTest extends TestCase
         $this->assertArrayNotHasKey('laravel_through_key', $comments[0]);
     }
 
-    public function testChunk()
+    public function testChunk(): void
     {
         Country::find(1)->comments()
             ->withIntermediate(Post::class)
@@ -97,7 +97,7 @@ class IntermediateTableTest extends TestCase
             });
     }
 
-    public function testGetIntermediateTables()
+    public function testGetIntermediateTables(): void
     {
         $comments = Country::find(1)->comments();
 

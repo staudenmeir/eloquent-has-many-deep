@@ -18,6 +18,7 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
  * @extends \Illuminate\Database\Eloquent\Relations\HasManyThrough<TRelatedModel>
  */
@@ -35,32 +36,32 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * The "through" parent model instances.
      *
-     * @var \Illuminate\Database\Eloquent\Model[]
+     * @var list<\Illuminate\Database\Eloquent\Model>
      */
     protected $throughParents;
 
     /**
      * The foreign keys on the relationship.
      *
-     * @var array
+     * @var list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     protected $foreignKeys;
 
     /**
      * The local keys on the relationship.
      *
-     * @var array
+     * @var list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     protected $localKeys;
 
     /**
      * Create a new has many deep relationship instance.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param \Illuminate\Database\Eloquent\Model $farParent
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
-     * @param array $foreignKeys
-     * @param array $localKeys
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
+     * @param list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
+     * @param list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
      * @return void
      */
     public function __construct(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
@@ -78,11 +79,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKey, $localKeys[1]);
     }
 
-    /**
-     * Set the base constraints on the relation query.
-     *
-     * @return void
-     */
+    /** @inheritDoc */
     public function addConstraints()
     {
         if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
@@ -108,12 +105,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         }
     }
 
-    /**
-     * Set the join clauses on the query.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder|null $query
-     * @return void
-     */
+    /** @inheritDoc */
     protected function performJoin(?Builder $query = null)
     {
         $query = $query ?: $this->query;
@@ -138,8 +130,8 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Set the select clause for the relation query.
      *
-     * @param array $columns
-     * @return array
+     * @param list<string> $columns
+     * @return list<string>
      */
     protected function shouldSelect(array $columns = ['*'])
     {
@@ -174,7 +166,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Restore soft-deleted models.
      *
-     * @param array|string ...$columns
+     * @param string|list<string> ...$columns
      * @return $this
      */
     public function withTrashed(...$columns)
@@ -210,7 +202,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the "through" parent model instances.
      *
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     public function getThroughParents()
     {
@@ -220,7 +212,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the foreign keys on the relationship.
      *
-     * @return array
+     * @return list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     public function getForeignKeys()
     {
@@ -230,7 +222,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the local keys on the relationship.
      *
-     * @return array
+     * @return list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
      */
     public function getLocalKeys()
     {
