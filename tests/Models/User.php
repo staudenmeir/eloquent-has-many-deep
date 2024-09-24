@@ -40,7 +40,7 @@ class User extends Model
 
     public function players(): HasManyDeep
     {
-        return $this->hasManyDeep(User::class, [Club::class, Team::class]);
+        return $this->hasManyDeep(static::class, [Club::class, Team::class]);
     }
 
     public function posts(): HasMany
