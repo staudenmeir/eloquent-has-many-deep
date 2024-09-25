@@ -53,8 +53,8 @@ trait JoinsThroughParents
             );
         }
 
-        if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-            /** @phpstan-ignore method.notFound */
+        if ($this->throughParentInstanceSoftDeletes($throughParent)
+            && method_exists($throughParent, 'getQualifiedDeletedAtColumn')) {
             $column = $throughParent->getQualifiedDeletedAtColumn();
 
             $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
