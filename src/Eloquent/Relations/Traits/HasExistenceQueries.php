@@ -17,6 +17,7 @@ trait HasExistenceQueries
         if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
             $this->performJoin($query);
 
+            /** @var callable $closureKey */
             $closureKey = $this->firstKey instanceof Closure ? $this->firstKey : $this->localKey;
 
             $closureKey($query, $parentQuery);
@@ -48,8 +49,14 @@ trait HasExistenceQueries
 
         $query->getModel()->setTable($hash);
 
+        $from = is_string($parentQuery->getQuery()->from)
+            ? $parentQuery->getQuery()->from
+            : (string) $parentQuery->getQuery()->from->getValue(
+                $parentQuery->getQuery()->getGrammar()
+            );
+
         return $query->select($columns)->whereColumn(
-            $parentQuery->getQuery()->from.'.'.$this->localKey,
+            "$from.$this->localKey",
             '=',
             $this->getQualifiedFirstKeyName()
         );

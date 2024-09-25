@@ -79,7 +79,7 @@ trait JoinsThroughParents
     {
         $joins = [];
 
-        if ($localKey instanceof CompositeKey) {
+        if ($localKey instanceof CompositeKey && $foreignKey instanceof CompositeKey) {
             foreach ($localKey->columns as $i => $column) {
                 $joins[] = [$column, $foreignKey->columns[$i]];
             }

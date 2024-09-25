@@ -20,15 +20,13 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Append the relation's through parents, foreign and local keys to a deep relationship.
      *
-     * @param list<\Illuminate\Database\Eloquent\Model> $through
-     * @param list<array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
-     * @param list<array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
+     * @param non-empty-list<string> $through
+     * @param non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $foreignKeys
+     * @param non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $localKeys
      * @param int $position
-     * @return array{0: list<string>,
-     *     1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
-     *     2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
+     * @return array{0: non-empty-list<string>,
+     *     1: non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null>,
+     *     2: non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null>}
      */
     public function appendToDeepRelationship(array $through, array $foreignKeys, array $localKeys, int $position): array
     {

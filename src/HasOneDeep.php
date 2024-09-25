@@ -16,7 +16,11 @@ class HasOneDeep extends HasManyDeep
 {
     use SupportsDefaultModels;
 
-    /** @inheritDoc */
+    /**
+     * Get the results of the relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function getResults()
     {
         return $this->first() ?: $this->getDefaultFor(end($this->throughParents));

@@ -23,12 +23,7 @@ trait ExecutesQueries
         return parent::getResults();
     }
 
-    /**
-     * Execute the query as a "select" statement.
-     *
-     * @param string|list<string> $columns
-     * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>
-     */
+    /** @inheritDoc */
     public function get($columns = ['*'])
     {
         $models = parent::get($columns);
@@ -111,13 +106,7 @@ trait ExecutesQueries
         });
     }
 
-    /**
-     * Chunk the results of the query.
-     *
-     * @param int $count
-     * @param callable $callback
-     * @return bool
-     */
+    /** @inheritDoc */
     public function chunk($count, callable $callback)
     {
         return $this->prepareQueryBuilder()->chunk($count, function (Collection $results) use ($callback) {

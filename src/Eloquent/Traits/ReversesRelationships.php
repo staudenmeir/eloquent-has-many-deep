@@ -14,7 +14,7 @@ trait ReversesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, $this>
      */
@@ -30,7 +30,7 @@ trait ReversesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, $this>
      */
@@ -46,12 +46,12 @@ trait ReversesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $relation
      * @return array{0: class-string<TDeclaringModel>,
      *     1: list<string>,
-     *     2: list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
-     *     3: list<string|callable|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
+     *     2: list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
+     *     3: list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
     protected function hasOneOrManyDeepFromReverse(HasManyDeep $relation): array
     {

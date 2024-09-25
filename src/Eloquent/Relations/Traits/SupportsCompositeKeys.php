@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as BaseCollection;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+ */
 trait SupportsCompositeKeys
 {
     /**
@@ -27,13 +31,19 @@ trait SupportsCompositeKeys
      */
     protected function addConstraintsWithCompositeKey(): void
     {
-        $columns = array_slice($this->foreignKeys[0]->columns, 1, null, true);
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey */
+        $foreignKey = $this->foreignKeys[0];
+
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey */
+        $localKey = $this->localKeys[0];
+
+        $columns = array_slice($foreignKey->columns, 1, null, true);
 
         foreach ($columns as $i => $column) {
             $this->query->where(
                 $this->throughParent->qualifyColumn($column),
                 '=',
-                $this->farParent[$this->localKeys[0]->columns[$i]]
+                $this->farParent[$localKey->columns[$i]]
             );
         }
     }
@@ -46,21 +56,27 @@ trait SupportsCompositeKeys
      */
     protected function addEagerConstraintsWithCompositeKey(array $models): void
     {
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey */
+        $foreignKey = $this->foreignKeys[0];
+
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey */
+        $localKey = $this->localKeys[0];
+
         $keys = (new BaseCollection($models))->map(
-            function (Model $model) {
+            function (Model $model) use ($localKey) {
                 return array_map(
                     fn (string $column) => $model[$column],
-                    $this->localKeys[0]->columns
+                    $localKey->columns
                 );
             }
         )->values()->unique(null, true)->all();
 
         $this->query->where(
-            function (Builder $query) use ($keys) {
+            function (Builder $query) use ($foreignKey, $keys) {
                 foreach ($keys as $key) {
                     $query->orWhere(
-                        function (Builder $query) use ($key) {
-                            foreach ($this->foreignKeys[0]->columns as $i => $column) {
+                        function (Builder $query) use ($foreignKey, $key) {
+                            foreach ($foreignKey->columns as $i => $column) {
                                 $query->where(
                                     $this->throughParent->qualifyColumn($column),
                                     '=',
@@ -77,10 +93,10 @@ trait SupportsCompositeKeys
     /**
      * Match the eagerly loaded results to their parents for a leading composite key.
      *
-     * @param list<\Illuminate\Database\Eloquent\Model> $models
-     * @param \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model> $results
-     * @param string $relation
-     * @return list<\Illuminate\Database\Eloquent\Model>
+     * @param  array<int, TDeclaringModel>  $models
+     * @param  \Illuminate\Database\Eloquent\Collection<int, TRelatedModel>  $results
+     * @param  string  $relation
+     * @return array<int, TDeclaringModel>
      */
     protected function matchWithCompositeKey(array $models, Collection $results, string $relation): array
     {
@@ -88,8 +104,10 @@ trait SupportsCompositeKeys
 
         foreach ($models as $model) {
             $values = [];
+            /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey */
+            $localKey = $this->localKeys[0];
 
-            foreach ($this->localKeys[0]->columns as $column) {
+            foreach ($localKey->columns as $column) {
                 $values[] = $this->getDictionaryKey(
                     $model->getAttribute($column)
                 );
@@ -118,10 +136,13 @@ trait SupportsCompositeKeys
     {
         $dictionary = [];
 
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey */
+        $foreignKey = $this->foreignKeys[0];
+
         foreach ($results as $result) {
             $values = [];
 
-            foreach ($this->foreignKeys[0]->columns as $i => $column) {
+            foreach ($foreignKey->columns as $i => $column) {
                 $alias = 'laravel_through_key' . ($i > 0 ? "_$i" : '');
 
                 $values[] = $result->$alias;
@@ -142,7 +163,10 @@ trait SupportsCompositeKeys
      */
     protected function shouldSelectWithCompositeKey(): array
     {
-        $columns = array_slice($this->foreignKeys[0]->columns, 1, null, true);
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey */
+        $foreignKey = $this->foreignKeys[0];
+
+        $columns = array_slice($foreignKey->columns, 1, null, true);
 
         return array_map(
             fn ($column, $i) => $this->throughParent->qualifyColumn($column) . " as laravel_through_key_$i",
@@ -159,13 +183,19 @@ trait SupportsCompositeKeys
      */
     public function getRelationExistenceQueryWithCompositeKey(Builder $query): void
     {
-        $columns = array_slice($this->localKeys[0]->columns, 1, null, true);
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey */
+        $foreignKey = $this->foreignKeys[0];
+
+        /** @var \Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey */
+        $localKey = $this->localKeys[0];
+
+        $columns = array_slice($localKey->columns, 1, null, true);
 
         foreach ($columns as $i => $column) {
             $query->whereColumn(
                 $this->farParent->qualifyColumn($column),
                 '=',
-                $this->throughParent->qualifyColumn($this->foreignKeys[0]->columns[$i])
+                $this->throughParent->qualifyColumn($foreignKey->columns[$i])
             );
         }
     }
