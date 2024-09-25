@@ -18,9 +18,9 @@ trait JoinsThroughParents
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $foreignKey
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $localKey
      * @param string $prefix
      * @return void
      */
@@ -70,9 +70,9 @@ trait JoinsThroughParents
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $foreignKey
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $localKey
      * @return list<array{0: string, 1: string}>
      */
     protected function throughParentJoins(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey): array

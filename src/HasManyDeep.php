@@ -224,7 +224,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the foreign keys on the relationship.
      *
-     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
+     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null>
      */
     public function getForeignKeys()
     {
@@ -234,7 +234,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Get the local keys on the relationship.
      *
-     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>
+     * @return list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null>
      */
     public function getLocalKeys()
     {
