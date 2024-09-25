@@ -115,7 +115,10 @@ trait RetrievesIntermediateTables
             foreach ($models as $model) {
                 $relation = $this->intermediateRelation($model, $intermediateTable, $prefix);
 
-                data_get($model, $path)->setRelation($key, $relation);
+                /** @var \Illuminate\Database\Eloquent\Model $relatedModel */
+                $relatedModel = data_get($model, $path);
+
+                $relatedModel->setRelation($key, $relation);
             }
         }
     }
