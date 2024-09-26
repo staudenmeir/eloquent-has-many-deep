@@ -4,6 +4,10 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+ */
 trait HasEagerLoading
 {
     /** @inheritDoc */
@@ -29,7 +33,14 @@ trait HasEagerLoading
         }
     }
 
-    /** @inheritDoc */
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param array<int, TDeclaringModel> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @param string $relation
+     * @return array<int, TDeclaringModel>
+     */
     public function match(array $models, Collection $results, $relation)
     {
         if ($this->customEagerMatchingCallbacks) {

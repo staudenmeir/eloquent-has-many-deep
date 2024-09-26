@@ -18,9 +18,9 @@ trait JoinsThroughParents
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $foreignKey
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $localKey
      * @param string $prefix
      * @return void
      */
@@ -53,8 +53,8 @@ trait JoinsThroughParents
             );
         }
 
-        if ($this->throughParentInstanceSoftDeletes($throughParent)) {
-            /** @phpstan-ignore method.notFound */
+        if ($this->throughParentInstanceSoftDeletes($throughParent)
+            && method_exists($throughParent, 'getQualifiedDeletedAtColumn')) {
             $column = $throughParent->getQualifiedDeletedAtColumn();
 
             $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
@@ -70,16 +70,16 @@ trait JoinsThroughParents
      * @param \Illuminate\Database\Eloquent\Model $throughParent
      * @param \Illuminate\Database\Eloquent\Model $predecessor
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $foreignKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $foreignKey
      * @param array{0: string,
-     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey $localKey
+     *     1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null $localKey
      * @return list<array{0: string, 1: string}>
      */
     protected function throughParentJoins(Builder $query, Model $throughParent, Model $predecessor, $foreignKey, $localKey): array
     {
         $joins = [];
 
-        if ($localKey instanceof CompositeKey) {
+        if ($localKey instanceof CompositeKey && $foreignKey instanceof CompositeKey) {
             foreach ($localKey->columns as $i => $column) {
                 $joins[] = [$column, $foreignKey->columns[$i]];
             }

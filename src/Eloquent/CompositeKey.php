@@ -14,6 +14,6 @@ class CompositeKey
      */
     public function __construct(...$columns)
     {
-        $this->columns = $columns;
+        $this->columns = array_values($columns);
     }
 }

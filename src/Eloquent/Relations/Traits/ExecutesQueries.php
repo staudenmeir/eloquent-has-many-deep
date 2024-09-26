@@ -23,12 +23,7 @@ trait ExecutesQueries
         return parent::getResults();
     }
 
-    /**
-     * Execute the query as a "select" statement.
-     *
-     * @param string|list<string> $columns
-     * @return \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>
-     */
+    /** @inheritDoc */
     public function get($columns = ['*'])
     {
         $models = parent::get($columns);
@@ -91,10 +86,10 @@ trait ExecutesQueries
     /**
      * Paginate the given query into a cursor paginator.
      *
-     * @param  int|null  $perPage
-     * @param  list<string>  $columns
-     * @param  string  $cursorName
-     * @param  string|null  $cursor
+     * @param int|null $perPage
+     * @param list<string> $columns
+     * @param string $cursorName
+     * @param string|null $cursor
      * @return \Illuminate\Contracts\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
@@ -111,13 +106,7 @@ trait ExecutesQueries
         });
     }
 
-    /**
-     * Chunk the results of the query.
-     *
-     * @param int $count
-     * @param callable $callback
-     * @return bool
-     */
+    /** @inheritDoc */
     public function chunk($count, callable $callback)
     {
         return $this->prepareQueryBuilder()->chunk($count, function (Collection $results) use ($callback) {
