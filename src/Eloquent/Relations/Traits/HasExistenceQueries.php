@@ -51,9 +51,11 @@ trait HasExistenceQueries
 
         $from = is_string($parentQuery->getQuery()->from)
             ? $parentQuery->getQuery()->from
+            // @codeCoverageIgnoreStart
             : (string) $parentQuery->getQuery()->from->getValue(
                 $parentQuery->getQuery()->getGrammar()
             );
+            // @codeCoverageIgnoreEnd
 
         return $query->select($columns)->whereColumn(
             "$from.$this->localKey",

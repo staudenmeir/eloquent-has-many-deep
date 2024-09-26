@@ -120,9 +120,11 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 
         $from = is_string($query->getQuery()->from)
             ? $query->getQuery()->from
+            // @codeCoverageIgnoreStart
             : (string) $query->getQuery()->from->getValue(
                 $query->getQuery()->getGrammar()
             );
+            // @codeCoverageIgnoreEnd
 
         $segments = explode(' as ', $from);
 
