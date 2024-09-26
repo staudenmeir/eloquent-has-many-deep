@@ -93,9 +93,9 @@ trait SupportsCompositeKeys
     /**
      * Match the eagerly loaded results to their parents for a leading composite key.
      *
-     * @param  array<int, TDeclaringModel>  $models
-     * @param  \Illuminate\Database\Eloquent\Collection<int, TRelatedModel>  $results
-     * @param  string  $relation
+     * @param array<int, TDeclaringModel> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @param string $relation
      * @return array<int, TDeclaringModel>
      */
     protected function matchWithCompositeKey(array $models, Collection $results, string $relation): array

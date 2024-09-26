@@ -86,10 +86,10 @@ trait ExecutesQueries
     /**
      * Paginate the given query into a cursor paginator.
      *
-     * @param  int|null  $perPage
-     * @param  list<string>  $columns
-     * @param  string  $cursorName
-     * @param  string|null  $cursor
+     * @param int|null $perPage
+     * @param list<string> $columns
+     * @param string $cursorName
+     * @param string|null $cursor
      * @return \Illuminate\Contracts\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)

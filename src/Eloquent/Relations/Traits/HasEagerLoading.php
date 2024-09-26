@@ -36,9 +36,9 @@ trait HasEagerLoading
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param  array<int, TDeclaringModel>  $models
-     * @param  \Illuminate\Database\Eloquent\Collection<int, TRelatedModel>  $results
-     * @param  string  $relation
+     * @param array<int, TDeclaringModel> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @param string $relation
      * @return array<int, TDeclaringModel>
      */
     public function match(array $models, Collection $results, $relation)
