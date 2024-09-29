@@ -22,7 +22,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     }
 
     /**
-     * @return list<class-string>
+     * @return list<class-string<\Illuminate\Console\Command>>
      */
     public function provides(): array
     {
@@ -33,7 +33,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
 
     protected function registerIdeHelperHook(): void
     {
-        /** @var \Illuminate\Contracts\Config\Repository $config */
+        /** @var \Illuminate\Config\Repository $config */
         $config = $this->app->get('config');
 
         if (!$config->get('eloquent-has-many-deep.ide_helper_enabled')) {
@@ -44,7 +44,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             'ide-helper.model_hooks',
             array_merge(
                 [DeepRelationsHook::class],
-                (array) $config->get('ide-helper.model_hooks', [])
+                $config->array('ide-helper.model_hooks', [])
             )
         );
     }
