@@ -22,7 +22,9 @@ trait HasExistenceQueries
 
             $closureKey($query, $parentQuery);
 
-            return $query->select($columns);
+            $query->select($columns);
+
+            return $query;
         }
 
         $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);
@@ -55,13 +57,15 @@ trait HasExistenceQueries
             : (string) $parentQuery->getQuery()->from->getValue(
                 $parentQuery->getQuery()->getGrammar()
             );
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
 
-        return $query->select($columns)->whereColumn(
+        $query->select($columns)->whereColumn(
             "$from.$this->localKey",
             '=',
             $this->getQualifiedFirstKeyName()
         );
+
+        return $query;
     }
 
     /**

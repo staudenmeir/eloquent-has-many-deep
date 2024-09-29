@@ -64,8 +64,8 @@ class HasOneDeep extends HasManyDeep
     /**
      * Make a new related instance for the given model.
      *
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param TDeclaringModel $parent
+     * @return TRelatedModel
      */
     public function newRelatedInstanceFor(Model $parent)
     {

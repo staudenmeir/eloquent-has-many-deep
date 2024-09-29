@@ -21,10 +21,11 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
- * @extends \Illuminate\Database\Eloquent\Relations\HasManyThrough<TRelatedModel>
+ * @extends \Illuminate\Database\Eloquent\Relations\HasManyThrough<TRelatedModel, \Illuminate\Database\Eloquent\Model, TDeclaringModel>
  */
 class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 {
+    /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\ExecutesQueries<TRelatedModel, TDeclaringModel> */
     use ExecutesQueries;
     /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\HasEagerLoading<TRelatedModel, TDeclaringModel> */
     use HasEagerLoading;
@@ -79,7 +80,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
 
         $localKey = $localKeys[0] instanceof CompositeKey ? $localKeys[0]->columns[0] : $localKeys[0];
 
-        /* @phpstan-ignore-next-line */
+        // @phpstan-ignore-next-line
         parent::__construct($query, $farParent, $throughParents[0], $firstKey, $foreignKeys[1], $localKey, $localKeys[1]);
     }
 
@@ -124,7 +125,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
             : (string) $query->getQuery()->from->getValue(
                 $query->getQuery()->getGrammar()
             );
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
 
         $segments = explode(' as ', $from);
 
@@ -184,7 +185,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     public function withTrashed(...$columns)
     {
         if (empty($columns)) {
-            /** @phpstan-ignore method.notFound */
+            // @phpstan-ignore method.notFound
             $this->query->withTrashed();
 
             return $this;

@@ -3,10 +3,12 @@
 namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
 use Closure;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+ */
 trait ExecutesQueries
 {
     /**
@@ -23,7 +25,12 @@ trait ExecutesQueries
         return parent::getResults();
     }
 
-    /** @inheritDoc */
+    /**
+     * Execute the query as a "select" statement.
+     *
+     * @param list<string> $columns
+     * @return \Illuminate\Database\Eloquent\Collection<int, TRelatedModel>
+     */
     public function get($columns = ['*'])
     {
         $models = parent::get($columns);
@@ -40,24 +47,28 @@ trait ExecutesQueries
     /**
      * Get a paginator for the "select" statement.
      *
-     * @param int $perPage
-     * @param list<string> $columns
+     * @param int|\Closure|null $perPage
+     * @param list<string>|string $columns
      * @param string $pageName
-     * @param int $page
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>
+     * @param int|null $page
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     *
+     * @throws \InvalidArgumentException
      */
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         $columns = array_filter(
-            $this->shouldSelect($columns),
+            $this->shouldSelect((array) $columns),
             fn ($column) => !str_contains($column, 'laravel_through_key')
         );
 
         $this->query->addSelect($columns);
 
-        return tap($this->query->paginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
+        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page);
+
+        $this->hydrateIntermediateRelations($paginator->items());
+
+        return $paginator;
     }
 
     /**
@@ -67,7 +78,7 @@ trait ExecutesQueries
      * @param list<string> $columns
      * @param string $pageName
      * @param int|null $page
-     * @return \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>
+     * @return \Illuminate\Contracts\Pagination\Paginator
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
@@ -78,9 +89,11 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
-        return tap($this->query->simplePaginate($perPage, $columns, $pageName, $page), function (Paginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
+        $paginator = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
+
+        $this->hydrateIntermediateRelations($paginator->items());
+
+        return $paginator;
     }
 
     /**
@@ -90,7 +103,7 @@ trait ExecutesQueries
      * @param list<string> $columns
      * @param string $cursorName
      * @param string|null $cursor
-     * @return \Illuminate\Contracts\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
@@ -101,9 +114,11 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
-        return tap($this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor), function (CursorPaginator $paginator) {
-            $this->hydrateIntermediateRelations($paginator->items());
-        });
+        $paginator = $this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor);
+
+        $this->hydrateIntermediateRelations($paginator->items());
+
+        return $paginator;
     }
 
     /** @inheritDoc */

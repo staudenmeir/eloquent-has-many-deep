@@ -55,6 +55,9 @@ trait HasEagerLoading
             return $this->matchWithCompositeKey($models, $results, $relation);
         }
 
-        return parent::match($models, $results, $relation);
+        /** @var array<int, TDeclaringModel> $parentModels */
+        $parentModels = parent::match($models, $results, $relation);
+
+        return $parentModels;
     }
 }

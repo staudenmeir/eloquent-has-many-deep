@@ -1,7 +1,5 @@
-includes:
-    - ./vendor/larastan/larastan/extension.neon
 parameters:
-    level: max
+    level: 9
     paths:
         - src
     treatPhpDocTypesAsCertain: false
