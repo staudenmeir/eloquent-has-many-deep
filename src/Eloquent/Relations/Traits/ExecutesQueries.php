@@ -51,11 +51,12 @@ trait ExecutesQueries
      * @param list<string>|string $columns
      * @param string $pageName
      * @param int|null $page
+     * @param int|null|\Closure $total
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
      * @throws \InvalidArgumentException
      */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null, $total = null)
     {
         $columns = array_filter(
             $this->shouldSelect((array) $columns),
@@ -64,7 +65,7 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
-        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page);
+        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page, $total);
 
         $this->hydrateIntermediateRelations($paginator->items());
 
