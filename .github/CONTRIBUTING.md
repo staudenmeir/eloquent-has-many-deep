@@ -20,9 +20,10 @@ We accept contributions via Pull Requests on [GitHub](https://github.com/stauden
 
 - **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 
-## Running Tests
+## Running Tests & Static Analysis
 
 ```
 docker compose run --rm php8.3 composer install
 docker compose run --rm php8.3 vendor/bin/phpunit
+docker compose run --rm php8.3 vendor/bin/phpstan analyse --memory-limit=-1
 ```
