@@ -67,7 +67,9 @@ trait ExecutesQueries
 
         $paginator = $this->query->paginate($perPage, $columns, $pageName, $page, $total);
 
-        $this->hydrateIntermediateRelations($paginator->items());
+        $this->hydrateIntermediateRelations(
+            $paginator->items()
+        );
 
         return $paginator;
     }
@@ -92,7 +94,9 @@ trait ExecutesQueries
 
         $paginator = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
 
-        $this->hydrateIntermediateRelations($paginator->items());
+        $this->hydrateIntermediateRelations(
+            $paginator->items()
+        );
 
         return $paginator;
     }
@@ -117,7 +121,9 @@ trait ExecutesQueries
 
         $paginator = $this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor);
 
-        $this->hydrateIntermediateRelations($paginator->items());
+        $this->hydrateIntermediateRelations(
+            $paginator->items()
+        );
 
         return $paginator;
     }
