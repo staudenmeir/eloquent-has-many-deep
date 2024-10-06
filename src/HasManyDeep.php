@@ -119,13 +119,8 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
         $foreignKeys = array_reverse($this->foreignKeys);
         $localKeys = array_reverse($this->localKeys);
 
-        $from = is_string($query->getQuery()->from)
-            ? $query->getQuery()->from
-            // @codeCoverageIgnoreStart
-            : (string) $query->getQuery()->from->getValue(
-                $query->getQuery()->getGrammar()
-            );
-        // @codeCoverageIgnoreEnd
+        /** @var string $from */
+        $from = $query->getQuery()->from;
 
         $segments = explode(' as ', $from);
 

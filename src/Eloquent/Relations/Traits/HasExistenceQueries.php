@@ -51,13 +51,8 @@ trait HasExistenceQueries
 
         $query->getModel()->setTable($hash);
 
-        $from = is_string($parentQuery->getQuery()->from)
-            ? $parentQuery->getQuery()->from
-            // @codeCoverageIgnoreStart
-            : (string) $parentQuery->getQuery()->from->getValue(
-                $parentQuery->getQuery()->getGrammar()
-            );
-        // @codeCoverageIgnoreEnd
+        /** @var string $from */
+        $from = $query->getQuery()->from;
 
         $query->select($columns)->whereColumn(
             "$from.$this->localKey",
