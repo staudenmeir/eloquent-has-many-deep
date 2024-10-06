@@ -51,11 +51,11 @@ trait HasExistenceQueries
 
         $query->getModel()->setTable($hash);
 
-        /** @var string $from */
-        $from = $query->getQuery()->from;
+        /** @var string $parentFrom */
+        $parentFrom = $parentQuery->getQuery()->from;
 
         $query->select($columns)->whereColumn(
-            "$from.$this->localKey",
+            "$parentFrom.$this->localKey",
             '=',
             $this->getQualifiedFirstKeyName()
         );
