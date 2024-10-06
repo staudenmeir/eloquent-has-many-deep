@@ -31,3 +31,7 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
             vendor/bin/phpstan analyse --error-format=github --memory-limit=-1
+      - name: Analyse types
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
+            vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --error-format=github --memory-limit=-1   

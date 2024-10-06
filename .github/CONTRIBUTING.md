@@ -26,4 +26,5 @@ We accept contributions via Pull Requests on [GitHub](https://github.com/stauden
 docker compose run --rm php8.3 composer install
 docker compose run --rm php8.3 vendor/bin/phpunit
 docker compose run --rm php8.3 vendor/bin/phpstan analyse --memory-limit=-1
+docker compose run --rm php8.3 vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --memory-limit=-1
 ```
