@@ -16,7 +16,7 @@ trait ConcatenatesRelationships
     /**
      * Define a has-many-deep relationship from existing relationships.
      *
-     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> ...$relations
+     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*> ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, $this>
      */
     public function hasManyDeepFromRelations(...$relations)
@@ -49,7 +49,7 @@ trait ConcatenatesRelationships
     /**
      * Define a has-one-deep relationship from existing relationships.
      *
-     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> ...$relations
+     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*> ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Illuminate\Database\Eloquent\Model, $this>
      */
     public function hasOneDeepFromRelations(...$relations)

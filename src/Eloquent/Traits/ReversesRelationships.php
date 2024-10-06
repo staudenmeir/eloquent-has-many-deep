@@ -16,7 +16,7 @@ trait ReversesRelationships
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, $this>
+     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>
      */
     public function hasManyDeepFromReverse(HasManyDeep $relation): HasManyDeep
     {
@@ -32,7 +32,7 @@ trait ReversesRelationships
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
-     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, $this>
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
      */
     public function hasOneDeepFromReverse(HasManyDeep $relation): HasOneDeep
     {
