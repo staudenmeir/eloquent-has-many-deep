@@ -64,8 +64,8 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param \Illuminate\Database\Eloquent\Model $farParent
      * @param non-empty-list<\Illuminate\Database\Eloquent\Model> $throughParents
-     * @param non-empty-list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $foreignKeys
-     * @param non-empty-list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $localKeys
+     * @param non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $foreignKeys
+     * @param non-empty-list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey|null> $localKeys
      * @return void
      */
     public function __construct(Builder $query, Model $farParent, array $throughParents, array $foreignKeys, array $localKeys)
