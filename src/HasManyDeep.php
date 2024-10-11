@@ -238,4 +238,30 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     {
         return $this->localKeys;
     }
+
+    /**
+     * Convert the relationship to a "has one deep" relationship.
+     *
+     * @phpstan-ignore-next-line
+     * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
+     */
+    public function one()
+    {
+        $query = $this->getQuery();
+
+        $query->getQuery()->joins = [];
+
+        /** @var \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel> $hasOneDeep */
+        $hasOneDeep = HasOneDeep::noConstraints(
+            fn () => new HasOneDeep(
+                $query,
+                $this->farParent,
+                $this->throughParents,
+                $this->foreignKeys,
+                $this->localKeys
+            )
+        );
+
+        return $hasOneDeep;
+    }
 }

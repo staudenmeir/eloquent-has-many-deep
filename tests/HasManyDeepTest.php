@@ -183,4 +183,11 @@ class HasManyDeepTest extends TestCase
 
         $this->assertEquals(3, $country->count);
     }
+
+    public function testOne(): void
+    {
+        $comment = Country::find(1)->comments()->one()->first();
+
+        $this->assertEquals(31, $comment->id);
+    }
 }
