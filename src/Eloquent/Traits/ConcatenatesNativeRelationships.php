@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use RuntimeException;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait ConcatenatesNativeRelationships
 {
     /**
@@ -232,7 +235,7 @@ trait ConcatenatesNativeRelationships
     /**
      * Get the relationship method name.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $relation
      * @return string
      */
     protected function hasOneOrManyDeepRelationMethod(Relation $relation)

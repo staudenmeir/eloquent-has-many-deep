@@ -51,7 +51,7 @@ trait SupportsCompositeKeys
     /**
      * Set the constraints for an eager load of the relation for a leading composite key.
      *
-     * @param list<\Illuminate\Database\Eloquent\Model> $models
+     * @param array<\Illuminate\Database\Eloquent\Model> $models
      * @return void
      */
     protected function addEagerConstraintsWithCompositeKey(array $models): void
@@ -159,7 +159,7 @@ trait SupportsCompositeKeys
     /**
      * Get the columns to select for a leading composite key.
      *
-     * @return list<string>
+     * @return array<string>
      */
     protected function shouldSelectWithCompositeKey(): array
     {

@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait ReversesRelationships
 {
     /**

@@ -84,6 +84,9 @@ trait JoinsThroughParents
                 $joins[] = [$column, $foreignKey->columns[$i]];
             }
         } else {
+            /** @var array{0: string, 1: string}|string $localKey */
+            /** @var array{0: string, 1: string}|string $foreignKey */
+
             if (is_array($localKey)) {
                 $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
 

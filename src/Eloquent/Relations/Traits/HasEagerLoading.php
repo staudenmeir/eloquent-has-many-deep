@@ -24,8 +24,11 @@ trait HasEagerLoading
             parent::addEagerConstraints($models);
 
             if (is_array($this->foreignKeys[0])) {
+                /** @var string $foreignKey */
+                $foreignKey = $this->foreignKeys[0][0];
+
                 $this->query->where(
-                    $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
+                    $this->throughParent->qualifyColumn($foreignKey),
                     '=',
                     $this->farParent->getMorphClass()
                 );

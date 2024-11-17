@@ -33,6 +33,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     use IsConcatenable;
     use IsCustomizable;
     use JoinsThroughParents;
+    /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables<TRelatedModel, TDeclaringModel> */
     use RetrievesIntermediateTables;
     /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\SupportsCompositeKeys<TRelatedModel, TDeclaringModel> */
     use SupportsCompositeKeys;
@@ -99,8 +100,11 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
             } elseif ($this->localKey instanceof Closure) {
                 ($this->localKey)($this->query);
             } elseif (is_array($this->foreignKeys[0])) {
+                /** @var string $foreignKey */
+                $foreignKey = $this->foreignKeys[0][0];
+
                 $this->query->where(
-                    $this->throughParent->qualifyColumn($this->foreignKeys[0][0]),
+                    $this->throughParent->qualifyColumn($foreignKey),
                     '=',
                     $this->farParent->getMorphClass()
                 );
@@ -139,7 +143,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      * Set the select clause for the relation query.
      *
      * @param list<string> $columns
-     * @return list<string>
+     * @return array<string>
      */
     protected function shouldSelect(array $columns = ['*'])
     {
@@ -242,8 +246,8 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     /**
      * Convert the relationship to a "has one deep" relationship.
      *
-     * @phpstan-ignore-next-line
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
+     * @phpstan-ignore method.childReturnType
      */
     public function one()
     {

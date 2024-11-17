@@ -9,6 +9,9 @@ use Laravel\Prompts\Themes\Default\TableRenderer;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ConcatenatesRelationships;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ReversesRelationships;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait HasRelationships
 {
     use ConcatenatesRelationships;

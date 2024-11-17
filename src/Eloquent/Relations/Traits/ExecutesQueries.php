@@ -52,7 +52,7 @@ trait ExecutesQueries
      * @param string $pageName
      * @param int|null $page
      * @param int|null|\Closure $total
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, TRelatedModel>
      *
      * @throws \InvalidArgumentException
      */
@@ -65,6 +65,7 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
+        /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, TRelatedModel> $paginator */
         $paginator = $this->query->paginate($perPage, $columns, $pageName, $page, $total);
 
         $this->hydrateIntermediateRelations(
@@ -81,7 +82,7 @@ trait ExecutesQueries
      * @param list<string> $columns
      * @param string $pageName
      * @param int|null $page
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Contracts\Pagination\Paginator<int, TRelatedModel>
      */
     public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
@@ -92,6 +93,7 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
+        /** @var \Illuminate\Contracts\Pagination\Paginator<int, TRelatedModel> $paginator */
         $paginator = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
 
         $this->hydrateIntermediateRelations(
@@ -108,7 +110,7 @@ trait ExecutesQueries
      * @param list<string> $columns
      * @param string $cursorName
      * @param string|null $cursor
-     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator<int, TRelatedModel>
      */
     public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
@@ -119,6 +121,7 @@ trait ExecutesQueries
 
         $this->query->addSelect($columns);
 
+        /** @var \Illuminate\Contracts\Pagination\CursorPaginator<int, TRelatedModel> $paginator */
         $paginator = $this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor);
 
         $this->hydrateIntermediateRelations(

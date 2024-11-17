@@ -16,11 +16,11 @@
     "require-dev": {
         "awobaz/compoships": "^2.3",
         "barryvdh/laravel-ide-helper": "^3.0",
-        "illuminate/pagination": "^11.0",
         "korridor/laravel-has-many-merged": "^1.1",
-        "larastan/larastan": "^2.9",
+        "larastan/larastan": "^3.0",
+        "laravel/framework": "^11.0",
         "mockery/mockery": "^1.6",
-        "orchestra/testbench": "^9.0",
+        "orchestra/testbench-core": "^9.5",
         "phpunit/phpunit": "^11.0",
         "staudenmeir/eloquent-json-relations": "^1.11",
         "staudenmeir/laravel-adjacency-list": "^1.21"
