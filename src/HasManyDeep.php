@@ -31,6 +31,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
     use HasEagerLoading;
     use HasExistenceQueries;
     use IsConcatenable;
+    /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsCustomizable<TRelatedModel, TDeclaringModel> */
     use IsCustomizable;
     use JoinsThroughParents;
     /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\RetrievesIntermediateTables<TRelatedModel, TDeclaringModel> */
