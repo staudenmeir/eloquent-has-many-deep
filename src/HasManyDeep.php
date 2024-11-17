@@ -144,7 +144,7 @@ class HasManyDeep extends HasManyThrough implements ConcatenableRelation
      * Set the select clause for the relation query.
      *
      * @param list<string> $columns
-     * @return array<string>
+     * @return array<int, string>
      */
     protected function shouldSelect(array $columns = ['*'])
     {

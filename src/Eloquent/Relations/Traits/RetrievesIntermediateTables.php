@@ -15,7 +15,10 @@ trait RetrievesIntermediateTables
     /**
      * The intermediate tables to retrieve.
      *
-     * @var array<string, array{table: string, columns: array<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: callable|null}>
+     * @var array<string, array{table: string,
+     *     columns: array<int, string>,
+     *     class: class-string<\Illuminate\Database\Eloquent\Model>,
+     *     postProcessor: callable(\Illuminate\Database\Eloquent\Model, array<string, mixed>): array<string, mixed>|null}>
      */
     protected $intermediateTables = [];
 
@@ -44,7 +47,7 @@ trait RetrievesIntermediateTables
      * @param list<string> $columns
      * @param class-string<\Illuminate\Database\Eloquent\Model> $class
      * @param string|null $accessor
-     * @param callable|null $postProcessor
+     * @param callable(\Illuminate\Database\Eloquent\Model, array<string, mixed>): array<string, mixed>|null $postProcessor
      * @return $this
      */
     public function withPivot(
@@ -58,6 +61,7 @@ trait RetrievesIntermediateTables
             /** @var \Illuminate\Database\Connection $connection */
             $connection = $this->query->getConnection();
 
+            /** @var array<int, string> $columns */
             $columns = $connection->getSchemaBuilder()->getColumnListing($table);
         }
 
@@ -75,7 +79,7 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate columns for the relation.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     protected function intermediateColumns()
     {
@@ -131,7 +135,10 @@ trait RetrievesIntermediateTables
      * Get the intermediate relationship from the query.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
-     * @param array{table: string, columns: array<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: callable|null} $intermediateTable
+     * @param array{table: string,
+     *     columns: array<int, string>,
+     *     class: class-string<\Illuminate\Database\Eloquent\Model>,
+     *     postProcessor: callable(\Illuminate\Database\Eloquent\Model, array<string, mixed>): array<string, mixed>|null} $intermediateTable
      * @param string $prefix
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -195,7 +202,7 @@ trait RetrievesIntermediateTables
     /**
      * Get the intermediate tables.
      *
-     * @return array<string, array{table: string, columns: array<string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: callable|null}>
+     * @return array<string, array{table: string, columns: array<int, string>, class: class-string<\Illuminate\Database\Eloquent\Model>, postProcessor: callable|null}>
      */
     public function getIntermediateTables(): array
     {

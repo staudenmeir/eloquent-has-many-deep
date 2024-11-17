@@ -25,7 +25,7 @@ trait IsCustomizable
     /**
      * The custom constraints callback for an eager load of the relation.
      *
-     * @var callable(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, array<int, TDeclaringModel>): void
+     * @var callable(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, array<int, \Illuminate\Database\Eloquent\Model>): void
      */
     protected $customEagerConstraintsCallback = null;
 
@@ -65,7 +65,7 @@ trait IsCustomizable
     /**
      * Set the custom constraints callback for an eager load of the relation.
      *
-     * @param callable(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, array<int, TDeclaringModel>): void $callback
+     * @param callable(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, array<int, \Illuminate\Database\Eloquent\Model>): void $callback
      * @return $this
      */
     public function withCustomEagerConstraintsCallback(callable $callback): static
