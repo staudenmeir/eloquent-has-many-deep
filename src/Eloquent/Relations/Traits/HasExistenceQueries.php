@@ -30,7 +30,10 @@ trait HasExistenceQueries
         $query = parent::getRelationExistenceQuery($query, $parentQuery, $columns);
 
         if (is_array($this->foreignKeys[0])) {
-            $column = $this->throughParent->qualifyColumn($this->foreignKeys[0][0]);
+            /** @var string $foreignKey */
+            $foreignKey = $this->foreignKeys[0][0];
+
+            $column = $this->throughParent->qualifyColumn($foreignKey);
 
             $query->where($column, '=', $this->farParent->getMorphClass());
         } elseif ($this->hasLeadingCompositeKey()) {

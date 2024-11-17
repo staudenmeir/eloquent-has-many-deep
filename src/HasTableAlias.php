@@ -2,6 +2,9 @@
 
 namespace Staudenmeir\EloquentHasManyDeep;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait HasTableAlias
 {
     /** @inheritDoc */

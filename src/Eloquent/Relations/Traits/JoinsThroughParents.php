@@ -55,6 +55,7 @@ trait JoinsThroughParents
 
         if ($this->throughParentInstanceSoftDeletes($throughParent)
             && method_exists($throughParent, 'getQualifiedDeletedAtColumn')) {
+            /** @var string $column */
             $column = $throughParent->getQualifiedDeletedAtColumn();
 
             $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
@@ -84,6 +85,9 @@ trait JoinsThroughParents
                 $joins[] = [$column, $foreignKey->columns[$i]];
             }
         } else {
+            /** @var array{0: string, 1: string}|string $localKey */
+            /** @var array{0: string, 1: string}|string $foreignKey */
+
             if (is_array($localKey)) {
                 $query->where($throughParent->qualifyColumn($localKey[0]), '=', $predecessor->getMorphClass());
 

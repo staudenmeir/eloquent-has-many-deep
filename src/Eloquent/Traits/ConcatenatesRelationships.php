@@ -9,6 +9,9 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait ConcatenatesRelationships
 {
     use ConcatenatesNativeRelationships;
@@ -16,7 +19,7 @@ trait ConcatenatesRelationships
     /**
      * Define a has-many-deep relationship from existing relationships.
      *
-     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*> ...$relations
+     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *> ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, $this>
      */
     public function hasManyDeepFromRelations(...$relations)
@@ -49,7 +52,7 @@ trait ConcatenatesRelationships
     /**
      * Define a has-one-deep relationship from existing relationships.
      *
-     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*> ...$relations
+     * @param callable|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *> ...$relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<\Illuminate\Database\Eloquent\Model, $this>
      */
     public function hasOneDeepFromRelations(...$relations)
@@ -81,7 +84,7 @@ trait ConcatenatesRelationships
     /**
      * Prepare a has-one-deep or has-many-deep relationship from existing relationships.
      *
-     * @param list<callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model>> $relations
+     * @param list<callable|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *>> $relations
      * @return array{0: class-string<\Illuminate\Database\Eloquent\Model>,
      *     1: list<string>,
      *     2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
@@ -173,8 +176,8 @@ trait ConcatenatesRelationships
     /**
      * Prepare the through parent class from an existing relationship and its successor.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relation
-     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $successor
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $successor
      * @return string
      */
     protected function hasOneOrManyThroughParent(Relation $relation, Relation $successor)
@@ -207,7 +210,7 @@ trait ConcatenatesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $relation
      * @param list<callable> $postGetCallbacks
      * @param callable|null $customThroughKeyCallback
@@ -274,7 +277,7 @@ trait ConcatenatesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $deepRelation
      * @param list<callable> $relations
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>|\Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
@@ -308,9 +311,9 @@ trait ConcatenatesRelationships
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
-     * TODO
+     *
      * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $deepRelation
-     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $relation
      * @param bool $isLastRelation
      * @return void
      */
@@ -350,8 +353,8 @@ trait ConcatenatesRelationships
     /**
      * Normalize the relations from a variadic parameter.
      *
-     * @param list<callable|list<callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model>>|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model>> $relations
-     * @return list<callable|\Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model>>
+     * @param list<callable|list<callable|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *>>|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *>> $relations
+     * @return list<callable|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *>>
      */
     protected function normalizeVariadicRelations(array $relations): array
     {
