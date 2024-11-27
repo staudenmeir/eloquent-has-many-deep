@@ -16,7 +16,7 @@ jobs:
         database: [ mysql, sqlite ]
         release: [ stable, lowest ]
         include:
-          - php: 8.3
+          - php: 8.4
             release: stable
             coverage: true
 
