@@ -22,7 +22,7 @@ services:
       - test
     volumes:
       - .:/var/www/html:delegated
-      #- .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - .docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   mysql:
     image: 'mysql:5.7'
     environment:
