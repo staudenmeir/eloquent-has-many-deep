@@ -9,6 +9,9 @@ use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 
 class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+    /**
+     * @var string
+     */
     const ModelsCommandAlias = 'ModelsCommand__EloquentHasManyDeep__alias';
 
     public function boot(): void
