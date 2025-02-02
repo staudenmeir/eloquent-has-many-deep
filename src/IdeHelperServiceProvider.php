@@ -12,7 +12,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     /**
      * @var string
      */
-    const ModelsCommandAlias = 'ModelsCommand__EloquentHasManyDeep__alias';
+    const ModelsCommandAlias = __NAMESPACE__ . '\\' . ModelsCommand::class;
 
     public function boot(): void
     {
