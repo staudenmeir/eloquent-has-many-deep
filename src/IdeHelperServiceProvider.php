@@ -9,9 +9,20 @@ use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 
 class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+    /**
+     * @var string
+     */
+    const ModelsCommandAlias = __NAMESPACE__ . '\\' . ModelsCommand::class;
+
     public function boot(): void
     {
         $this->publishConfig();
+
+        // Laravel only allows a single deferred service provider to claim
+        // responsibility for a given class, interface, or service in the
+        // provides() method. To ensure this provider is properly loaded
+        // when running the ModelsCommand we bind an alias and use that instead.
+        $this->app->alias(ModelsCommand::class, static::ModelsCommandAlias);
     }
 
     public function register(): void
@@ -22,12 +33,12 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     }
 
     /**
-     * @return list<class-string<\Illuminate\Console\Command>>
+     * @return list<string>
      */
     public function provides(): array
     {
         return [
-            ModelsCommand::class,
+            static::ModelsCommandAlias
         ];
     }
 
