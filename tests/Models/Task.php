@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
-    use Compoships;
+//    use Compoships; TODO[L12]
 
     public function employee(): ComposhipsBelongsTo
     {
