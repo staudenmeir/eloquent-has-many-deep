@@ -18,7 +18,9 @@
         "laravel/framework": "^12.0",
         "mockery/mockery": "^1.6",
         "orchestra/testbench-core": "^10.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^11.0",
+        "staudenmeir/eloquent-json-relations": "dev-l12",
+        "staudenmeir/laravel-adjacency-list": "dev-l12"
     },
     "autoload": {
         "psr-4": {
