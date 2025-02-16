@@ -19,8 +19,8 @@
         "mockery/mockery": "^1.6",
         "orchestra/testbench-core": "^10.0",
         "phpunit/phpunit": "^11.0",
-        "staudenmeir/eloquent-json-relations": "dev-l12",
-        "staudenmeir/laravel-adjacency-list": "dev-l12"
+        "staudenmeir/eloquent-json-relations": "^1.14",
+        "staudenmeir/laravel-adjacency-list": "^1.24"
     },
     "autoload": {
         "psr-4": {
@@ -36,6 +36,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-l12": "1.21.x-dev"
+        },
         "laravel": {
             "providers": [
                 "Staudenmeir\\EloquentHasManyDeep\\IdeHelperServiceProvider"

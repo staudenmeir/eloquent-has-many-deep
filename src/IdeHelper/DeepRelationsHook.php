@@ -39,7 +39,7 @@ class DeepRelationsHook implements ModelHookInterface
                 continue; // @codeCoverageIgnore
             }
 
-            if ($relationship instanceof HasManyDeep) {
+            if ($relationship instanceof HasManyDeep || $relationship instanceof HasOneDeep) {
                 $this->addRelationship($command, $method, $relationship);
             }
         }

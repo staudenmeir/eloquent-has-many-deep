@@ -4,6 +4,7 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Traits;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\ThirdParty\LaravelHasManyMerged\HasManyMerged;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
@@ -211,20 +212,20 @@ trait ConcatenatesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $relation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel> $relation
      * @param list<callable> $postGetCallbacks
      * @param callable|null $customThroughKeyCallback
      * @param callable|null $customEagerConstraintsCallback
      * @param callable|null $customEagerMatchingCallback
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>|\Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
+     * @return \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel>
      */
     protected function customizeHasOneOrManyDeepRelationship(
-        HasManyDeep $relation,
+        DeepRelation $relation,
         array $postGetCallbacks,
         ?callable $customThroughKeyCallback,
         ?callable $customEagerConstraintsCallback,
         ?callable $customEagerMatchingCallback
-    ): HasManyDeep|HasOneDeep {
+    ): DeepRelation {
         $relation->withPostGetCallbacks($postGetCallbacks);
 
         if ($customThroughKeyCallback) {
@@ -278,14 +279,14 @@ trait ConcatenatesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $deepRelation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel> $deepRelation
      * @param list<callable> $relations
-     * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>|\Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
+     * @return \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel>
      */
     protected function addConstraintsToHasOneOrManyDeepRelationship(
-        HasManyDeep $deepRelation,
+        DeepRelation $deepRelation,
         array $relations
-    ): HasManyDeep|HasOneDeep {
+    ): DeepRelation {
         $relations = $this->normalizeVariadicRelations($relations);
 
         foreach ($relations as $i => $relation) {
@@ -312,13 +313,13 @@ trait ConcatenatesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $deepRelation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel> $deepRelation
      * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $relation
      * @param bool $isLastRelation
      * @return void
      */
     protected function addRemovedScopesToHasOneOrManyDeepRelationship(
-        HasManyDeep $deepRelation,
+        DeepRelation $deepRelation,
         Relation $relation,
         bool $isLastRelation
     ): void {
