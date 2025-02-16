@@ -5,15 +5,21 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsOneOrManyDeepRelation;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
- * @extends \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>
+ * @extends \Illuminate\Database\Eloquent\Relations\HasOneThrough<TRelatedModel, \Illuminate\Database\Eloquent\Model, TDeclaringModel>
+ * @implements \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel>
  */
-class HasOneDeep extends HasManyDeep
+class HasOneDeep extends HasOneThrough implements DeepRelation
 {
+    /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsOneOrManyDeepRelation<TRelatedModel, TDeclaringModel> */
+    use IsOneOrManyDeepRelation;
     use SupportsDefaultModels;
 
     /**
@@ -26,17 +32,14 @@ class HasOneDeep extends HasManyDeep
         return $this->first() ?: $this->getDefaultFor(end($this->throughParents));
     }
 
-    /** @inheritDoc */
-    public function initRelation(array $models, $relation)
-    {
-        foreach ($models as $model) {
-            $model->setRelation($relation, $this->getDefaultFor($model));
-        }
-
-        return $models;
-    }
-
-    /** @inheritDoc */
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param array<int, TDeclaringModel> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @param string $relation
+     * @return array<int, TDeclaringModel>
+     */
     public function match(array $models, Collection $results, $relation)
     {
         if ($this->customEagerMatchingCallbacks) {

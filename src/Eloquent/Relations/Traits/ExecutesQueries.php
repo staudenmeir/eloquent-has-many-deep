@@ -2,7 +2,6 @@
 
 namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits;
 
-use Closure;
 use Illuminate\Support\Collection;
 
 /**
@@ -11,20 +10,6 @@ use Illuminate\Support\Collection;
  */
 trait ExecutesQueries
 {
-    /**
-     * Get the results of the relationship.
-     *
-     * @return mixed
-     */
-    public function getResults()
-    {
-        if ($this->firstKey instanceof Closure || $this->localKey instanceof Closure) {
-            return $this->get();
-        }
-
-        return parent::getResults();
-    }
-
     /**
      * Execute the query as a "select" statement.
      *

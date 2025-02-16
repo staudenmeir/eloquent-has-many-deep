@@ -4,6 +4,7 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasOneDeep;
 
@@ -18,10 +19,10 @@ trait ReversesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TDeclaringModel, TRelatedModel> $relation
      * @return \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel>
      */
-    public function hasManyDeepFromReverse(HasManyDeep $relation): HasManyDeep
+    public function hasManyDeepFromReverse(DeepRelation $relation): HasManyDeep
     {
         return $this->hasManyDeep(
             ...$this->hasOneOrManyDeepFromReverse($relation)
@@ -34,10 +35,10 @@ trait ReversesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TDeclaringModel, TRelatedModel> $relation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TDeclaringModel, TRelatedModel> $relation
      * @return \Staudenmeir\EloquentHasManyDeep\HasOneDeep<TRelatedModel, TDeclaringModel>
      */
-    public function hasOneDeepFromReverse(HasManyDeep $relation): HasOneDeep
+    public function hasOneDeepFromReverse(DeepRelation $relation): HasOneDeep
     {
         return $this->hasOneDeep(
             ...$this->hasOneOrManyDeepFromReverse($relation)
@@ -50,13 +51,13 @@ trait ReversesRelationships
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
-     * @param \Staudenmeir\EloquentHasManyDeep\HasManyDeep<TRelatedModel, TDeclaringModel> $relation
+     * @param \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel> $relation
      * @return array{0: class-string<TDeclaringModel>,
      *     1: list<string>,
      *     2: list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
      *     3: list<callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
-    protected function hasOneOrManyDeepFromReverse(HasManyDeep $relation): array
+    protected function hasOneOrManyDeepFromReverse(DeepRelation $relation): array
     {
         $related = $relation->getFarParent()::class;
 

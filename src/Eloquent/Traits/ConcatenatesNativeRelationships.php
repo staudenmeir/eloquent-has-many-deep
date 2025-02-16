@@ -4,8 +4,8 @@ namespace Staudenmeir\EloquentHasManyDeep\Eloquent\Traits;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -117,9 +117,9 @@ trait ConcatenatesNativeRelationships
     }
 
     /**
-     * Prepare a has-one-deep or has-many-deep relationship from an existing has-many-through relationship.
+     * Prepare a has-one-deep or has-many-deep relationship from an existing has-one-through or has-many-through relationship.
      *
-     * @param \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Illuminate\Database\Eloquent\Model> $relation
+     * @param \Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough<\Illuminate\Database\Eloquent\Model> $relation
      * @param list<\Illuminate\Database\Eloquent\Model> $through
      * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $foreignKeys
      * @param list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey> $localKeys
@@ -127,8 +127,8 @@ trait ConcatenatesNativeRelationships
      *      1: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>,
      *      2: list<array{0: string, 1: string}|callable|string|\Staudenmeir\EloquentHasManyDeep\Eloquent\CompositeKey>}
      */
-    protected function hasOneOrManyDeepFromHasManyThrough(
-        HasManyThrough $relation,
+    protected function hasOneOrManyDeepFromHasOneOrManyThrough(
+        HasOneOrManyThrough $relation,
         array $through,
         array $foreignKeys,
         array $localKeys
@@ -242,8 +242,7 @@ trait ConcatenatesNativeRelationships
     {
         $classes = [
             BelongsTo::class,
-            HasManyThrough::class, // TODO[L12]
-            HasOneThrough::class,
+            HasOneOrManyThrough::class,
             MorphOneOrMany::class,
             HasOneOrMany::class,
             MorphToMany::class,

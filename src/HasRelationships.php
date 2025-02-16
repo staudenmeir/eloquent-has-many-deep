@@ -5,7 +5,6 @@ namespace Staudenmeir\EloquentHasManyDeep;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Laravel\Prompts\Themes\Default\TableRenderer;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ConcatenatesRelationships;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Traits\ReversesRelationships;
 
