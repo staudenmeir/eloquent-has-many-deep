@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^11.0",
+        "illuminate/database": "^11.0|^12.0",
         "staudenmeir/eloquent-has-many-deep-contracts": "^1.2"
     },
     "require-dev": {
@@ -18,7 +18,7 @@
         "barryvdh/laravel-ide-helper": "^3.0",
         "korridor/laravel-has-many-merged": "^1.1",
         "larastan/larastan": "^3.0",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^11.0|^12.0",
         "mockery/mockery": "^1.6",
         "orchestra/testbench-core": "^9.5",
         "phpunit/phpunit": "^11.0",
