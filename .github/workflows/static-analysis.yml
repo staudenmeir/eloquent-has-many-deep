@@ -12,26 +12,30 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.4 ]
-        release: [ stable ]
+        php: ['8.2', '8.3', 8.4, '8.4']
+        release: [stable]
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/composer/files
           key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
       - name: Install dependencies
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
             composer update --no-interaction --no-progress --prefer-dist --prefer-${{ matrix.release }}
+
       - name: Analyse code
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
             vendor/bin/phpstan analyse --error-format=github --memory-limit=-1
+
       - name: Analyse types
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
-            vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --error-format=github --memory-limit=-1   
+            vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --error-format=github --memory-limit=-1
