@@ -10,20 +10,19 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^11.0",
-        "staudenmeir/eloquent-has-many-deep-contracts": "^1.2"
+        "illuminate/database": "^12.0",
+        "staudenmeir/eloquent-has-many-deep-contracts": "^1.3"
     },
     "require-dev": {
         "awobaz/compoships": "^2.3",
         "barryvdh/laravel-ide-helper": "^3.0",
-        "korridor/laravel-has-many-merged": "^1.1",
         "larastan/larastan": "^3.0",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "mockery/mockery": "^1.6",
-        "orchestra/testbench-core": "^9.5",
+        "orchestra/testbench-core": "^10.0",
         "phpunit/phpunit": "^11.0",
-        "staudenmeir/eloquent-json-relations": "^1.11",
-        "staudenmeir/laravel-adjacency-list": "^1.21"
+        "staudenmeir/eloquent-json-relations": "^1.14",
+        "staudenmeir/laravel-adjacency-list": "^1.24"
     },
     "autoload": {
         "psr-4": {
