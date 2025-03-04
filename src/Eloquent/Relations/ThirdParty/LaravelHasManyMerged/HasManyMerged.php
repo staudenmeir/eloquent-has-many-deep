@@ -12,8 +12,9 @@ use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
  * @copyright Based on package by Constantin Graf (korridor): https://github.com/korridor/laravel-has-many-merged
  *
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
- * @extends \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel>
+ * @extends \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel, TDeclaringModel>
  */
 class HasManyMerged extends Base implements ConcatenableRelation
 {
@@ -145,16 +146,19 @@ class HasManyMerged extends Base implements ConcatenableRelation
     /**
      * Create a new instance of the relation from a base relation instance.
      *
-     * @param \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel> $relation
-     * @return static
+     * @param \Korridor\LaravelHasManyMerged\HasManyMerged<TRelatedModel, TDeclaringModel> $baseRelation
+     * @return static<TRelatedModel, TDeclaringModel>
      */
-    public static function fromBaseRelation(Base $relation): static
+    public static function fromBaseRelation(Base $baseRelation): static
     {
-        return new static(
-            $relation->getQuery(),
-            $relation->getParent(),
-            $relation->getQualifiedForeignKeyNames(),
-            (fn () => $this->localKey)->call($relation)
+        /** @var static<TRelatedModel, TDeclaringModel> $relation */
+        $relation =  new static(
+            $baseRelation->getQuery(),
+            $baseRelation->getParent(),
+            $baseRelation->getQualifiedForeignKeyNames(),
+            (fn () => $this->localKey)->call($baseRelation)
         );
+
+        return $relation;
     }
 }

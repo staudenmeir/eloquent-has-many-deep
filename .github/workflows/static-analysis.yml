@@ -1,10 +1,10 @@
 name: Static Analysis
 
-on: workflow_dispatch # TODO[L12]
-#  push:
-#    branches:
-#      - main
-#  pull_request:
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   phpstan:
@@ -34,4 +34,4 @@ jobs:
       - name: Analyse types
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm php${{ matrix.php }} \
-            vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --error-format=github --memory-limit=-1   
+            vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --error-format=github --memory-limit=-1

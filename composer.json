@@ -16,6 +16,7 @@
     "require-dev": {
         "awobaz/compoships": "^2.3",
         "barryvdh/laravel-ide-helper": "^3.0",
+        "korridor/laravel-has-many-merged": "^1.2",
         "larastan/larastan": "^3.0",
         "laravel/framework": "^12.0",
         "mockery/mockery": "^1.6",
