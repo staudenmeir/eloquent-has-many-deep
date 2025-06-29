@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation;
 use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsOneOrManyDeepRelation;
+use Staudenmeir\EloquentHasManyDeepContracts\Interfaces\ConcatenableRelation;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
@@ -16,7 +17,7 @@ use Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsOneOrManyDeepRel
  * @extends \Illuminate\Database\Eloquent\Relations\HasOneThrough<TRelatedModel, \Illuminate\Database\Eloquent\Model, TDeclaringModel>
  * @implements \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Interfaces\DeepRelation<TRelatedModel, TDeclaringModel>
  */
-class HasOneDeep extends HasOneThrough implements DeepRelation
+class HasOneDeep extends HasOneThrough implements ConcatenableRelation, DeepRelation
 {
     /** @use \Staudenmeir\EloquentHasManyDeep\Eloquent\Relations\Traits\IsOneOrManyDeepRelation<TRelatedModel, TDeclaringModel> */
     use IsOneOrManyDeepRelation;
