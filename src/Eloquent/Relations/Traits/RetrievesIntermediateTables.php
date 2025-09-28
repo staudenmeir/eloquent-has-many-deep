@@ -48,7 +48,7 @@ trait RetrievesIntermediateTables
         array $columns = ['*'],
         $class = Pivot::class,
         $accessor = null,
-        callable $postProcessor = null
+        ?callable $postProcessor = null
     ) {
         if ($columns === ['*']) {
             $columns = $this->query->getConnection()->getSchemaBuilder()->getColumnListing($table);

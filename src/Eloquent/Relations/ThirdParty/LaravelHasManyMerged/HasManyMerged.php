@@ -25,7 +25,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
     public function appendToDeepRelationship(array $through, array $foreignKeys, array $localKeys, int $position): array
     {
         if ($position === 0) {
-            $foreignKeys[] = function (Builder $query, Builder $parentQuery = null) {
+            $foreignKeys[] = function (Builder $query, ?Builder $parentQuery = null) {
                 if ($parentQuery) {
                     $this->getRelationExistenceQuery($this->query, $parentQuery);
                 }
