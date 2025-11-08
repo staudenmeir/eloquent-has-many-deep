@@ -39,7 +39,7 @@ class DeepRelationsHookTest extends TestCase
         );
         $command->shouldReceive('setProperty')->once()->with(
             'comments',
-            '\Illuminate\Database\Eloquent\Collection|\Tests\IdeHelper\Models\Comment[]',
+            '\Illuminate\Database\Eloquent\Collection<int, \Tests\IdeHelper\Models\Comment>',
             true,
             false,
             '',

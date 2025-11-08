@@ -39,7 +39,9 @@ abstract class TestCase extends Base
 
     protected function tearDown(): void
     {
-        DB::connection()->disconnect();
+        if ($this->connection !== 'sqlite') {
+            DB::connection()->disconnect();
+        }
 
         parent::tearDown();
     }

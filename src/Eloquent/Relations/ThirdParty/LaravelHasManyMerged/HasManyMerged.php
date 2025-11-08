@@ -102,7 +102,10 @@ class HasManyMerged extends Base implements ConcatenableRelation
         $dictionary = $this->buildDictionaryForDeepRelationship($results);
 
         foreach ($models as $model) {
-            if (isset($dictionary[$key = $model->getAttribute($this->localKey)])) {
+            /** @var int|string $key */
+            $key = $model->getAttribute($this->localKey);
+
+            if (isset($dictionary[$key])) {
                 $model->setRelation(
                     $relation,
                     $this->getRelated()->newCollection($dictionary[$key])->unique($this->getRelated()->getKeyName())
@@ -130,6 +133,7 @@ class HasManyMerged extends Base implements ConcatenableRelation
 
         foreach ($results as $result) {
             foreach ($foreignKeyNames as $foreignKeyName) {
+                /** @var int|string $foreignKeyValue */
                 $foreignKeyValue = $result->{$foreignKeyName};
 
                 if (!isset($dictionary[$foreignKeyValue])) {

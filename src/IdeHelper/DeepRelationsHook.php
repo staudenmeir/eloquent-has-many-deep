@@ -51,7 +51,7 @@ class DeepRelationsHook implements ModelHookInterface
         $manyRelation = !$relationship instanceof HasOneDeep;
 
         $type = $manyRelation
-            ? '\\' . Collection::class . '|\\' . $relationship->getRelated()::class . '[]'
+            ? '\\' . Collection::class . '<int, \\' . $relationship->getRelated()::class . '>'
             : '\\' . $relationship->getRelated()::class;
 
         $command->setProperty(
