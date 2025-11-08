@@ -54,7 +54,10 @@ class HasOneDeep extends HasOneThrough implements ConcatenableRelation, DeepRela
         $dictionary = $this->buildDictionary($results);
 
         foreach ($models as $model) {
-            if (isset($dictionary[$key = $model->getAttribute($this->localKey)])) {
+            /** @var int|string $key */
+            $key = $model->getAttribute($this->localKey);
+
+            if (isset($dictionary[$key])) {
                 $model->setRelation(
                     $relation,
                     reset($dictionary[$key])
