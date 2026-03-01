@@ -10,7 +10,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Employee extends Model
 {
-    use Compoships;
+    // TODO[L13]
+    //use Compoships;
     use HasRelationships;
 
     public function projects(): HasManyDeep
