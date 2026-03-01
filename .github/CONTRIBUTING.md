@@ -23,8 +23,8 @@ We accept contributions via Pull Requests on [GitHub](https://github.com/stauden
 ## Running Tests & Static Analysis
 
 ```
-docker compose run --rm php8.4 composer install
-docker compose run --rm php8.4 vendor/bin/phpunit
-docker compose run --rm php8.4 vendor/bin/phpstan analyse --memory-limit=-1
-docker compose run --rm php8.4 vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --memory-limit=-1
+docker compose run --rm php8.5 composer install
+docker compose run --rm php8.5 vendor/bin/phpunit
+docker compose run --rm php8.5 vendor/bin/phpstan analyse --memory-limit=-1
+docker compose run --rm php8.5 vendor/bin/phpstan analyse --configuration=phpstan.types.neon.dist --memory-limit=-1
 ```
