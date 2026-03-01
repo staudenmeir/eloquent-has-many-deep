@@ -15,8 +15,16 @@ services:
     volumes:
       - .:/var/www/html:delegated
       - ~/.cache/composer/files:/root/.composer/cache/files
-  php8.4-xdebug:
-    image: ghcr.io/staudenmeir/php:8.4
+  php8.5:
+    image: ghcr.io/staudenmeir/php:8.5
+    working_dir: /var/www/html
+    networks:
+      - test
+    volumes:
+      - .:/var/www/html:delegated
+      - ~/.cache/composer/files:/root/.composer/cache/files
+  php8.5-xdebug:
+    image: ghcr.io/staudenmeir/php:8.5
     working_dir: /var/www/html
     networks:
       - test
