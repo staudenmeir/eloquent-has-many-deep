@@ -18,12 +18,16 @@ services:
   php8.5:
     image: ghcr.io/staudenmeir/php:8.5
     working_dir: /var/www/html
+    networks:
+      - test
     volumes:
       - .:/var/www/html:delegated
       - ~/.cache/composer/files:/root/.composer/cache/files
   php8.5-xdebug:
     image: ghcr.io/staudenmeir/php:8.5
     working_dir: /var/www/html
+    networks:
+      - test
     volumes:
       - .:/var/www/html:delegated
       - .docker/xdebug.ci.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
