@@ -20,8 +20,8 @@
         "mockery/mockery": "^1.6",
         "orchestra/testbench-core": "^11.0",
         "phpunit/phpunit": "^12.5",
-        "staudenmeir/eloquent-json-relations": "dev-l13",
-        "staudenmeir/laravel-adjacency-list": "dev-l13"
+        "staudenmeir/eloquent-json-relations": "v1.15",
+        "staudenmeir/laravel-adjacency-list": "v1.26"
     },
     "autoload": {
         "psr-4": {
