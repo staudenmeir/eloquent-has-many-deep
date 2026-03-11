@@ -7,14 +7,6 @@ use Tests\Models\Project;
 
 class CompositeKeyTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // TODO[L13]
-        $this->markTestSkipped();
-    }
-
     public function testLazyLoadingWithLeadingKey(): void
     {
         $projects = Employee::find(131)->projects;

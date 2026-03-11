@@ -14,6 +14,7 @@
         "staudenmeir/eloquent-has-many-deep-contracts": "^1.4"
     },
     "require-dev": {
+        "awobaz/compoships": "^2.5.5",
         "barryvdh/laravel-ide-helper": "^3.0",
         "larastan/larastan": "^3.0",
         "laravel/framework": "^13.0",
