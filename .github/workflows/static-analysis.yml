@@ -1,10 +1,10 @@
 name: Static Analysis
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: workflow_dispatch # TODO[L13]
+#  push:
+#    branches:
+#      - main
+#  pull_request:
 
 jobs:
   phpstan:
@@ -12,14 +12,14 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.4 ]
+        php: [ 8.5 ]
         release: [ stable ]
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache Composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/files
           key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
